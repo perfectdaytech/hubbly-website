@@ -25,3 +25,7 @@ Thumbs.db
 .vscode/
 .idea/
 *.swp
+
+# local agent config
+.claude/
+RECON.md

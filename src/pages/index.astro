@@ -1,0 +1,46 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import Hero from '@/components/home/Hero.astro';
+import SocialProof from '@/components/home/SocialProof.astro';
+import MeetHubbly from '@/components/home/MeetHubbly.astro';
+import Features from '@/components/home/Features.astro';
+import KitchenShowcase from '@/components/home/KitchenShowcase.astro';
+import ForFamilies from '@/components/home/ForFamilies.astro';
+import Safety from '@/components/home/Safety.astro';
+import Pricing from '@/components/home/Pricing.astro';
+import WhyNoSubscription from '@/components/home/WhyNoSubscription.astro';
+import Faq from '@/components/home/Faq.astro';
+import FinalCta from '@/components/home/FinalCta.astro';
+import { softwareApplicationSchema, faqPageSchema } from '@/lib/schema';
+
+// Build the FAQPage structured data from the same content collection
+// the FAQ section renders, so the two never drift apart.
+const stripMarkdown = (s: string) =>
+  s
+    .replace(/\[([^\]]+)\]\([^)]+\)/g, '$1')
+    .replace(/[*_`>#]/g, '')
+    .replace(/\s+/g, ' ')
+    .trim();
+
+const faqEntries = (await getCollection('faqs')).sort((a, b) => a.data.order - b.data.order);
+const faqSchema = faqPageSchema(
+  faqEntries.map((e) => ({
+    question: e.data.question,
+    answer: stripMarkdown(e.body ?? ''),
+  })),
+);
+---
+<BaseLayout jsonLd={[softwareApplicationSchema(), faqSchema]}>
+  <Hero />
+  <SocialProof />
+  <MeetHubbly />
+  <Features />
+  <KitchenShowcase />
+  <ForFamilies />
+  <Safety />
+  <Pricing />
+  <WhyNoSubscription />
+  <Faq />
+  <FinalCta />
+</BaseLayout>

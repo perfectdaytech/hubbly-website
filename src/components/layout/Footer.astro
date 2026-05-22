@@ -1,0 +1,99 @@
+---
+import Logo from '@/components/ui/Logo.astro';
+import StoreButtons from '@/components/ui/StoreButtons.astro';
+import Icon from '@/components/ui/Icon.astro';
+import { FOOTER_COLUMNS } from '@/data/nav';
+import { SOCIAL_LINKS } from '@/data/social';
+import { SITE, COMPANY } from '@/data/site';
+
+const year = new Date().getFullYear();
+---
+<footer class="relative overflow-hidden bg-navy text-cream">
+  <!-- soft glow + watermark mark -->
+  <div
+    class="halo pointer-events-none absolute -left-24 -top-24 size-72 rounded-full bg-coral/25"
+    aria-hidden="true"
+  >
+  </div>
+  <div
+    class="halo pointer-events-none absolute -bottom-28 right-10 size-72 rounded-full bg-lavender/20"
+    aria-hidden="true"
+  >
+  </div>
+
+  <div class="relative mx-auto w-full max-w-[1200px] px-5 sm:px-7 lg:px-8">
+    <div class="grid gap-12 py-16 sm:py-20 lg:grid-cols-12">
+      <!-- brand block -->
+      <div class="lg:col-span-5">
+        <Logo />
+        <p class="mt-5 max-w-sm text-[1.05rem] leading-relaxed text-cream/70">
+          {SITE.tagline} <span class="text-coral">{SITE.heart}</span>
+          <br />
+          Routines, meals, plans and proud little moments, all under one roof.
+        </p>
+        <StoreButtons class="mt-7" tone="light" />
+        <div class="mt-7 flex gap-3">
+          {
+            SOCIAL_LINKS.map((s) => (
+              <a
+                href={s.href}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label={`Hubbly on ${s.label}`}
+                class="grid size-10 place-items-center rounded-full bg-white/8 text-cream/80 transition duration-200 ease-pop hover:-translate-y-0.5 hover:bg-coral hover:text-white"
+              >
+                <svg viewBox="0 0 24 24" class="size-[18px]" fill="currentColor" aria-hidden="true">
+                  <path d={s.icon} />
+                </svg>
+              </a>
+            ))
+          }
+        </div>
+      </div>
+
+      <!-- link columns -->
+      <nav class="grid grid-cols-2 gap-8 sm:grid-cols-3 lg:col-span-7" aria-label="Footer">
+        {
+          FOOTER_COLUMNS.map((col) => (
+            <div>
+              <h2 class="font-display text-sm font-bold uppercase tracking-[0.14em] text-cream/70">
+                {col.title}
+              </h2>
+              <ul class="mt-4 space-y-3">
+                {col.links.map((link) => (
+                  <li>
+                    <a
+                      href={link.href}
+                      target={link.external ? '_blank' : undefined}
+                      rel={link.external ? 'noopener noreferrer' : undefined}
+                      class="inline-flex items-center gap-1 text-[0.97rem] text-cream/75 transition-colors hover:text-coral"
+                    >
+                      {link.label}
+                      {link.external && <Icon name="arrow-up-right" size={13} class="opacity-60" />}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))
+        }
+      </nav>
+    </div>
+
+    <!-- bottom bar -->
+    <div
+      class="flex flex-col gap-4 border-t border-white/10 py-7 text-sm text-cream/55 sm:flex-row sm:items-center sm:justify-between"
+    >
+      <p>
+        &copy; {year} {COMPANY.legalName}. Made with
+        <span class="text-coral">{SITE.heart}</span> for busy households.
+      </p>
+      <div class="flex flex-wrap items-center gap-x-5 gap-y-2">
+        <a href="/privacy" class="transition-colors hover:text-coral">Privacy</a>
+        <a href="/terms" class="transition-colors hover:text-coral">Terms</a>
+        <a href="/cookies" class="transition-colors hover:text-coral">Cookies</a>
+        <a href="/safety" class="transition-colors hover:text-coral">Safety</a>
+      </div>
+    </div>
+  </div>
+</footer>

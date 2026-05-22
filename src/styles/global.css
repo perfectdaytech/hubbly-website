@@ -1,0 +1,290 @@
+/* ============================================================
+   Hubbly website — global stylesheet.
+   Tailwind v4 + brand design tokens ported from the app's
+   src/theme/tokens.ts. See RECON.md §3 for the source of truth.
+   ============================================================ */
+
+@import 'tailwindcss';
+
+/* Self-hosted variable fonts — no Google Fonts CDN call, so the site
+   makes zero third-party requests (consistent with the privacy brand). */
+@import '@fontsource-variable/fredoka';
+@import '@fontsource-variable/nunito';
+
+/* ---- Design tokens -------------------------------------------------- */
+@theme {
+  /* Core palette */
+  --color-cream: #fff8ee;
+  --color-paper: #fbefd8;
+  --color-peach: #ffb088;
+  --color-sun: #ffd166;
+  --color-mint: #88d9c0;
+  --color-sky: #7fc8e4;
+  --color-coral: #ff6b6b;
+  /* Contrast-safe coral for text + CTAs (AA: clears 4.5:1 with white and on
+     light tints). The bright --color-coral stays for fills and decoration. */
+  --color-coral-deep: #b93c37;
+  --color-lavender: #c5a3ff;
+  --color-navy: #2d3142;
+  --color-navy-soft: #4a4f66;
+
+  /* Night / bedtime palette */
+  --color-night: #1a1f3a;
+  --color-night-alt: #252b4a;
+  --color-night-text: #f0e8d6;
+  --color-night-accent: #b89dfc;
+  --color-night-star: #ffd166;
+
+  /* Typography */
+  --font-display: 'Fredoka Variable', ui-rounded, 'Segoe UI', system-ui, sans-serif;
+  --font-body: 'Nunito Variable', ui-sans-serif, system-ui, sans-serif;
+
+  /* Radius scale (from R in tokens.ts) */
+  --radius-xs: 8px;
+  --radius-sm: 10px;
+  --radius-md: 12px;
+  --radius-lg: 14px;
+  --radius-xl: 16px;
+  --radius-2xl: 18px;
+  --radius-3xl: 20px;
+  --radius-4xl: 22px;
+  --radius-5xl: 24px;
+
+  /* Soft brand shadows */
+  --shadow-soft: 0 4px 20px rgba(45, 49, 66, 0.06);
+  --shadow-card: 0 12px 36px -10px rgba(45, 49, 66, 0.16);
+  --shadow-lift: 0 24px 60px -16px rgba(45, 49, 66, 0.24);
+  --shadow-coral: 0 18px 48px -12px rgba(255, 107, 107, 0.45);
+
+  /* Springy "pop" easing — approximates the app's cubic-bezier */
+  --ease-pop: cubic-bezier(0.34, 1.56, 0.64, 1);
+
+  /* Keyframe → utility names */
+  --animate-bob: bob 4.5s var(--ease-pop) infinite;
+  --animate-drift: drift 14s ease-in-out infinite;
+  --animate-twinkle: twinkle 3s ease-in-out infinite;
+  --animate-float-y: float-y 7s ease-in-out infinite;
+  --animate-spin-slow: spin-slow 26s linear infinite;
+}
+
+/* ---- Keyframes ------------------------------------------------------ */
+@keyframes bob {
+  0%,
+  100% {
+    transform: translateY(0) rotate(-1deg);
+  }
+  50% {
+    transform: translateY(-14px) rotate(1.5deg);
+  }
+}
+@keyframes drift {
+  0%,
+  100% {
+    transform: translate(0, 0) rotate(0deg);
+  }
+  33% {
+    transform: translate(18px, -22px) rotate(6deg);
+  }
+  66% {
+    transform: translate(-14px, 14px) rotate(-5deg);
+  }
+}
+@keyframes twinkle {
+  0%,
+  100% {
+    opacity: 0.35;
+    transform: scale(0.85);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.1);
+  }
+}
+@keyframes float-y {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-16px);
+  }
+}
+@keyframes gradient-pan {
+  0%,
+  100% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+}
+@keyframes spin-slow {
+  to {
+    transform: rotate(360deg);
+  }
+}
+/* ---- Base layer ----------------------------------------------------- */
+@layer base {
+  :root {
+    --nav-h: 76px;
+    color-scheme: light;
+    /* Lets <details> animate to/from height:auto in modern browsers. */
+    interpolate-size: allow-keywords;
+  }
+
+  html {
+    scroll-behavior: smooth;
+    scroll-padding-top: calc(var(--nav-h) + 16px);
+    -webkit-text-size-adjust: 100%;
+    /* Clip stray horizontal overflow from decorative blobs at the document
+       root — covers fixed/absolute elements that body's clip can miss.
+       `clip` doesn't create a scroll container, so sticky/fixed still work. */
+    overflow-x: clip;
+  }
+
+  body {
+    background-color: var(--color-cream);
+    color: var(--color-navy);
+    font-family: var(--font-body);
+    font-synthesis-weight: none;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    overflow-x: hidden;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    font-family: var(--font-display);
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    line-height: 1.08;
+    text-wrap: balance;
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+
+  a {
+    color: inherit;
+  }
+
+  ::selection {
+    background-color: var(--color-coral);
+    color: #fff;
+  }
+
+  /* Visible, on-brand focus ring for keyboard users. */
+  :focus-visible {
+    outline: 3px solid var(--color-coral);
+    outline-offset: 3px;
+    border-radius: 4px;
+  }
+
+  /* Smooth cross-document page transitions — zero JavaScript. */
+  @view-transition {
+    navigation: auto;
+  }
+
+  img {
+    max-width: 100%;
+    height: auto;
+  }
+}
+
+/* ---- Component / utility helpers ------------------------------------ */
+
+/* Scroll-reveal: elements tagged [data-reveal] fade + rise into view.
+   A tiny IntersectionObserver in BaseLayout adds .is-visible. */
+[data-reveal] {
+  opacity: 0;
+  transform: translateY(28px);
+  transition:
+    opacity 0.7s var(--ease-pop),
+    transform 0.7s var(--ease-pop);
+  transition-delay: var(--reveal-delay, 0ms);
+  will-change: opacity, transform;
+}
+[data-reveal].is-visible {
+  opacity: 1;
+  transform: none;
+}
+
+/* Soft warm focus-glow card used across sections. */
+@utility card-surface {
+  background-color: #fff;
+  border-radius: var(--radius-5xl);
+  box-shadow: var(--shadow-card);
+  border: 1px solid rgba(45, 49, 66, 0.05);
+}
+
+/* Frosted nav background once the page is scrolled. */
+@utility glass {
+  background-color: rgba(255, 248, 238, 0.82);
+  backdrop-filter: saturate(1.4) blur(14px);
+  -webkit-backdrop-filter: saturate(1.4) blur(14px);
+}
+
+/* Warm text gradient for headline highlights — both stops clear AA-large
+   contrast on cream/white, so the highlighted word stays readable. */
+@utility text-gradient {
+  background-image: linear-gradient(115deg, var(--color-coral-deep), #d55f38);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* Animated mesh-gradient panel (final CTA). Kept dark enough that white
+   text on top clears AA — subtle radials don't reach the centred copy. */
+@utility mesh-coral {
+  background:
+    radial-gradient(at 16% 24%, rgba(255, 209, 102, 0.22) 0px, transparent 45%),
+    radial-gradient(at 86% 16%, rgba(255, 255, 255, 0.16) 0px, transparent 44%),
+    radial-gradient(at 80% 88%, rgba(120, 28, 28, 0.55) 0px, transparent 50%),
+    linear-gradient(125deg, #c0403b, #9c302c);
+  background-size: 170% 170%;
+  animation: gradient-pan 16s ease-in-out infinite;
+}
+
+/* The hero's grain-free soft halo behind floating objects. */
+@utility halo {
+  filter: blur(46px);
+}
+
+/* FAQ accordion open/close animation (native <details>). */
+details.faq::details-content {
+  height: 0;
+  overflow: hidden;
+  opacity: 0;
+  transition:
+    height 0.4s var(--ease-pop),
+    opacity 0.3s ease,
+    content-visibility 0.4s allow-discrete;
+}
+details.faq[open]::details-content {
+  height: auto;
+  opacity: 1;
+}
+
+/* ---- Reduced motion ------------------------------------------------- */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+  [data-reveal] {
+    opacity: 1;
+    transform: none;
+  }
+  @view-transition {
+    navigation: none;
+  }
+}

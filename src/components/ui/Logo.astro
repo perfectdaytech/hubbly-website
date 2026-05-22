@@ -1,0 +1,16 @@
+---
+// Hubbly logo lockup — the character mark + the "hubbly" wordmark.
+import HubblyMark from './HubblyMark.astro';
+import HubblyWordmark from './HubblyWordmark.astro';
+interface Props {
+  /** Wrapper classes. */
+  class?: string;
+  /** Show the wordmark beside the mark. */
+  showWord?: boolean;
+}
+const { class: cls = '', showWord = true } = Astro.props;
+---
+<span class={`inline-flex items-center gap-2 ${cls}`}>
+  <HubblyMark class="h-9 w-auto shrink-0" />
+  {showWord && <HubblyWordmark class="h-8 w-auto" />}
+</span>

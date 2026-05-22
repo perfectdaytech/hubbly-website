@@ -1,0 +1,13 @@
+{
+  "name": "Hubbly: the cosy command centre for your family's day",
+  "short_name": "Hubbly",
+  "description": "A warm family hub for kitchen tablets and phones. Routines, calendar, meals, lists and rewards in one place.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#FFF8EE",
+  "theme_color": "#FFF8EE",
+  "icons": [
+    { "src": "/hubbly-icon.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" },
+    { "src": "/favicon.svg", "sizes": "any", "type": "image/svg+xml" }
+  ]
+}

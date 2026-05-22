@@ -1,0 +1,70 @@
+---
+// The single Hubbly Forever pricing card — a confident coral panel.
+// All text is full white for AA contrast on the coral-deep background;
+// hierarchy comes from size + weight, not opacity.
+import Icon from '@/components/ui/Icon.astro';
+import type { PricingPlan } from '@/data/pricing';
+
+interface Props {
+  plan: PricingPlan;
+  /** Heading level for the plan name, so the page outline stays correct. */
+  headingLevel?: 'h2' | 'h3';
+}
+const { plan, headingLevel = 'h2' } = Astro.props;
+const Heading = headingLevel;
+---
+<div class="relative flex flex-col rounded-[2rem] bg-coral-deep p-7 text-white shadow-coral ring-1 ring-[#8f2c28]/50 sm:p-9">
+  {
+    plan.badge && (
+      <span class="absolute -top-3 right-7 inline-flex items-center gap-1 rounded-full bg-sun px-3 py-1.5 text-[11px] font-extrabold uppercase tracking-wide text-navy shadow-card">
+        <Icon name="star" size={12} />
+        {plan.badge}
+      </span>
+    )
+  }
+
+  <Heading class="font-display text-2xl font-bold">{plan.name}</Heading>
+  <p class="mt-1.5 text-[0.95rem] font-medium leading-snug text-white">{plan.tagline}</p>
+
+  {
+    plan.trialLabel && (
+      <p class="mt-6 text-sm font-bold uppercase tracking-wide text-white">{plan.trialLabel}</p>
+    )
+  }
+  <div class={`flex flex-wrap items-end gap-x-2.5 gap-y-1 ${plan.trialLabel ? 'mt-1' : 'mt-6'}`}>
+    {
+      plan.priceWas && (
+        <span class="pb-2 font-display text-xl font-bold text-white line-through decoration-2">
+          {plan.priceWas}
+        </span>
+      )
+    }
+    <span class="font-display text-[3.4rem] font-bold leading-none">{plan.price}</span>
+    <span class="pb-1.5 text-sm font-semibold text-white">{plan.period}</span>
+  </div>
+
+  {
+    plan.priceNote && (
+      <p class="mt-3 flex items-start gap-1.5 text-[0.82rem] font-semibold leading-snug text-white">
+        <Icon name="star" size={13} class="mt-px shrink-0" />
+        {plan.priceNote}
+      </p>
+    )
+  }
+  {
+    plan.note && <p class="mt-2.5 text-xs leading-relaxed text-white">{plan.note}</p>
+  }
+
+  <ul class="mt-7 grid gap-3 border-t border-white/25 pt-7 sm:grid-cols-2">
+    {
+      plan.features.map((feat) => (
+        <li class="flex items-start gap-2.5">
+          <span class="mt-0.5 grid size-5 shrink-0 place-items-center rounded-full bg-white/25">
+            <Icon name="check" size={12} strokeWidth={3.5} class="text-white" />
+          </span>
+          <span class="text-[0.9rem] font-medium leading-snug text-white">{feat}</span>
+        </li>
+      ))
+    }
+  </ul>
+</div>

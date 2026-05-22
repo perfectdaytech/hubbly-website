@@ -1,0 +1,48 @@
+---
+// Callout box used inside legal MDX pages — e.g. plain-English summaries.
+interface Props {
+  type?: 'plain' | 'note' | 'important';
+  title?: string;
+}
+const { type = 'plain', title } = Astro.props;
+
+const styles: Record<string, { ring: string; bg: string; icon: string; label: string }> = {
+  plain: {
+    ring: 'ring-mint/40',
+    bg: 'bg-mint/[0.13]',
+    icon: '💡',
+    label: 'What this means for you',
+  },
+  note: {
+    ring: 'ring-sky/40',
+    bg: 'bg-sky/[0.12]',
+    icon: 'ℹ️',
+    label: 'Good to know',
+  },
+  important: {
+    ring: 'ring-coral/40',
+    bg: 'bg-coral/[0.1]',
+    icon: '❗',
+    label: 'Important',
+  },
+};
+const s = styles[type];
+---
+<aside class={`my-6 rounded-3xl ring-1 ${s.ring} ${s.bg} p-5 sm:p-6`}>
+  <p class="m-0 flex items-center gap-2 font-display text-sm font-bold text-navy">
+    <span aria-hidden="true">{s.icon}</span>
+    {title ?? s.label}
+  </p>
+  <div class="callout-body mt-2 text-[0.97rem] leading-relaxed text-navy-soft">
+    <slot />
+  </div>
+</aside>
+
+<style is:global>
+  .callout-body > :first-child {
+    margin-top: 0;
+  }
+  .callout-body > :last-child {
+    margin-bottom: 0;
+  }
+</style>

@@ -1,0 +1,154 @@
+---
+import Section from '@/components/ui/Section.astro';
+import Eyebrow from '@/components/ui/Eyebrow.astro';
+import Icon from '@/components/ui/Icon.astro';
+import StoreButtons from '@/components/ui/StoreButtons.astro';
+import TabletMockup from './TabletMockup.astro';
+import { SITE } from '@/data/site';
+
+const avatars = ['👩', '👨', '🦄', '🦖'];
+---
+<section class="relative overflow-hidden">
+  <!-- background wash -->
+  <div class="absolute inset-0 -z-10 bg-gradient-to-b from-cream via-cream to-paper"></div>
+  <div
+    class="halo absolute -right-32 -top-24 size-[34rem] rounded-full bg-peach/30"
+    aria-hidden="true"
+    data-parallax="0.06"
+  >
+  </div>
+  <div
+    class="halo absolute -left-40 top-1/3 size-[30rem] rounded-full bg-mint/25"
+    aria-hidden="true"
+    data-parallax="0.04"
+  >
+  </div>
+  <div
+    class="halo absolute bottom-0 left-1/2 size-[26rem] -translate-x-1/2 rounded-full bg-sun/20"
+    aria-hidden="true"
+  >
+  </div>
+
+  <Section pad="none" innerClass="pt-[calc(var(--nav-h)+2.5rem)] pb-14 sm:pb-20">
+    <div class="grid items-center gap-12 lg:grid-cols-[1.05fr_1fr] lg:gap-10">
+      <!-- copy -->
+      <div class="max-w-xl">
+        <div data-reveal>
+          <Eyebrow>
+            <Icon name="sparkles" size={13} slot="icon" />
+            {SITE.launchStatus}
+          </Eyebrow>
+        </div>
+
+        <h1
+          data-reveal
+          style="--reveal-delay:80ms"
+          class="mt-5 font-display text-[2.65rem] font-semibold leading-[1.05] tracking-tight text-navy sm:text-[3.4rem] lg:text-[3.85rem]"
+        >
+          The cosy command centre for your
+          <span class="text-gradient">family's day</span>
+          <span class="inline-block text-coral-deep motion-safe:animate-[twinkle_3.5s_var(--ease-pop)_infinite]"
+            >♥</span
+          >
+        </h1>
+
+        <p
+          data-reveal
+          style="--reveal-delay:160ms"
+          class="mt-5 text-lg leading-relaxed text-navy-soft"
+        >
+          Routines, calendar, meals, lists and star rewards, all in one warm app
+          that lives on the kitchen tablet and syncs to every phone. Calmer
+          mornings and gentler bedtimes start here.
+        </p>
+
+        <div data-reveal style="--reveal-delay:240ms" class="mt-8">
+          <StoreButtons />
+          <p class="mt-3 flex items-center gap-1.5 text-sm font-semibold text-navy-soft">
+            <Icon name="check-circle" size={15} class="text-mint" />
+            Free for 30 days, then one simple purchase to keep Hubbly.
+          </p>
+        </div>
+
+        <!-- social proof -->
+        <div
+          data-reveal
+          style="--reveal-delay:320ms"
+          class="mt-9 flex items-center gap-3.5"
+        >
+          <div class="flex -space-x-2.5">
+            {
+              avatars.map((a) => (
+                <span class="grid size-9 place-items-center rounded-full bg-white text-[15px] shadow-soft ring-2 ring-cream">
+                  {a}
+                </span>
+              ))
+            }
+            <span
+              class="grid size-9 place-items-center rounded-full bg-navy text-[10px] font-extrabold text-cream ring-2 ring-cream"
+            >
+              +all
+            </span>
+          </div>
+          <p class="text-sm font-semibold text-navy-soft">
+            Built for real families:<br class="hidden sm:block" /> parents, kids and everyone in between.
+          </p>
+        </div>
+      </div>
+
+      <!-- device -->
+      <div class="relative" data-tilt-zone>
+        <div class="relative mx-auto max-w-[560px] motion-safe:animate-float-y">
+          <div data-tilt class="transition-transform duration-300 ease-out will-change-transform">
+            <TabletMockup />
+          </div>
+
+          <!-- floating accents -->
+          <div
+            class="absolute -left-5 -top-7 motion-safe:animate-twinkle sm:-left-9"
+            data-parallax="-0.08"
+            aria-hidden="true"
+          >
+            <Icon name="star" size={46} class="text-sun drop-shadow-[0_8px_14px_rgba(255,209,102,0.5)]" />
+          </div>
+
+          <svg
+            class="absolute -right-4 -top-9 w-28 motion-safe:animate-drift sm:-right-10"
+            data-parallax="0.1"
+            viewBox="0 0 120 64"
+            aria-hidden="true"
+          >
+            <g fill="#ffffff" opacity="0.95">
+              <circle cx="38" cy="40" r="22"></circle>
+              <circle cx="64" cy="30" r="26"></circle>
+              <circle cx="90" cy="42" r="20"></circle>
+              <rect x="34" y="44" width="62" height="18" rx="9"></rect>
+            </g>
+          </svg>
+
+          <div
+            class="absolute -bottom-8 -left-6 w-40 -rotate-6 motion-safe:animate-bob sm:-left-12"
+            data-parallax="-0.05"
+            aria-hidden="true"
+          >
+            <div class="rounded-xl bg-sun px-3.5 py-3 shadow-card">
+              <div class="mx-auto -mt-5 mb-1.5 h-3 w-14 rounded-full bg-white/55"></div>
+              <p class="font-display text-[13px] font-bold leading-snug text-navy">
+                Swimming kit by the door! 🏊
+              </p>
+            </div>
+          </div>
+
+          <div
+            class="absolute -bottom-5 right-0 flex items-center gap-1.5 rounded-full bg-white px-3 py-2 shadow-card sm:-right-6"
+            data-parallax="0.07"
+            aria-hidden="true"
+          >
+            <Icon name="star" size={15} class="text-sun" />
+            <span class="font-display text-[13px] font-bold text-navy">+3 stars earned</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </Section>
+</section>

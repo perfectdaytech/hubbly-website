@@ -1,0 +1,8 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(ls -la \"C:/Users/oschi/AndroidStudioProjects/Hubbly\" 2>/dev/null || echo \"NOT FOUND with ls\")",
+      "Read(//c/Users/oschi/AndroidStudioProjects/Hubbly/**)"
+    ]
+  }
+}

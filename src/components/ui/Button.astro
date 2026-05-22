@@ -1,0 +1,54 @@
+---
+// Primary call-to-action button. Renders <a> when `href` is set, else <button>.
+interface Props {
+  href?: string;
+  variant?: 'primary' | 'white';
+  size?: 'sm' | 'md' | 'lg';
+  external?: boolean;
+  type?: 'button' | 'submit';
+  class?: string;
+  id?: string;
+  'aria-label'?: string;
+}
+
+const {
+  href,
+  variant = 'primary',
+  size = 'md',
+  external = false,
+  type = 'button',
+  class: cls = '',
+  id,
+  'aria-label': ariaLabel,
+} = Astro.props;
+
+const base =
+  'group/btn inline-flex items-center justify-center gap-2 font-display font-semibold ' +
+  'rounded-full whitespace-nowrap transition duration-200 ease-pop will-change-transform ' +
+  'hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.97]';
+
+const variants: Record<string, string> = {
+  primary: 'bg-coral-deep text-white shadow-coral hover:bg-[#a6322e]',
+  white: 'bg-white text-navy shadow-soft ring-1 ring-navy/10 hover:shadow-card',
+};
+
+const sizes: Record<string, string> = {
+  sm: 'text-sm px-4 py-2',
+  md: 'text-[15px] px-5 py-2.5',
+  lg: 'text-base px-7 py-3.5',
+};
+
+const cn = [base, variants[variant], sizes[size], cls].join(' ');
+const Tag = href ? 'a' : 'button';
+---
+<Tag
+  class={cn}
+  id={id}
+  href={href}
+  rel={external ? 'noopener noreferrer' : undefined}
+  target={external ? '_blank' : undefined}
+  type={href ? undefined : type}
+  aria-label={ariaLabel}
+>
+  <slot />
+</Tag>

@@ -1,0 +1,18 @@
+---
+// Small capability chip used inside feature cards.
+interface Props {
+  tone?: 'light' | 'dark' | 'tint';
+  class?: string;
+}
+const { tone = 'light', class: cls = '' } = Astro.props;
+const tones: Record<string, string> = {
+  light: 'bg-navy/[0.05] text-navy-soft',
+  dark: 'bg-white/10 text-night-text/90',
+  tint: 'bg-white text-navy-soft ring-1 ring-navy/[0.07]',
+};
+---
+<span
+  class={`inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-[12.5px] font-semibold ${tones[tone]} ${cls}`}
+>
+  <slot />
+</span>

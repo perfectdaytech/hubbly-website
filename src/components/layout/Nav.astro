@@ -1,0 +1,135 @@
+---
+import Logo from '@/components/ui/Logo.astro';
+import Icon from '@/components/ui/Icon.astro';
+import StoreButtons from '@/components/ui/StoreButtons.astro';
+import { NAV_LINKS } from '@/data/nav';
+---
+<header id="site-nav" class="fixed inset-x-0 top-0 z-50">
+  <div class="relative z-[1] mx-auto w-full max-w-[1200px] px-5 sm:px-7 lg:px-8">
+    <div class="flex h-[var(--nav-h)] items-center justify-between">
+      <a href="/" class="rounded-xl" aria-label="Hubbly home">
+        <Logo />
+      </a>
+
+      <nav aria-label="Primary" class="hidden md:block">
+        <ul class="flex items-center gap-0.5">
+          {
+            NAV_LINKS.map((l) => (
+              <li>
+                <a
+                  href={l.href}
+                  class="block rounded-full px-3.5 py-2 text-[0.95rem] font-semibold text-navy-soft transition-colors duration-200 hover:bg-navy/[0.05] hover:text-navy"
+                >
+                  {l.label}
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+      </nav>
+
+      <div class="flex items-center gap-2">
+        <span
+          class="hidden items-center gap-1.5 rounded-full bg-coral/10 px-4 py-2 text-sm font-bold text-coral-deep md:inline-flex"
+        >
+          <Icon name="sparkles" size={14} />
+          Coming soon
+        </span>
+        <button
+          id="menu-toggle"
+          type="button"
+          class="grid size-11 place-items-center rounded-xl text-navy transition-colors hover:bg-navy/[0.06] md:hidden"
+          aria-expanded="false"
+          aria-controls="mobile-menu"
+          aria-label="Open menu"
+        >
+          <Icon name="menu" size={24} class="js-menu-open" />
+          <Icon name="x" size={24} class="js-menu-close hidden" />
+        </button>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- Mobile menu overlay -->
+<div
+  id="mobile-menu"
+  class="pointer-events-none fixed inset-0 z-40 overflow-hidden opacity-0 md:hidden"
+  aria-hidden="true"
+>
+  <div class="absolute inset-0 bg-gradient-to-b from-cream to-paper"></div>
+  <div
+    class="halo absolute -right-16 top-10 size-56 rounded-full bg-peach/40"
+    aria-hidden="true"
+  >
+  </div>
+  <div
+    class="relative flex h-full flex-col px-6 pb-10"
+    style="padding-top: calc(var(--nav-h) + 20px)"
+  >
+    <ul class="flex flex-col">
+      {
+        NAV_LINKS.map((l, i) => (
+          <li
+            class="js-mobile-link translate-y-3 border-b border-navy/[0.07] opacity-0"
+            style={`--i:${i}`}
+          >
+            <a
+              href={l.href}
+              class="flex items-center justify-between py-4 font-display text-2xl font-semibold text-navy"
+            >
+              {l.label}
+              <Icon name="arrow-right" size={20} class="text-coral" />
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+    <div class="mt-auto js-mobile-link translate-y-3 opacity-0" style={`--i:${NAV_LINKS.length}`}>
+      <p class="mb-3 text-sm font-semibold text-navy-soft">Get Hubbly for your family</p>
+      <StoreButtons />
+    </div>
+  </div>
+</div>
+
+<style>
+  /* Frosted backdrop fades in once the page is scrolled. */
+  #site-nav::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    background-color: rgba(255, 248, 238, 0.85);
+    backdrop-filter: saturate(1.5) blur(14px);
+    -webkit-backdrop-filter: saturate(1.5) blur(14px);
+    border-bottom: 1px solid rgba(45, 49, 66, 0.07);
+    box-shadow: 0 10px 34px -20px rgba(45, 49, 66, 0.4);
+  }
+  #site-nav.is-scrolled::before {
+    opacity: 1;
+  }
+
+  /* `visibility` keeps the closed menu's links out of the tab order and the
+     accessibility tree, while still allowing the fade transition. */
+  #mobile-menu {
+    visibility: hidden;
+    transition:
+      opacity 0.32s ease,
+      visibility 0.32s ease;
+  }
+  #mobile-menu.is-open {
+    pointer-events: auto;
+    opacity: 1;
+    visibility: visible;
+  }
+  /* Staggered entrance for the mobile links. */
+  #mobile-menu.is-open .js-mobile-link {
+    opacity: 1;
+    transform: none;
+    transition:
+      opacity 0.4s ease,
+      transform 0.4s var(--ease-pop);
+    transition-delay: calc(120ms + var(--i) * 55ms);
+  }
+</style>

@@ -1,0 +1,49 @@
+---
+import { getCollection, render } from 'astro:content';
+import Section from '@/components/ui/Section.astro';
+import SectionHeading from '@/components/ui/SectionHeading.astro';
+import Icon from '@/components/ui/Icon.astro';
+import { CONTACT } from '@/data/site';
+
+const entries = (await getCollection('faqs')).sort((a, b) => a.data.order - b.data.order);
+const faqs = await Promise.all(
+  entries.map(async (e) => ({
+    question: e.data.question,
+    Content: (await render(e)).Content,
+  })),
+);
+---
+<Section id="faq" pad="lg">
+  <SectionHeading eyebrow="Questions, answered">
+    Everything else you might be <span class="text-gradient">wondering</span>
+    <Fragment slot="lead">
+      Can't find it here? Email
+      <a class="font-semibold text-coral-deep underline" href={`mailto:${CONTACT.support}`}
+        >{CONTACT.support}</a
+      >. A real person replies.
+    </Fragment>
+  </SectionHeading>
+
+  <div class="mx-auto mt-10 max-w-3xl space-y-3">
+    {
+      faqs.map((f, i) => (
+        <details
+          class="faq group/faq overflow-hidden rounded-2xl bg-white shadow-soft ring-1 ring-navy/[0.05] transition-shadow open:shadow-card hover:shadow-card"
+          open={i === 0}
+          data-reveal
+          style={`--reveal-delay:${i * 45}ms`}
+        >
+          <summary class="flex cursor-pointer list-none items-center justify-between gap-4 px-5 py-4 sm:px-6 [&::-webkit-details-marker]:hidden">
+            <span class="font-display text-[1.05rem] font-semibold text-navy">{f.question}</span>
+            <span class="grid size-8 shrink-0 place-items-center rounded-full bg-coral/[0.12] text-coral-deep transition-transform duration-300 ease-pop group-open/faq:rotate-180">
+              <Icon name="chevron-down" size={18} />
+            </span>
+          </summary>
+          <div class="px-5 pb-5 text-[0.97rem] leading-relaxed text-navy-soft sm:px-6 [&_a]:font-semibold [&_a]:text-coral-deep [&_a]:underline [&_p]:m-0">
+            <f.Content />
+          </div>
+        </details>
+      ))
+    }
+  </div>
+</Section>

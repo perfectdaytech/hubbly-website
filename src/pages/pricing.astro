@@ -1,0 +1,54 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import Pricing from '@/components/home/Pricing.astro';
+import WhyNoSubscription from '@/components/home/WhyNoSubscription.astro';
+import ShopPreview from '@/components/home/ShopPreview.astro';
+import FinalCta from '@/components/home/FinalCta.astro';
+import Eyebrow from '@/components/ui/Eyebrow.astro';
+import Icon from '@/components/ui/Icon.astro';
+import { webPageSchema } from '@/lib/schema';
+
+const pageDesc =
+  'Hubbly pricing, kept simple: try the whole app free for 30 days, then one purchase with no subscription. Every future update is included.';
+---
+<BaseLayout
+  title="Pricing"
+  description={pageDesc}
+  jsonLd={webPageSchema({ name: 'Pricing', description: pageDesc, path: '/pricing' })}
+>
+  <header
+    class="relative overflow-hidden bg-gradient-to-b from-paper to-cream pb-8 pt-[calc(var(--nav-h)+3.5rem)]"
+  >
+    <div class="halo absolute -right-24 -top-16 size-80 rounded-full bg-coral/20" aria-hidden="true"></div>
+    <div class="halo absolute -left-24 bottom-0 size-72 rounded-full bg-mint/20" aria-hidden="true"></div>
+    <span
+      class="pointer-events-none absolute right-[14%] top-[38%] motion-safe:animate-twinkle"
+      aria-hidden="true"
+    >
+      <Icon name="star" size={26} class="text-sun" />
+    </span>
+
+    <div class="relative mx-auto w-full max-w-[1200px] px-5 text-center sm:px-7 lg:px-8">
+      <div class="flex justify-center">
+        <Eyebrow>
+          <Icon name="heart" size={13} slot="icon" />
+          One price, no catch
+        </Eyebrow>
+      </div>
+      <h1
+        class="mx-auto mt-5 max-w-2xl font-display text-4xl font-semibold leading-[1.08] tracking-tight text-navy sm:text-[3.1rem]"
+      >
+        Pay once. <span class="text-gradient">Hubbly is yours to keep.</span>
+      </h1>
+      <p class="mx-auto mt-4 max-w-xl text-lg leading-relaxed text-navy-soft">
+        Use the whole app free for 30 days. There is no subscription and no
+        ads, and the current price is always shown before you buy.
+      </p>
+    </div>
+  </header>
+
+  <Pricing withHeading={false} />
+  <WhyNoSubscription />
+  <ShopPreview />
+  <FinalCta />
+</BaseLayout>

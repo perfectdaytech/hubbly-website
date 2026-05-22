@@ -1,0 +1,58 @@
+---
+import Section from '@/components/ui/Section.astro';
+import Icon from '@/components/ui/Icon.astro';
+---
+<Section pad="md">
+  <div
+    data-reveal
+    class="relative overflow-hidden rounded-[2rem] bg-paper px-6 py-12 ring-1 ring-navy/[0.06] sm:px-12 sm:py-14"
+  >
+    <div
+      class="halo pointer-events-none absolute -right-16 -top-16 size-56 rounded-full bg-coral/15"
+      aria-hidden="true"
+    >
+    </div>
+
+    <div class="relative mx-auto max-w-2xl">
+      <div class="flex items-center gap-3">
+        <span
+          class="grid size-10 shrink-0 place-items-center rounded-full bg-coral/[0.14]"
+          aria-hidden="true"
+        >
+          <Icon name="heart" size={19} class="text-coral-deep" />
+        </span>
+        <h2 class="font-display text-2xl font-semibold tracking-tight text-navy sm:text-[1.9rem]">
+          A note on why no subscription
+        </h2>
+      </div>
+
+      <div class="mt-5 space-y-4 text-[1.03rem] leading-relaxed text-navy-soft">
+        <p>
+          We've used family apps. Most charge you every month, gate the bits
+          you actually want behind a paywall, and quietly raise prices once your
+          whole household depends on them. We didn't want to build that.
+        </p>
+        <p>
+          Hubbly Forever is a one-time purchase because that's how trust works.
+          We build the best app we can. You pay us once. We keep making it
+          better, for free, for as long as we're around.
+        </p>
+        <p>
+          The optional shop is for families who want to personalise things. It's
+          not where the real value lives. The real value is in the app itself,
+          which is yours from the moment you buy it.
+        </p>
+        <p class="font-display text-lg font-semibold text-navy">
+          No subscription. No ads. No data sold. No upsells in your face.
+        </p>
+        <p class="font-display text-lg font-semibold text-navy">
+          Just one hub for the whole family, bought once and yours to keep.
+        </p>
+      </div>
+
+      <p class="mt-7 font-display text-lg font-semibold text-coral-deep">
+        With <span class="text-coral">♥</span> from Hubbly
+      </p>
+    </div>
+  </div>
+</Section>

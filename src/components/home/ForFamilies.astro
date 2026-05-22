@@ -1,0 +1,65 @@
+---
+import Section from '@/components/ui/Section.astro';
+import SectionHeading from '@/components/ui/SectionHeading.astro';
+import Icon from '@/components/ui/Icon.astro';
+import { AUDIENCES } from '@/data/audiences';
+
+const ACCENT: Record<string, { halo: string; chip: string; dot: string }> = {
+  coral: { halo: 'bg-coral/15', chip: 'bg-coral/15', dot: 'bg-coral' },
+  sun: { halo: 'bg-sun/20', chip: 'bg-sun/25', dot: 'bg-sun' },
+  sky: { halo: 'bg-sky/18', chip: 'bg-sky/20', dot: 'bg-sky' },
+  mint: { halo: 'bg-mint/18', chip: 'bg-mint/22', dot: 'bg-mint' },
+  lavender: { halo: 'bg-lavender/18', chip: 'bg-lavender/22', dot: 'bg-lavender' },
+};
+---
+<Section id="families" pad="lg">
+  <SectionHeading eyebrow="A hub for the whole house">
+    One app, <span class="text-gradient">everyone included</span>
+    <Fragment slot="lead">
+      Hubbly gives every member of the household exactly what they need, and
+      nothing they don't.
+    </Fragment>
+  </SectionHeading>
+
+  <div class="mt-12 grid gap-6 md:grid-cols-3">
+    {
+      AUDIENCES.map((a, i) => {
+        const c = ACCENT[a.accent];
+        return (
+          <article
+            data-reveal
+            style={`--reveal-delay:${i * 110}ms`}
+            class="group relative flex flex-col overflow-hidden rounded-3xl bg-white p-7 shadow-card ring-1 ring-navy/[0.05] transition duration-300 ease-pop hover:-translate-y-1.5 hover:shadow-lift"
+          >
+            <div
+              class={`halo pointer-events-none absolute -right-8 -top-8 size-32 rounded-full ${c.halo}`}
+              aria-hidden="true"
+            />
+            <div class="relative">
+              <span
+                class={`grid size-14 place-items-center rounded-2xl text-3xl ${c.chip} transition-transform duration-300 ease-pop group-hover:-rotate-6`}
+                aria-hidden="true"
+              >
+                {a.emoji}
+              </span>
+              <h3 class="mt-4 font-display text-2xl font-semibold text-navy">{a.title}</h3>
+              <p class="mt-1.5 text-[0.97rem] leading-relaxed text-navy-soft">{a.blurb}</p>
+            </div>
+            <ul class="relative mt-5 space-y-2.5 border-t border-navy/[0.07] pt-5">
+              {a.points.map((p) => (
+                <li class="flex items-start gap-2.5">
+                  <span
+                    class={`mt-0.5 grid size-5 shrink-0 place-items-center rounded-full ${c.dot}`}
+                  >
+                    <Icon name="check" size={12} class="text-white" strokeWidth={3.5} />
+                  </span>
+                  <span class="text-[0.92rem] font-medium leading-snug text-navy-soft">{p}</span>
+                </li>
+              ))}
+            </ul>
+          </article>
+        );
+      })
+    }
+  </div>
+</Section>

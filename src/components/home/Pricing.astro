@@ -1,0 +1,33 @@
+---
+import Section from '@/components/ui/Section.astro';
+import SectionHeading from '@/components/ui/SectionHeading.astro';
+import PricingCard from './PricingCard.astro';
+import { FOREVER_PLAN, PRICING_NOTE } from '@/data/pricing';
+
+interface Props {
+  /** Hide the section heading when the page already has its own. */
+  withHeading?: boolean;
+}
+const { withHeading = true } = Astro.props;
+---
+<Section id="pricing" pad="lg" class="bg-gradient-to-b from-paper/50 to-cream">
+  {
+    withHeading && (
+      <SectionHeading eyebrow="Simple, honest pricing">
+        Free to try. <span class="text-gradient">Yours to keep.</span>
+        <Fragment slot="lead">
+          Use the whole app free for 30 days. If Hubbly earns its place in your
+          home, one payment makes it yours.
+        </Fragment>
+      </SectionHeading>
+    )
+  }
+
+  <div class={`mx-auto max-w-xl ${withHeading ? 'mt-12' : 'mt-4'}`} data-reveal>
+    <PricingCard plan={FOREVER_PLAN} headingLevel={withHeading ? 'h3' : 'h2'} />
+  </div>
+
+  <p class="mx-auto mt-9 max-w-lg text-center text-[0.82rem] leading-relaxed text-navy-soft">
+    {PRICING_NOTE}
+  </p>
+</Section>

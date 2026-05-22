@@ -1,0 +1,63 @@
+---
+import { getCollection } from 'astro:content';
+import Section from '@/components/ui/Section.astro';
+import SectionHeading from '@/components/ui/SectionHeading.astro';
+import Icon from '@/components/ui/Icon.astro';
+import TabletMockup from './TabletMockup.astro';
+
+const features = (await getCollection('features')).sort(
+  (a, b) => a.data.order - b.data.order,
+);
+
+// Soft tint for each feature's icon chip, keyed off its brand colour.
+const TINT: Record<string, string> = {
+  coral: 'bg-coral/[0.13]',
+  peach: 'bg-peach/25',
+  sun: 'bg-sun/30',
+  mint: 'bg-mint/25',
+  sky: 'bg-sky/25',
+  lavender: 'bg-lavender/25',
+  navy: 'bg-navy/[0.07]',
+};
+---
+<Section id="features" pad="lg" class="bg-gradient-to-b from-cream to-paper/60">
+  <SectionHeading eyebrow="Everything in one hub">
+    Twelve features. <span class="text-gradient">One tidy screen.</span>
+    <Fragment slot="lead">
+      Open Hubbly and a default family is already set up, just like this. Rename
+      everyone and reshape the routines to fit your home.
+    </Fragment>
+  </SectionHeading>
+
+  <div class="mt-10 grid items-center gap-10 lg:grid-cols-[1.05fr_1fr] lg:gap-14">
+    <!-- the app, with its default family -->
+    <div data-reveal class="relative mx-auto w-full max-w-[560px] motion-safe:animate-float-y">
+      <TabletMockup />
+    </div>
+
+    <!-- compact list of everything in the app -->
+    <div data-reveal style="--reveal-delay:90ms">
+      <ul class="grid grid-cols-2 gap-x-5 gap-y-4">
+        {
+          features.map((f) => (
+            <li class="flex items-center gap-2.5">
+              <span
+                class={`grid size-9 shrink-0 place-items-center rounded-xl text-lg ${TINT[f.data.color] ?? TINT.navy}`}
+                aria-hidden="true"
+              >
+                {f.data.icon}
+              </span>
+              <span class="font-display text-[0.95rem] font-semibold leading-tight text-navy">
+                {f.data.title}
+              </span>
+            </li>
+          ))
+        }
+      </ul>
+      <p class="mt-7 flex items-center gap-2 text-sm font-semibold text-navy-soft">
+        <Icon name="check-circle" size={16} class="text-mint" />
+        Every feature included. Nothing locked behind a paywall.
+      </p>
+    </div>
+  </div>
+</Section>

@@ -1,0 +1,193 @@
+---
+// A faithful mock of the real Hubbly dashboard (app repo: app/index.tsx +
+// src/components/home/*). Shows the app's sample family — Mum, Dad,
+// Lily 🦄 and Max 🦖 — with the real cards: the clock header, the
+// Morning/Bedtime routine pair, the Today's plan & meals strip, and a
+// per-child card each. Decorative only.
+import Icon from '@/components/ui/Icon.astro';
+interface Props {
+  class?: string;
+}
+const { class: cls = '' } = Astro.props;
+---
+<div
+  class={`device-frame ${cls}`}
+  role="img"
+  aria-label="The Hubbly dashboard on a kitchen tablet, showing the sample family"
+>
+  <div class="rounded-[1.7rem] bg-navy p-[10px] shadow-[0_40px_90px_-30px_rgba(45,49,66,0.55)]">
+    <div class="relative aspect-[16/11] overflow-hidden rounded-[1.25rem] bg-gradient-to-br from-cream to-paper">
+      <!-- ambient blobs, matching the app's dashboard background -->
+      <div class="absolute -right-10 -top-10 size-32 rounded-full bg-peach/25 blur-2xl"></div>
+      <div class="absolute -bottom-12 -left-10 size-36 rounded-full bg-mint/25 blur-2xl"></div>
+
+      <div class="relative flex h-full flex-col gap-2 p-3">
+        <!-- HEADER: clock + greeting + weather + lock -->
+        <div class="flex items-start justify-between">
+          <div>
+            <div class="font-display text-[30px] font-semibold leading-none text-navy">8:42</div>
+            <div class="mt-1 text-[10px] font-semibold text-navy-soft">Good morning, family</div>
+            <div class="text-[8.5px] font-semibold text-navy-soft/70">Tuesday, 20 May</div>
+          </div>
+          <div class="flex items-center gap-1.5">
+            <div class="flex items-center gap-1 rounded-full bg-white px-2 py-1 shadow-soft">
+              <span class="text-[11px]">☀️</span>
+              <span class="text-[10px] font-extrabold text-navy">18°</span>
+            </div>
+            <div class="grid size-[26px] place-items-center rounded-xl bg-white shadow-soft">
+              <Icon name="lock" size={12} class="text-navy" />
+            </div>
+          </div>
+        </div>
+
+        <!-- ROUTINES: morning + bedtime -->
+        <div class="grid grid-cols-2 gap-2">
+          <!-- Morning routine -->
+          <div class="relative overflow-hidden rounded-2xl bg-gradient-to-br from-[#FFE5C2] to-[#FFB088] p-2.5">
+            <span class="absolute right-2 top-1.5 text-[12px] opacity-55" aria-hidden="true">☀️</span>
+            <div class="flex items-center gap-2">
+              <div class="grid size-7 shrink-0 place-items-center rounded-full bg-white/60">
+                <Icon name="sun" size={15} class="text-[#A23E3E]" />
+              </div>
+              <div class="min-w-0 flex-1">
+                <div class="font-display text-[11px] font-bold leading-tight text-[#A23E3E]">
+                  Morning routine
+                </div>
+                <div class="mt-0.5 text-[7.5px] font-bold text-[#7A3030]">4 of 6 tasks done</div>
+              </div>
+            </div>
+            <div class="mt-1.5 flex items-center gap-1">
+              <span class="text-[7px]" aria-hidden="true">⭐</span>
+              <span class="text-[7px] font-extrabold text-[#7A3030]">4 / 6 stars</span>
+            </div>
+            <div class="mt-1 h-1.5 overflow-hidden rounded-full bg-white/45">
+              <div class="h-full w-2/3 rounded-full bg-coral"></div>
+            </div>
+          </div>
+
+          <!-- Bedtime routine -->
+          <div class="relative overflow-hidden rounded-2xl bg-gradient-to-br from-night to-night-alt p-2.5">
+            <span class="absolute right-2 top-1 text-[9px] opacity-60" aria-hidden="true">✨</span>
+            <span class="absolute right-5 top-3 text-[6px] opacity-50" aria-hidden="true">⭐</span>
+            <span class="absolute bottom-2 right-3 text-[7px] opacity-40" aria-hidden="true">⭐</span>
+            <div class="flex items-center gap-2">
+              <div class="grid size-7 shrink-0 place-items-center rounded-full bg-white/10">
+                <Icon name="moon" size={14} class="text-night-text" />
+              </div>
+              <div class="min-w-0 flex-1">
+                <div class="font-display text-[11px] font-bold leading-tight text-night-text">
+                  Bedtime routine
+                </div>
+                <div class="mt-0.5 text-[7.5px] font-bold text-night-text/65">3 of 5 tasks done</div>
+              </div>
+            </div>
+            <div class="mt-1.5 flex items-center gap-1">
+              <span class="text-[7px]" aria-hidden="true">⭐</span>
+              <span class="text-[7px] font-extrabold text-night-text/65">3 / 5 stars</span>
+            </div>
+            <div class="mt-1 h-1.5 overflow-hidden rounded-full bg-white/15">
+              <div class="h-full w-3/5 rounded-full bg-night-accent"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- TODAY: plan + meals -->
+        <div class="grid grid-cols-[1.65fr_1fr] gap-2">
+          <!-- Today's plan -->
+          <div class="rounded-2xl bg-white p-2.5 shadow-soft">
+            <div class="flex items-center gap-1">
+              <Icon name="calendar" size={11} class="text-navy-soft" />
+              <span class="font-display text-[9px] font-bold text-navy">Today's plan</span>
+            </div>
+            <div class="mt-1.5 space-y-1">
+              <div class="flex items-center gap-1.5 rounded-xl bg-white px-1.5 py-1 shadow-soft ring-1 ring-navy/[0.05]">
+                <span class="h-5 w-1 shrink-0 rounded-full bg-sun"></span>
+                <span class="text-[8px] font-extrabold text-navy">16:30</span>
+                <span class="flex-1 truncate text-[8px] text-navy-soft">Lily's swimming</span>
+                <span class="text-[9px]" aria-hidden="true">🦄</span>
+                <span class="rounded-md bg-mint/30 px-1 py-0.5 text-[5.5px] font-extrabold text-navy">⏱</span>
+              </div>
+              <div class="flex items-center gap-1.5 rounded-xl bg-white px-1.5 py-1 shadow-soft ring-1 ring-navy/[0.05]">
+                <span class="h-5 w-1 shrink-0 rounded-full bg-mint"></span>
+                <span class="text-[8px] font-extrabold text-navy">17:00</span>
+                <span class="flex-1 truncate text-[8px] text-navy-soft">Max football</span>
+                <span class="text-[9px]" aria-hidden="true">🦖</span>
+                <span class="rounded-md bg-mint/30 px-1 py-0.5 text-[5.5px] font-extrabold text-navy">⏱</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Today's meals -->
+          <div class="rounded-2xl bg-gradient-to-br from-peach/25 to-sun/25 p-2.5">
+            <div class="flex items-center gap-1">
+              <span class="text-[10px]" aria-hidden="true">🍽️</span>
+              <span class="font-display text-[9px] font-bold text-navy">Today's meals</span>
+            </div>
+            <div class="mt-1.5 flex items-center gap-1">
+              <span class="text-[11px]" aria-hidden="true">🍟</span>
+              <span class="font-display text-[9px] font-semibold text-navy">Fish &amp; chips</span>
+            </div>
+            <div class="mt-1 text-[6.5px] font-semibold text-navy-soft/70">Tap to plan the week</div>
+          </div>
+        </div>
+
+        <!-- PEOPLE: one card per child -->
+        <div class="grid flex-1 grid-cols-2 gap-2">
+          <!-- Lily -->
+          <div class="flex flex-col rounded-2xl border-l-[5px] border-sun bg-white p-2 shadow-soft">
+            <div class="flex items-center gap-1.5">
+              <div class="grid size-7 shrink-0 place-items-center rounded-full bg-sun/20 text-[14px]">
+                🦄
+              </div>
+              <div class="min-w-0 flex-1">
+                <div class="font-display text-[10px] font-bold leading-none text-navy">Lily</div>
+                <div class="mt-1 flex items-center gap-1">
+                  <span class="text-[7px]" aria-hidden="true">⭐</span>
+                  <span class="text-[8.5px] font-extrabold text-navy">24</span>
+                  <span class="text-[6.5px] text-navy-soft/70">stars</span>
+                  <span class="ml-0.5 rounded-full bg-coral/15 px-1 py-px text-[6.5px] font-extrabold text-[#C44545]">🔥 5</span>
+                </div>
+              </div>
+            </div>
+            <div class="mt-auto pt-1.5">
+              <div class="text-[6.5px] font-bold text-navy-soft">4 of 7 tasks done</div>
+              <div class="mt-0.5 h-1.5 overflow-hidden rounded-full bg-sun/20">
+                <div class="h-full w-[57%] rounded-full bg-sun"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Max -->
+          <div class="flex flex-col rounded-2xl border-l-[5px] border-mint bg-white p-2 shadow-soft">
+            <div class="flex items-center gap-1.5">
+              <div class="grid size-7 shrink-0 place-items-center rounded-full bg-mint/25 text-[14px]">
+                🦖
+              </div>
+              <div class="min-w-0 flex-1">
+                <div class="font-display text-[10px] font-bold leading-none text-navy">Max</div>
+                <div class="mt-1 flex items-center gap-1">
+                  <span class="text-[7px]" aria-hidden="true">⭐</span>
+                  <span class="text-[8.5px] font-extrabold text-navy">18</span>
+                  <span class="text-[6.5px] text-navy-soft/70">stars</span>
+                  <span class="ml-0.5 rounded-full bg-coral/15 px-1 py-px text-[6.5px] font-extrabold text-[#C44545]">🔥 3</span>
+                </div>
+              </div>
+            </div>
+            <div class="mt-auto pt-1.5">
+              <div class="text-[6.5px] font-bold text-navy-soft">3 of 6 tasks done</div>
+              <div class="mt-0.5 h-1.5 overflow-hidden rounded-full bg-mint/20">
+                <div class="h-full w-1/2 rounded-full bg-mint"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- screen sheen -->
+      <div
+        class="pointer-events-none absolute inset-0 bg-gradient-to-tr from-transparent via-white/0 to-white/25"
+      >
+      </div>
+    </div>
+  </div>
+</div>

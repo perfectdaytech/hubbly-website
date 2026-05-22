@@ -1,0 +1,207 @@
+---
+import '@/styles/global.css';
+import Seo from '@/components/seo/Seo.astro';
+import JsonLd from '@/components/seo/JsonLd.astro';
+import Nav from '@/components/layout/Nav.astro';
+import Footer from '@/components/layout/Footer.astro';
+import { SITE } from '@/data/site';
+import { organizationSchema } from '@/lib/schema';
+
+interface Props {
+  title?: string;
+  description?: string;
+  ogImage?: string;
+  noindex?: boolean;
+  type?: 'website' | 'article';
+  /** Page-specific structured data, merged with the site-wide Organization. */
+  jsonLd?: Record<string, unknown> | Record<string, unknown>[];
+  mainClass?: string;
+}
+const {
+  title,
+  description,
+  ogImage,
+  noindex = false,
+  type = 'website',
+  jsonLd,
+  mainClass = '',
+} = Astro.props;
+
+const fullTitle = title ? `${title} · ${SITE.name}` : `${SITE.name} · ${SITE.tagline}`;
+const metaDesc = description ?? SITE.description;
+const extra = jsonLd ? (Array.isArray(jsonLd) ? jsonLd : [jsonLd]) : [];
+const schema = [organizationSchema(), ...extra];
+---
+<!doctype html>
+<html lang="en-GB">
+  <head>
+    <Seo title={fullTitle} description={metaDesc} image={ogImage} noindex={noindex} type={type} />
+    <JsonLd schema={schema} />
+    <slot name="head" />
+    <!-- Without JS, scroll-reveal can't fire, so show everything immediately. -->
+    <noscript>
+      <style>
+        [data-reveal] {
+          opacity: 1 !important;
+          transform: none !important;
+        }
+      </style>
+    </noscript>
+  </head>
+  <body>
+    <a
+      href="#main"
+      class="sr-only rounded-xl focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[100] focus:bg-navy focus:px-4 focus:py-2 focus:font-semibold focus:text-cream"
+    >
+      Skip to content
+    </a>
+
+    <Nav />
+
+    <main id="main" class={mainClass}>
+      <slot />
+    </main>
+
+    <Footer />
+
+    <script>
+      // ====================================================================
+      // Site interactions — one small bundle. Honours reduced motion.
+      // ====================================================================
+      const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+      // ---- Scroll-reveal -------------------------------------------------
+      const revealEls = document.querySelectorAll<HTMLElement>('[data-reveal]');
+      if ('IntersectionObserver' in window && !reduce) {
+        const io = new IntersectionObserver(
+          (entries) => {
+            for (const e of entries) {
+              if (e.isIntersecting) {
+                e.target.classList.add('is-visible');
+                io.unobserve(e.target);
+              }
+            }
+          },
+          { threshold: 0.1, rootMargin: '0px 0px -7% 0px' },
+        );
+        revealEls.forEach((el) => io.observe(el));
+      } else {
+        revealEls.forEach((el) => el.classList.add('is-visible'));
+      }
+
+      // ---- Count-up numbers ---------------------------------------------
+      const counters = document.querySelectorAll<HTMLElement>('[data-count-to]');
+      const runCount = (el: HTMLElement) => {
+        const target = parseFloat(el.dataset.countTo || '0');
+        if (reduce || Number.isNaN(target)) {
+          el.textContent = String(target);
+          return;
+        }
+        const dur = 1500;
+        const t0 = performance.now();
+        const tick = (now: number) => {
+          const p = Math.min(1, (now - t0) / dur);
+          const eased = 1 - Math.pow(1 - p, 3);
+          el.textContent = Math.round(target * eased).toString();
+          if (p < 1) requestAnimationFrame(tick);
+        };
+        requestAnimationFrame(tick);
+      };
+      if ('IntersectionObserver' in window) {
+        const cio = new IntersectionObserver(
+          (entries) => {
+            for (const e of entries) {
+              if (e.isIntersecting) {
+                runCount(e.target as HTMLElement);
+                cio.unobserve(e.target);
+              }
+            }
+          },
+          { threshold: 0.6 },
+        );
+        counters.forEach((el) => cio.observe(el));
+      } else {
+        counters.forEach(runCount);
+      }
+
+      // ---- Sticky nav scrolled state ------------------------------------
+      const nav = document.getElementById('site-nav');
+      const onScroll = () => nav?.classList.toggle('is-scrolled', window.scrollY > 8);
+      onScroll();
+      window.addEventListener('scroll', onScroll, { passive: true });
+
+      // ---- Mobile menu ---------------------------------------------------
+      const toggle = document.getElementById('menu-toggle');
+      const menu = document.getElementById('mobile-menu');
+      const openIcon = toggle?.querySelector('.js-menu-open');
+      const closeIcon = toggle?.querySelector('.js-menu-close');
+      let menuOpen = false;
+      const setMenu = (v: boolean) => {
+        menuOpen = v;
+        menu?.classList.toggle('is-open', v);
+        menu?.setAttribute('aria-hidden', String(!v));
+        toggle?.setAttribute('aria-expanded', String(v));
+        toggle?.setAttribute('aria-label', v ? 'Close menu' : 'Open menu');
+        openIcon?.classList.toggle('hidden', v);
+        closeIcon?.classList.toggle('hidden', !v);
+        document.body.style.overflow = v ? 'hidden' : '';
+      };
+      toggle?.addEventListener('click', () => setMenu(!menuOpen));
+      menu?.querySelectorAll('a').forEach((a) => a.addEventListener('click', () => setMenu(false)));
+      window.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && menuOpen) setMenu(false);
+      });
+      window.matchMedia('(min-width: 768px)').addEventListener('change', (e) => {
+        if (e.matches && menuOpen) setMenu(false);
+      });
+
+      // ---- FAQ accordion: one open at a time ----------------------------
+      const faqItems = document.querySelectorAll<HTMLDetailsElement>('details.faq');
+      faqItems.forEach((d) => {
+        d.addEventListener('toggle', () => {
+          if (d.open) faqItems.forEach((o) => o !== d && (o.open = false));
+        });
+      });
+
+      // ---- Gentle scroll parallax for floating accents ------------------
+      const parallax = document.querySelectorAll<HTMLElement>('[data-parallax]');
+      if (parallax.length && !reduce) {
+        let ticking = false;
+        const apply = () => {
+          const y = window.scrollY;
+          parallax.forEach((el) => {
+            const speed = parseFloat(el.dataset.parallax || '0.15');
+            el.style.transform = `translate3d(0, ${(-y * speed).toFixed(1)}px, 0)`;
+          });
+          ticking = false;
+        };
+        window.addEventListener(
+          'scroll',
+          () => {
+            if (!ticking) {
+              requestAnimationFrame(apply);
+              ticking = true;
+            }
+          },
+          { passive: true },
+        );
+        apply();
+      }
+
+      // ---- Pointer tilt for the hero device -----------------------------
+      const tilt = document.querySelector<HTMLElement>('[data-tilt]');
+      const tiltZone = document.querySelector<HTMLElement>('[data-tilt-zone]');
+      if (tilt && tiltZone && !reduce && window.matchMedia('(pointer: fine)').matches) {
+        tiltZone.addEventListener('pointermove', (e) => {
+          const r = tiltZone.getBoundingClientRect();
+          const dx = (e.clientX - r.left) / r.width - 0.5;
+          const dy = (e.clientY - r.top) / r.height - 0.5;
+          tilt.style.transform = `perspective(1100px) rotateY(${(dx * 9).toFixed(2)}deg) rotateX(${(-dy * 9).toFixed(2)}deg)`;
+        });
+        tiltZone.addEventListener('pointerleave', () => {
+          tilt.style.transform = 'perspective(1100px) rotateY(0deg) rotateX(0deg)';
+        });
+      }
+    </script>
+  </body>
+</html>

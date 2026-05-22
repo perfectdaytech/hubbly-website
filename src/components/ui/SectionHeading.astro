@@ -1,0 +1,47 @@
+---
+// Eyebrow + heading + optional lead paragraph (named "lead" slot).
+import Eyebrow from './Eyebrow.astro';
+interface Props {
+  eyebrow?: string;
+  eyebrowTone?: 'coral' | 'cream' | 'sky' | 'mint';
+  align?: 'left' | 'center';
+  tone?: 'navy' | 'cream';
+  as?: 'h1' | 'h2' | 'h3';
+  size?: 'md' | 'lg';
+  class?: string;
+}
+const {
+  eyebrow,
+  eyebrowTone = 'coral',
+  align = 'center',
+  tone = 'navy',
+  as = 'h2',
+  size = 'lg',
+  class: cls = '',
+} = Astro.props;
+const Heading = as;
+const isCenter = align === 'center';
+const headingColor = tone === 'cream' ? 'text-cream' : 'text-navy';
+const sizeCls =
+  size === 'lg'
+    ? 'text-[2rem] sm:text-4xl lg:text-[2.85rem]'
+    : 'text-[1.6rem] sm:text-3xl';
+const hasLead = Astro.slots.has('lead');
+---
+<div
+  class={`flex flex-col gap-4 ${isCenter ? 'items-center text-center mx-auto max-w-2xl' : 'items-start text-left max-w-xl'} ${cls}`}
+>
+  {eyebrow && <Eyebrow tone={eyebrowTone}>{eyebrow}</Eyebrow>}
+  <Heading class={`${sizeCls} font-semibold leading-[1.07] tracking-tight ${headingColor}`}>
+    <slot />
+  </Heading>
+  {
+    hasLead && (
+      <p
+        class={`text-[1.05rem] leading-relaxed ${tone === 'cream' ? 'text-cream/75' : 'text-navy-soft'}`}
+      >
+        <slot name="lead" />
+      </p>
+    )
+  }
+</div>

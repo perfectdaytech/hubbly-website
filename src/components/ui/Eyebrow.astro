@@ -1,0 +1,22 @@
+---
+// Small uppercase label that sits above a section heading.
+interface Props {
+  tone?: 'coral' | 'cream' | 'sky' | 'mint';
+  class?: string;
+}
+const { tone = 'coral', class: cls = '' } = Astro.props;
+
+const tones: Record<string, string> = {
+  coral: 'bg-coral/10 text-coral-deep',
+  cream: 'bg-white/15 text-cream',
+  sky: 'bg-sky/15 text-[#2f7fa0]',
+  mint: 'bg-mint/20 text-[#2c8068]',
+};
+const hasIcon = Astro.slots.has('icon');
+---
+<span
+  class={`inline-flex items-center gap-2 rounded-full px-3.5 py-1.5 text-[11px] font-extrabold uppercase tracking-[0.16em] ${tones[tone]} ${cls}`}
+>
+  {hasIcon ? <slot name="icon" /> : <span class="size-1.5 rounded-full bg-current"></span>}
+  <slot />
+</span>

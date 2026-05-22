@@ -1,0 +1,24 @@
+---
+// Full-width band with a centred max-width container.
+interface Props {
+  id?: string;
+  class?: string;
+  innerClass?: string;
+  as?: 'section' | 'div' | 'footer' | 'header';
+  /** Vertical rhythm. */
+  pad?: 'none' | 'sm' | 'md' | 'lg';
+}
+const { id, class: cls = '', innerClass = '', as = 'section', pad = 'lg' } = Astro.props;
+const Tag = as;
+const pads: Record<string, string> = {
+  none: '',
+  sm: 'py-10 sm:py-12',
+  md: 'py-12 sm:py-16',
+  lg: 'py-16 sm:py-20',
+};
+---
+<Tag id={id} class={`relative ${pads[pad]} ${cls}`}>
+  <div class={`mx-auto w-full max-w-[1200px] px-5 sm:px-7 lg:px-8 ${innerClass}`}>
+    <slot />
+  </div>
+</Tag>

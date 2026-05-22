@@ -1,0 +1,50 @@
+---
+import Section from '@/components/ui/Section.astro';
+import StoreButtons from '@/components/ui/StoreButtons.astro';
+import Icon from '@/components/ui/Icon.astro';
+---
+<Section pad="lg">
+  <div
+    data-reveal
+    class="mesh-coral relative overflow-hidden rounded-[2.5rem] px-6 py-16 text-center sm:px-12 sm:py-24"
+  >
+    <!-- floating accents -->
+    <span
+      class="pointer-events-none absolute left-8 top-10 text-3xl motion-safe:animate-bob sm:left-16"
+      aria-hidden="true">⭐</span
+    >
+    <span
+      class="pointer-events-none absolute right-10 top-16 text-2xl motion-safe:animate-twinkle sm:right-24"
+      aria-hidden="true">✨</span
+    >
+    <span
+      class="pointer-events-none absolute bottom-10 left-14 text-2xl motion-safe:animate-drift sm:left-28"
+      aria-hidden="true">☁️</span
+    >
+    <span
+      class="pointer-events-none absolute bottom-14 right-12 text-3xl motion-safe:animate-float-y sm:right-28"
+      aria-hidden="true">💛</span
+    >
+
+    <div class="relative mx-auto max-w-2xl">
+      <span
+        class="inline-flex items-center gap-2 rounded-full bg-white px-3.5 py-1.5 text-[11px] font-extrabold uppercase tracking-[0.16em] text-coral-deep"
+      >
+        <Icon name="heart" size={13} />
+        Get Hubbly
+      </span>
+      <h2 class="mt-5 font-display text-[2.1rem] font-semibold leading-[1.08] text-white sm:text-5xl">
+        Hubbly is on its way
+      </h2>
+      <p class="mx-auto mt-4 max-w-xl text-lg leading-relaxed text-white/90">
+        It's coming soon to Android and iOS. When it lands, the whole app is
+        free to use for 30 days, then a one-time purchase to keep it.
+      </p>
+      <StoreButtons tone="light" align="center" class="mt-8" />
+      <p class="mt-4 flex items-center justify-center gap-1.5 text-sm font-semibold text-white">
+        <Icon name="check-circle" size={15} />
+        No ads · No data sold · No surprises
+      </p>
+    </div>
+  </div>
+</Section>

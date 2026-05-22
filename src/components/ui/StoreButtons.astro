@@ -1,0 +1,75 @@
+---
+// App-store buttons. Each badge is a live link when its `*Live` flag in
+// site.ts is true, otherwise a non-clickable badge with a "Soon" ribbon.
+// Both apps are pre-launch right now, so both show "Coming soon".
+import { STORES } from '@/data/site';
+interface Props {
+  class?: string;
+  align?: 'start' | 'center';
+  tone?: 'dark' | 'light';
+}
+const { class: cls = '', align = 'start', tone = 'dark' } = Astro.props;
+
+const badge =
+  'group/store relative inline-flex items-center gap-3 rounded-2xl px-4 py-2.5 ' +
+  'transition duration-200 ease-pop will-change-transform';
+const skin =
+  tone === 'dark'
+    ? 'bg-navy text-cream shadow-card hover:shadow-lift'
+    : 'bg-white text-navy shadow-soft ring-1 ring-navy/10 hover:shadow-card';
+
+const ribbon =
+  'absolute -right-2 -top-2 rounded-full bg-navy px-2 py-0.5 text-[9px] ' +
+  'font-extrabold uppercase tracking-wide text-white shadow-sm';
+
+const androidLive = STORES.androidLive;
+const iosLive = STORES.iosLive;
+const PlayTag = androidLive ? 'a' : 'span';
+const AppTag = iosLive ? 'a' : 'span';
+---
+<div class={`flex flex-wrap gap-3 ${align === 'center' ? 'justify-center' : ''} ${cls}`}>
+  {/* Google Play */}
+  <PlayTag
+    href={androidLive ? STORES.android : undefined}
+    target={androidLive ? '_blank' : undefined}
+    rel={androidLive ? 'noopener noreferrer' : undefined}
+    class={`${badge} ${skin} ${androidLive ? 'hover:-translate-y-0.5' : 'cursor-default opacity-90'}`}
+    aria-label={androidLive ? 'Get Hubbly on Google Play' : 'Hubbly on Google Play, coming soon'}
+  >
+    <svg viewBox="0 0 24 24" class="size-6 shrink-0" aria-hidden="true">
+      <path d="M3.6 2.3 13.4 12 3.6 21.7a1.7 1.7 0 0 1-.6-1.3V3.6c0-.5.2-1 .6-1.3Z" fill="#7FC8E4"/>
+      <path d="m3.6 2.3 9.8 9.7 2.9-2.9-12-6.9a1.7 1.7 0 0 0-.7.1Z" fill="#88D9C0"/>
+      <path d="m16.3 9.1-2.9 2.9 2.9 2.9 3.8-2.2c.9-.5.9-1.9 0-2.4l-3.8-2.2Z" fill="#FFD166"/>
+      <path d="m13.4 12-9.8 9.7c.2.1.5.1.7 0l12-6.9-2.9-2.8Z" fill="#FF6B6B"/>
+    </svg>
+    <span class="flex flex-col leading-tight">
+      <span class="text-[9px] font-bold uppercase tracking-[0.14em] opacity-70">
+        {androidLive ? 'Get it on' : 'Soon on'}
+      </span>
+      <span class="font-display text-[17px] font-semibold">Google Play</span>
+    </span>
+    {!androidLive && <span class={ribbon}>Soon</span>}
+  </PlayTag>
+
+  {/* App Store */}
+  <AppTag
+    href={iosLive ? STORES.ios : undefined}
+    target={iosLive ? '_blank' : undefined}
+    rel={iosLive ? 'noopener noreferrer' : undefined}
+    class={`${badge} ${skin} ${iosLive ? 'hover:-translate-y-0.5' : 'cursor-default opacity-90'}`}
+    aria-label={iosLive ? 'Get Hubbly on the App Store' : 'Hubbly on the App Store, coming soon'}
+  >
+    <svg viewBox="0 0 24 24" class="size-6 shrink-0" fill="currentColor" aria-hidden="true">
+      <path
+        d="M17.6 12.6c0-2.9 2.4-4.3 2.5-4.4-1.4-2-3.5-2.3-4.3-2.3-1.8-.2-3.6 1.1-4.5 1.1-.9 0-2.4-1-4-1-2 0-3.9 1.2-5 3-2.1 3.7-.5 9.2 1.5 12.2 1 1.5 2.2 3.1 3.7 3 1.5-.1 2-.9 3.8-.9s2.3.9 3.8.9c1.6 0 2.6-1.5 3.6-2.9 1.1-1.7 1.6-3.3 1.6-3.4-.1 0-3.1-1.2-3.1-4.4ZM14.7 4.3c.8-1 1.4-2.4 1.2-3.8-1.2.1-2.6.8-3.5 1.8-.8.9-1.4 2.3-1.2 3.6 1.3.1 2.7-.6 3.5-1.6Z"
+      ></path>
+    </svg>
+    <span class="flex flex-col leading-tight">
+      <span class="text-[9px] font-bold uppercase tracking-[0.14em] opacity-70">
+        {iosLive ? 'Download on the' : 'Soon on the'}
+      </span>
+      <span class="font-display text-[17px] font-semibold">App Store</span>
+    </span>
+    {!iosLive && <span class={ribbon}>Soon</span>}
+  </AppTag>
+</div>

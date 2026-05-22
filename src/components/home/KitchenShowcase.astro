@@ -1,0 +1,113 @@
+---
+import Section from '@/components/ui/Section.astro';
+import SectionHeading from '@/components/ui/SectionHeading.astro';
+import TabletMockup from './TabletMockup.astro';
+
+const reasons = [
+  {
+    emoji: '🔆',
+    title: 'Awake and glanceable, all day',
+    text: 'Kitchen mode keeps the screen on and drifts into a gentle photo screensaver, then springs back to the dashboard the moment someone walks up.',
+  },
+  {
+    emoji: '👀',
+    title: 'Readable from across the room',
+    text: 'Big type, big tap targets, warm colours. Built to be understood at a glance while you are stirring the pasta with your other hand.',
+  },
+  {
+    emoji: '🧲',
+    title: 'The spot everyone passes',
+    text: 'Propped by the kettle, Hubbly becomes the place the whole family naturally checks in. No app to open, no phone to find.',
+  },
+];
+---
+<Section id="kitchen" pad="lg">
+  <div class="grid items-center gap-12 lg:grid-cols-2 lg:gap-16">
+    <!-- kitchen scene -->
+    <div data-reveal class="order-1">
+      <div
+        class="relative aspect-[5/4] overflow-hidden rounded-[2rem] bg-gradient-to-b from-[#FBE8CC] via-[#F7DDB8] to-[#EAC795] shadow-card ring-1 ring-navy/[0.06]"
+      >
+        <!-- window -->
+        <div
+          class="absolute left-6 top-7 h-32 w-44 overflow-hidden rounded-2xl bg-gradient-to-b from-[#BFE4F1] to-[#E7F4F0] ring-4 ring-white/70 sm:h-40 sm:w-56"
+        >
+          <div class="absolute right-5 top-4 size-10 rounded-full bg-sun shadow-[0_0_28px_rgba(255,209,102,0.9)]"></div>
+          <div class="absolute bottom-6 left-5 h-5 w-16 rounded-full bg-white/85"></div>
+          <div class="absolute inset-y-0 left-1/2 w-1.5 -translate-x-1/2 bg-white/70"></div>
+          <div class="absolute inset-x-0 top-1/2 h-1.5 -translate-y-1/2 bg-white/70"></div>
+        </div>
+        <!-- little shelf jar -->
+        <div class="absolute right-10 top-12 flex flex-col items-center" aria-hidden="true">
+          <div class="h-9 w-7 rounded-md bg-mint/80"></div>
+          <div class="h-1.5 w-9 rounded-full bg-[#C99A6B]"></div>
+        </div>
+
+        <!-- counter -->
+        <div class="absolute inset-x-0 bottom-0 h-[27%] bg-gradient-to-b from-[#E5C094] to-[#D7AB78]">
+          <div class="h-2.5 w-full bg-white/35"></div>
+        </div>
+
+        <!-- tablet on the counter -->
+        <div class="absolute bottom-[19%] left-1/2 w-[62%] -translate-x-1/2 motion-safe:animate-float-y">
+          <TabletMockup />
+        </div>
+
+        <!-- mug -->
+        <svg
+          class="absolute bottom-[20%] left-[6%] w-14 sm:w-16"
+          viewBox="0 0 64 60"
+          aria-hidden="true"
+        >
+          <path d="M25 13c-3-3 3-6 0-11" fill="none" stroke="#ffffff" stroke-width="2.6" stroke-linecap="round" opacity="0.75"></path>
+          <path d="M35 13c-3-3 3-6 0-11" fill="none" stroke="#ffffff" stroke-width="2.6" stroke-linecap="round" opacity="0.75"></path>
+          <path d="M44 28a8 8 0 0 1 0 15" fill="none" stroke="#FF6B6B" stroke-width="6"></path>
+          <rect x="13" y="22" width="32" height="30" rx="9" fill="#FF6B6B"></rect>
+          <ellipse cx="29" cy="22" rx="16" ry="4.5" fill="#E95C53"></ellipse>
+        </svg>
+
+        <!-- plant -->
+        <svg
+          class="absolute bottom-[20%] right-[6%] w-16 sm:w-20"
+          viewBox="0 0 64 64"
+          aria-hidden="true"
+        >
+          <g fill="#88D9C0">
+            <ellipse cx="32" cy="20" rx="7" ry="15"></ellipse>
+            <ellipse cx="20" cy="27" rx="6" ry="12" transform="rotate(-32 20 27)"></ellipse>
+            <ellipse cx="44" cy="27" rx="6" ry="12" transform="rotate(32 44 27)"></ellipse>
+          </g>
+          <path d="M19 37h26l-3.5 21h-19z" fill="#FFB088"></path>
+          <rect x="16" y="33" width="32" height="8" rx="4" fill="#E89B73"></rect>
+        </svg>
+      </div>
+    </div>
+
+    <!-- copy -->
+    <div class="order-2">
+      <SectionHeading eyebrow="On the kitchen counter" align="left">
+        Built to live where your <span class="text-gradient">family already gathers</span>
+        <Fragment slot="lead">
+          Hubbly turns any spare tablet into the warm heart of the home, the
+          screen everyone glances at over breakfast and on the way out the door.
+        </Fragment>
+      </SectionHeading>
+
+      <ul class="mt-8 space-y-5">
+        {
+          reasons.map((r, i) => (
+            <li class="flex gap-4" data-reveal style={`--reveal-delay:${i * 90}ms`}>
+              <span class="grid size-12 shrink-0 place-items-center rounded-2xl bg-white text-2xl shadow-soft ring-1 ring-navy/[0.06]">
+                {r.emoji}
+              </span>
+              <div>
+                <h3 class="font-display text-lg font-semibold text-navy">{r.title}</h3>
+                <p class="mt-1 text-[0.97rem] leading-relaxed text-navy-soft">{r.text}</p>
+              </div>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </div>
+</Section>

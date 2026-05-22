@@ -1,0 +1,82 @@
+---
+import Section from '@/components/ui/Section.astro';
+import Eyebrow from '@/components/ui/Eyebrow.astro';
+import Icon from '@/components/ui/Icon.astro';
+import HubblyMark from '@/components/ui/HubblyMark.astro';
+
+const traits = [
+  { emoji: '🌅', text: 'I nudge the morning along, gently.' },
+  { emoji: '⭐', text: 'I cheer the kids on for every little win.' },
+  { emoji: '🤫', text: 'I keep quiet, show no ads, and guard your data.' },
+];
+---
+<Section id="meet" pad="lg">
+  <div class="grid items-center gap-12 lg:grid-cols-2 lg:gap-16">
+    <!-- icon with glow halos -->
+    <div class="relative flex justify-center lg:order-1" data-reveal>
+      <div
+        class="halo absolute left-1/2 top-1/2 size-72 -translate-x-1/2 -translate-y-1/2 rounded-full bg-coral/25"
+        aria-hidden="true"
+      >
+      </div>
+      <div
+        class="halo absolute left-1/2 top-1/2 size-56 -translate-x-1/2 -translate-y-1/2 rounded-full bg-sun/30"
+        aria-hidden="true"
+      >
+      </div>
+      <!-- orbiting sparkles -->
+      <div
+        class="absolute left-1/2 top-1/2 size-[22rem] -translate-x-1/2 -translate-y-1/2 motion-safe:animate-spin-slow"
+        aria-hidden="true"
+      >
+        <span class="absolute left-1/2 top-0 -translate-x-1/2 text-2xl">⭐</span>
+        <span class="absolute bottom-2 right-6 text-xl">✨</span>
+        <span class="absolute bottom-6 left-2 text-lg">💛</span>
+      </div>
+      <div class="relative motion-safe:animate-float-y">
+        <HubblyMark
+          label="Hubbly"
+          class="w-56 drop-shadow-[0_18px_30px_rgba(45,49,66,0.18)] sm:w-72"
+        />
+      </div>
+    </div>
+
+    <!-- first-person copy -->
+    <div class="lg:order-2">
+      <div data-reveal><Eyebrow>Meet Hubbly</Eyebrow></div>
+      <h2
+        data-reveal
+        style="--reveal-delay:80ms"
+        class="mt-5 font-display text-4xl font-semibold tracking-tight text-navy sm:text-[2.85rem]"
+      >
+        Hi, I'm Hubbly
+        <span class="inline-block motion-safe:animate-bob">👋</span>
+      </h2>
+      <p data-reveal style="--reveal-delay:140ms" class="mt-5 text-lg leading-relaxed text-navy-soft">
+        I'm the friendly little hub that sits on your kitchen tablet. I'm not
+        another to-do app shouting for attention. I'm the warm, steady centre of
+        your home, holding the whole family's day so nobody else has to.
+      </p>
+      <ul data-reveal style="--reveal-delay:200ms" class="mt-7 space-y-3">
+        {
+          traits.map((t) => (
+            <li class="flex items-center gap-3.5">
+              <span class="grid size-11 shrink-0 place-items-center rounded-2xl bg-white text-xl shadow-soft ring-1 ring-navy/[0.06]">
+                {t.emoji}
+              </span>
+              <span class="font-display text-[1.05rem] font-medium text-navy">{t.text}</span>
+            </li>
+          ))
+        }
+      </ul>
+      <p
+        data-reveal
+        style="--reveal-delay:260ms"
+        class="mt-7 flex items-center gap-2 font-display text-lg font-semibold text-coral-deep"
+      >
+        <Icon name="heart" size={18} class="text-coral" />
+        Pop me on the counter, and let's have a smoother day.
+      </p>
+    </div>
+  </div>
+</Section>

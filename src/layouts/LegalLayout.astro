@@ -1,0 +1,259 @@
+---
+import BaseLayout from './BaseLayout.astro';
+import Section from '@/components/ui/Section.astro';
+import Eyebrow from '@/components/ui/Eyebrow.astro';
+import Icon from '@/components/ui/Icon.astro';
+import { COMPANY, CONTACT } from '@/data/site';
+import { webPageSchema } from '@/lib/schema';
+
+interface Heading {
+  depth: number;
+  slug: string;
+  text: string;
+}
+interface Frontmatter {
+  title: string;
+  description: string;
+  updated?: string;
+  intro?: string;
+  eyebrow?: string;
+}
+interface Props {
+  frontmatter: Frontmatter;
+  headings: Heading[];
+}
+
+const { frontmatter, headings } = Astro.props;
+const toc = headings.filter((h) => h.depth === 2);
+const updated = frontmatter.updated ?? COMPANY.legalEffectiveDateLabel;
+const pathname = Astro.url.pathname;
+---
+<BaseLayout
+  title={frontmatter.title}
+  description={frontmatter.description}
+  type="article"
+  jsonLd={webPageSchema({
+    name: frontmatter.title,
+    description: frontmatter.description,
+    path: pathname,
+  })}
+>
+  <!-- Page header -->
+  <header class="relative overflow-hidden bg-gradient-to-b from-paper to-cream pt-[calc(var(--nav-h)+3rem)] pb-14">
+    <div
+      class="halo pointer-events-none absolute -right-20 -top-10 size-72 rounded-full bg-peach/30"
+      aria-hidden="true"
+    >
+    </div>
+    <div
+      class="halo pointer-events-none absolute -left-24 bottom-0 size-72 rounded-full bg-sky/20"
+      aria-hidden="true"
+    >
+    </div>
+    <div class="relative mx-auto w-full max-w-[1200px] px-5 sm:px-7 lg:px-8">
+      <Eyebrow>{frontmatter.eyebrow ?? 'Legal'}</Eyebrow>
+      <h1 class="mt-4 max-w-3xl text-4xl font-semibold tracking-tight text-navy sm:text-5xl">
+        {frontmatter.title}
+      </h1>
+      {
+        frontmatter.intro && (
+          <p class="mt-4 max-w-2xl text-lg leading-relaxed text-navy-soft">{frontmatter.intro}</p>
+        )
+      }
+      <div class="mt-6 flex flex-wrap items-center gap-3 text-sm">
+        <span
+          class="inline-flex items-center gap-2 rounded-full bg-white px-3.5 py-1.5 font-semibold text-navy shadow-soft ring-1 ring-navy/[0.06]"
+        >
+          <Icon name="refresh" size={15} class="text-coral" />
+          Last updated {updated}
+        </span>
+        <span class="text-navy-soft">{COMPANY.legalName}</span>
+      </div>
+    </div>
+  </header>
+
+  <Section pad="md">
+    <div class="grid gap-10 lg:grid-cols-[228px_minmax(0,1fr)] lg:gap-14">
+      <!-- sticky TOC -->
+      <aside class="hidden lg:block">
+        <nav
+          id="legal-toc"
+          aria-label="On this page"
+          class="sticky top-[calc(var(--nav-h)+1.5rem)]"
+        >
+          <p class="mb-3 font-display text-xs font-bold uppercase tracking-[0.14em] text-navy-soft">
+            On this page
+          </p>
+          <ul class="space-y-0.5 border-l-2 border-navy/10">
+            {
+              toc.map((h) => (
+                <li>
+                  <a
+                    href={`#${h.slug}`}
+                    data-toc-link={h.slug}
+                    class="-ml-0.5 block border-l-2 border-transparent py-1.5 pl-4 text-[0.86rem] leading-snug text-navy-soft transition-colors hover:text-navy"
+                  >
+                    {h.text}
+                  </a>
+                </li>
+              ))
+            }
+          </ul>
+        </nav>
+      </aside>
+
+      <!-- article body -->
+      <article class="legal-prose min-w-0 max-w-2xl">
+        <slot />
+
+        <hr />
+        <p class="text-sm text-navy-soft">
+          Questions about this document? Email
+          <a href={`mailto:${CONTACT.support}`}>{CONTACT.support}</a>.
+          This page was last updated on {updated}.
+        </p>
+      </article>
+    </div>
+  </Section>
+</BaseLayout>
+
+<script>
+  // Scrollspy — highlight the TOC entry for the section in view.
+  const links = Array.from(
+    document.querySelectorAll<HTMLAnchorElement>('[data-toc-link]'),
+  );
+  const heads = links
+    .map((l) => document.getElementById(l.dataset.tocLink || ''))
+    .filter((el): el is HTMLElement => !!el);
+
+  if (heads.length && 'IntersectionObserver' in window) {
+    const active = (slug: string) => {
+      links.forEach((l) => {
+        const on = l.dataset.tocLink === slug;
+        l.classList.toggle('border-coral', on);
+        l.classList.toggle('text-navy', on);
+        l.classList.toggle('font-semibold', on);
+      });
+    };
+    const spy = new IntersectionObserver(
+      (entries) => {
+        const visible = entries
+          .filter((e) => e.isIntersecting)
+          .sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top)[0];
+        if (visible) active(visible.target.id);
+      },
+      { rootMargin: '-20% 0px -68% 0px' },
+    );
+    heads.forEach((h) => spy.observe(h));
+  }
+</script>
+
+<style is:global>
+  /* ---- Legal page prose -------------------------------------------- */
+  .legal-prose {
+    font-size: 1rem;
+    line-height: 1.7;
+    color: var(--color-navy-soft);
+  }
+  .legal-prose > :first-child {
+    margin-top: 0;
+  }
+  .legal-prose h2 {
+    scroll-margin-top: calc(var(--nav-h) + 1.5rem);
+    margin-top: 2.75rem;
+    margin-bottom: 0.75rem;
+    font-size: 1.5rem;
+    line-height: 1.2;
+    color: var(--color-navy);
+  }
+  .legal-prose h3 {
+    scroll-margin-top: calc(var(--nav-h) + 1.5rem);
+    margin-top: 1.85rem;
+    margin-bottom: 0.5rem;
+    font-size: 1.12rem;
+    color: var(--color-navy);
+  }
+  .legal-prose p {
+    margin: 0.9rem 0;
+  }
+  .legal-prose a {
+    color: var(--color-coral-deep);
+    font-weight: 600;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+    text-decoration-thickness: 1.5px;
+  }
+  .legal-prose a:hover {
+    color: var(--color-coral);
+  }
+  .legal-prose strong {
+    color: var(--color-navy);
+    font-weight: 700;
+  }
+  .legal-prose ul,
+  .legal-prose ol {
+    margin: 0.9rem 0;
+    padding-left: 1.35rem;
+  }
+  .legal-prose ul {
+    list-style: none;
+  }
+  .legal-prose ul > li {
+    position: relative;
+  }
+  .legal-prose ul > li::before {
+    content: '';
+    position: absolute;
+    left: -1.1rem;
+    top: 0.62em;
+    width: 6px;
+    height: 6px;
+    border-radius: 999px;
+    background: var(--color-coral);
+  }
+  .legal-prose ol {
+    list-style: decimal;
+  }
+  .legal-prose li {
+    margin: 0.35rem 0;
+  }
+  .legal-prose hr {
+    margin: 2.5rem 0;
+    border: 0;
+    border-top: 1px solid rgba(45, 49, 66, 0.12);
+  }
+  .legal-prose blockquote {
+    margin: 1.2rem 0;
+    padding: 0.4rem 0 0.4rem 1.1rem;
+    border-left: 3px solid var(--color-peach);
+    color: var(--color-navy);
+    font-style: italic;
+  }
+  .legal-prose code {
+    background: rgba(45, 49, 66, 0.06);
+    padding: 0.12em 0.4em;
+    border-radius: 6px;
+    font-size: 0.9em;
+  }
+  .legal-prose table {
+    width: 100%;
+    margin: 1.25rem 0;
+    border-collapse: collapse;
+    font-size: 0.9rem;
+    display: block;
+    overflow-x: auto;
+  }
+  .legal-prose th,
+  .legal-prose td {
+    border: 1px solid rgba(45, 49, 66, 0.12);
+    padding: 0.6rem 0.8rem;
+    text-align: left;
+    vertical-align: top;
+  }
+  .legal-prose th {
+    background: rgba(45, 49, 66, 0.04);
+    color: var(--color-navy);
+    font-weight: 700;
+    font-family: var(--font-display);
+  }
+</style>

@@ -11,7 +11,7 @@ export const SITE = {
   tagline: "The cosy command centre for your family's day",
   /** ~155 char meta description used as the site-wide default. */
   description:
-    'Hubbly is the cosy command centre for your family: routines, calendar, meals, lists, trips and star rewards in one warm app for kitchen tablets and phones.',
+    'Hubbly is the family organiser app for the kitchen tablet: shared routines, calendar, meals, lists, trips and star rewards, all in one warm family hub.',
   /** Brand heart used in the tagline. */
   heart: '♥',
   launchStatus: 'Coming soon',

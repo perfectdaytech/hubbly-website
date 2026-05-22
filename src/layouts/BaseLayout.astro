@@ -27,7 +27,9 @@ const {
   mainClass = '',
 } = Astro.props;
 
-const fullTitle = title ? `${title} · ${SITE.name}` : `${SITE.name} · ${SITE.tagline}`;
+const fullTitle = title
+  ? `${title} · ${SITE.name}`
+  : `${SITE.name} · The Family Organiser App for Your Family's Day`;
 const metaDesc = description ?? SITE.description;
 const extra = jsonLd ? (Array.isArray(jsonLd) ? jsonLd : [jsonLd]) : [];
 const schema = [organizationSchema(), ...extra];

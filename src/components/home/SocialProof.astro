@@ -17,7 +17,7 @@ import { STATS } from '@/data/stats';
         STATS.map((s, i) => (
           <div class={i < STATS.length - 1 ? 'sm:border-r sm:border-navy/10 sm:pr-6' : ''}>
             <dt class="font-display text-3xl font-bold leading-none text-coral-deep sm:text-[2.4rem]">
-              {s.countTo ? <span data-count-to={s.countTo}>0</span> : s.value}
+              {s.countTo ? <span data-count-to={s.countTo}>{s.value}</span> : s.value}
             </dt>
             <dd class="mt-2 text-sm font-semibold leading-snug text-navy-soft">{s.label}</dd>
           </div>

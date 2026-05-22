@@ -56,7 +56,7 @@ export const FOREVER_PLAN: PricingPlan = {
     'Medication tracking & mood check-ins',
     'Bedtime mode & breathing timer',
     'Unlimited family members & devices',
-    'Every future update, included free',
+    'Future updates included while Hubbly operates',
   ],
   cta: 'Start your free trial',
   note: 'No payment details needed to start, and with no subscription, nothing renews on its own.',

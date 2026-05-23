@@ -12,7 +12,6 @@ export interface NavLink {
 export const NAV_LINKS: NavLink[] = [
   { label: 'Features', href: '/#features' },
   { label: 'For Families', href: '/#families' },
-  { label: 'Safety', href: '/safety' },
   { label: 'Pricing', href: '/pricing' },
   { label: 'FAQ', href: '/#faq' },
 ];
@@ -35,7 +34,6 @@ export const FOOTER_COLUMNS: FooterColumn[] = [
   {
     title: 'Company',
     links: [
-      { label: 'Safety & security', href: '/safety' },
       { label: 'FAQ', href: '/#faq' },
       { label: 'Contact us', href: `mailto:${CONTACT.general}`, external: true },
     ],

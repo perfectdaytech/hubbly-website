@@ -29,3 +29,6 @@ Thumbs.db
 # local agent config
 .claude/
 RECON.md
+
+# bulky design source — kept locally, not committed
+src/assets/new icons/

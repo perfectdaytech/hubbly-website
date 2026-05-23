@@ -1,5 +1,4 @@
 // Safety section (home) — four reassurance points.
-// The full /safety page expands on each of these.
 
 export interface SafetyPoint {
   emoji: string;

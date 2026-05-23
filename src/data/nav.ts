@@ -12,7 +12,7 @@ export interface NavLink {
 export const NAV_LINKS: NavLink[] = [
   { label: 'Features', href: '/#features' },
   { label: 'For Families', href: '/#families' },
-  { label: 'Pricing', href: '/pricing' },
+  { label: 'Pricing', href: '/#pricing' },
   { label: 'FAQ', href: '/#faq' },
 ];
 
@@ -28,7 +28,7 @@ export const FOOTER_COLUMNS: FooterColumn[] = [
       { label: 'Features', href: '/#features' },
       { label: 'Meet Hubbly', href: '/#meet' },
       { label: 'For families', href: '/#families' },
-      { label: 'Pricing', href: '/pricing' },
+      { label: 'Pricing', href: '/#pricing' },
     ],
   },
   {

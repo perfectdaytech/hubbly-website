@@ -30,7 +30,7 @@ export interface PricingPlan {
 }
 
 export const PRICING_NOTE =
-  'One purchase covers your whole household: unlimited members and devices. Prices are in GBP; your app store shows the equivalent in your local currency.';
+  'Prices in GBP; your app store shows the equivalent in your local currency.';
 
 export const FOREVER_PLAN: PricingPlan = {
   id: 'forever',
@@ -43,21 +43,14 @@ export const FOREVER_PLAN: PricingPlan = {
   priceWas: '£59.99',
   period: 'one-time',
   badge: 'Early access',
-  tagline: 'The complete Hubbly app, made for your whole family.',
-  priceNote:
-    'A limited early-access launch offer for early households. Hubbly Forever is £59.99 after launch, and the current price is always shown before you buy.',
+  tagline: 'Every feature, for the whole household.',
+  priceNote: 'A limited early-access offer. Hubbly Forever is £59.99 after launch.',
   features: [
-    'The complete Hubbly app, every feature',
-    'Shared family calendar & reminders',
-    'Unlimited routines, chores & reward charts',
-    'Star economy, reward shop & pocket money',
-    'Meal planner, shared lists & trip planner',
-    'Kitchen-tablet display & photo screensaver',
-    'Medication tracking & mood check-ins',
-    'Bedtime mode & breathing timer',
-    'Unlimited family members & devices',
-    'Future updates included while Hubbly operates',
+    'Every feature included, no paywalls',
+    'Unlimited family members and devices',
+    'Backup and restore as a file',
+    'Free updates while Hubbly runs',
   ],
   cta: 'Start your free trial',
-  note: 'No payment details needed to start, and with no subscription, nothing renews on its own.',
+  note: 'No card to start the trial, no subscription, nothing renews on its own.',
 };

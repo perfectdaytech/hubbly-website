@@ -1,5 +1,5 @@
 ---
-question: 'What is "Founders pricing"?'
+question: 'What is "Early access" pricing?'
 order: 5
 ---
 

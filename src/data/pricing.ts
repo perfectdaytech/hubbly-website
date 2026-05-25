@@ -14,7 +14,7 @@ export interface PricingPlan {
   price: string;
   /** Struck-through standard price, shown beside `price`. */
   priceWas?: string;
-  /** Founders / scarcity line shown just under the price. */
+  /** Early-access / scarcity line shown just under the price. */
   priceNote?: string;
   /** Period suffix next to the price. */
   period: string;
@@ -36,16 +36,16 @@ export const FOREVER_PLAN: PricingPlan = {
   id: 'forever',
   name: 'Hubbly Forever',
   trialLabel: 'Free for 30 days, then',
-  // Launch pricing lives here: `price` is the founders launch price and
-  // `priceWas` the post-launch standard price. When the founders offer ends,
+  // Launch pricing lives here: `price` is the early-access launch price and
+  // `priceWas` the post-launch standard price. When the early-access offer ends,
   // set `price` to the standard price and clear `priceWas`.
-  price: '£15',
-  priceWas: '£39.99',
+  price: '£19.99',
+  priceWas: '£59.99',
   period: 'one-time',
-  badge: 'Founders pricing',
+  badge: 'Early access',
   tagline: 'The complete Hubbly app, made for your whole family.',
   priceNote:
-    'A limited founders launch offer for early households. Hubbly Forever is £39.99 after launch, and the current price is always shown before you buy.',
+    'A limited early-access launch offer for early households. Hubbly Forever is £59.99 after launch, and the current price is always shown before you buy.',
   features: [
     'The complete Hubbly app, every feature',
     'Shared family calendar & reminders',

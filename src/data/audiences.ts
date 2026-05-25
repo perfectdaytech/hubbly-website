@@ -42,19 +42,4 @@ export const AUDIENCES: Audience[] = [
       'Confetti celebrations when it all clicks',
     ],
   },
-  {
-    id: 'everyone',
-    emoji: '🏡',
-    title: 'For everyone else',
-    blurb: 'Grandparents, sitters, housemates: everyone stays in the loop.',
-    accent: 'sky',
-    points: [
-      'Shared shopping & to-do lists',
-      'Sticky notes for the whole household',
-      'A trip planner for journeys big and small',
-      'Weather and the day ahead at a glance',
-      'Lives on the kitchen tablet, all day',
-      'Syncs to every phone in the family',
-    ],
-  },
 ];

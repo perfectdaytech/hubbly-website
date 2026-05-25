@@ -57,7 +57,7 @@ const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}" 
 
   <!-- tagline -->
   <text x="96" y="416" font-family="Trebuchet MS, Verdana, sans-serif" font-size="42"
-    font-weight="600" fill="#2D3142">The cosy command centre</text>
+    font-weight="600" fill="#2D3142">A happy little home</text>
   <text x="96" y="470" font-family="Trebuchet MS, Verdana, sans-serif" font-size="42"
     font-weight="600" fill="#4A4F66">for your family's day <tspan fill="#FF6B6B">&#9829;</tspan></text>
 

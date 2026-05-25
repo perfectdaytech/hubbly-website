@@ -3,7 +3,7 @@
   "type": "module",
   "version": "1.0.0",
   "private": true,
-  "description": "Marketing + legal website for Hubbly — the cosy command centre for your family's day.",
+  "description": "Marketing + legal website for Hubbly: a happy little home for your family's day.",
   "scripts": {
     "dev": "astro dev",
     "start": "astro dev",

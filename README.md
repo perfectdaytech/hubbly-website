@@ -1,6 +1,6 @@
 # Hubbly — marketing & legal website
 
-The public website for **Hubbly**, the cosy command centre for your family's day.
+The public website for **Hubbly**, a happy little home for your family's day.
 Built as a fast, static, accessible site with [Astro](https://astro.build) +
 [Tailwind CSS v4](https://tailwindcss.com). Deploys to **gethubbly.app**.
 
@@ -58,7 +58,6 @@ hubbly/
 | An FAQ | a file in `src/content/faqs/` |
 | Nav / footer links | `src/data/nav.ts` |
 | **Pricing tiers** | `src/data/pricing.ts` |
-| Stats / testimonial | `src/data/stats.ts` |
 | "For families" cards | `src/data/audiences.ts` |
 | Company / contact / store links | `src/data/site.ts` |
 | Social links | `src/data/social.ts` |

@@ -8,10 +8,10 @@ export const SITE = {
   name: 'Hubbly',
   domain: 'gethubbly.app',
   url: 'https://gethubbly.app',
-  tagline: "The cosy command centre for your family's day",
+  tagline: "A happy little home for your family's day",
   /** ~155 char meta description used as the site-wide default. */
   description:
-    'Hubbly is the family organiser app for the kitchen tablet: shared routines, calendar, meals, lists, trips and star rewards, all in one warm family hub.',
+    'Hubbly is the family organiser app for the kitchen tablet and every family phone: routines, calendars, meals, lists, star rewards and more, all in one happy little home.',
   /** Brand heart used in the tagline. */
   heart: '♥',
   launchStatus: 'Coming soon',

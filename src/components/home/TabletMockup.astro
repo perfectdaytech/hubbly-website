@@ -9,6 +9,11 @@ interface Props {
   class?: string;
 }
 const { class: cls = '' } = Astro.props;
+
+// The header date renders today's date at build time so the screenshot
+// never looks stale. Astro is static, so this updates on each deploy.
+const today = new Date();
+const dateLine = `${today.toLocaleDateString('en-GB', { weekday: 'long' })}, ${today.getDate()} ${today.toLocaleDateString('en-GB', { month: 'long' })}`;
 ---
 <div
   class={`device-frame ${cls}`}
@@ -27,7 +32,7 @@ const { class: cls = '' } = Astro.props;
           <div>
             <div class="font-display text-[30px] font-semibold leading-none text-navy">8:42</div>
             <div class="mt-1 text-[10px] font-semibold text-navy-soft">Good morning, family</div>
-            <div class="text-[8.5px] font-semibold text-navy-soft/70">Tuesday, 20 May</div>
+            <div class="text-[8.5px] font-semibold text-navy-soft/70">{dateLine}</div>
           </div>
           <div class="flex items-center gap-1.5">
             <div class="flex items-center gap-1 rounded-full bg-white px-2 py-1 shadow-soft">

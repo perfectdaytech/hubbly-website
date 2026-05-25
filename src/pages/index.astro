@@ -2,7 +2,6 @@
 import { getCollection } from 'astro:content';
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import Hero from '@/components/home/Hero.astro';
-import SocialProof from '@/components/home/SocialProof.astro';
 import MeetHubbly from '@/components/home/MeetHubbly.astro';
 import Features from '@/components/home/Features.astro';
 import KitchenShowcase from '@/components/home/KitchenShowcase.astro';
@@ -33,7 +32,6 @@ const faqSchema = faqPageSchema(
 ---
 <BaseLayout jsonLd={[softwareApplicationSchema(), faqSchema]}>
   <Hero />
-  <SocialProof />
   <MeetHubbly />
   <Features />
   <KitchenShowcase />

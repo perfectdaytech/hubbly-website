@@ -3,8 +3,11 @@ question: How does syncing across devices work?
 order: 11
 ---
 
-One person creates the family and signs in with an **email and password**.
-Everyone else signs into the same family using the same email, on whichever
-device they like, Android or iOS, phone or tablet. From then on, tick a chore
-on a phone and the kitchen tablet updates moments later. Lose a device or get
-a new one, and your whole family hub is right there when you sign back in.
+One device creates the family and gets a **6-digit code**. Every other phone
+or tablet joins by typing that code, no account, no sign-up forms. From then
+on, tick a chore on a phone and the kitchen tablet updates moments later, and
+the same family hub is right there on every joined device.
+
+You can also add an **email address as an optional safety net**: it's only
+used to recover your family hub if every device ever gets wiped at once.
+Apart from that, no email is required.

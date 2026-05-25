@@ -4,12 +4,15 @@ import SectionHeading from '@/components/ui/SectionHeading.astro';
 import Icon from '@/components/ui/Icon.astro';
 import { AUDIENCES } from '@/data/audiences';
 
-const ACCENT: Record<string, { halo: string; chip: string; dot: string }> = {
-  coral: { halo: 'bg-coral/15', chip: 'bg-coral/15', dot: 'bg-coral' },
-  sun: { halo: 'bg-sun/20', chip: 'bg-sun/25', dot: 'bg-sun' },
-  sky: { halo: 'bg-sky/18', chip: 'bg-sky/20', dot: 'bg-sky' },
-  mint: { halo: 'bg-mint/18', chip: 'bg-mint/22', dot: 'bg-mint' },
-  lavender: { halo: 'bg-lavender/18', chip: 'bg-lavender/22', dot: 'bg-lavender' },
+// One row per audience: background halo + chip tint share the audience
+// accent colour; `tint` is the brand token used by the rotator stars
+// when they "fill in".
+const ACCENT: Record<string, { halo: string; chip: string; tint: string }> = {
+  coral: { halo: 'bg-coral/15', chip: 'bg-coral/15', tint: 'var(--color-coral)' },
+  sun: { halo: 'bg-sun/20', chip: 'bg-sun/25', tint: 'var(--color-sun)' },
+  sky: { halo: 'bg-sky/18', chip: 'bg-sky/20', tint: 'var(--color-sky)' },
+  mint: { halo: 'bg-mint/18', chip: 'bg-mint/22', tint: 'var(--color-mint)' },
+  lavender: { halo: 'bg-lavender/18', chip: 'bg-lavender/22', tint: 'var(--color-lavender)' },
 };
 ---
 <Section id="families" pad="lg">
@@ -17,49 +20,245 @@ const ACCENT: Record<string, { halo: string; chip: string; dot: string }> = {
     One app, <span class="text-gradient">everyone included</span>
     <Fragment slot="lead">
       Hubbly gives every member of the household exactly what they need, and
-      nothing they don't.
+      nothing they don't. Watch the scenarios cycle, or tap a star to skip ahead.
     </Fragment>
   </SectionHeading>
 
   <div class="mx-auto mt-12 grid max-w-4xl gap-6 md:grid-cols-2">
-    {
-      AUDIENCES.map((a, i) => {
-        const c = ACCENT[a.accent];
-        return (
-          <article
-            data-reveal
-            style={`--reveal-delay:${i * 110}ms`}
-            class="group relative flex flex-col overflow-hidden rounded-3xl bg-white p-7 shadow-card ring-1 ring-navy/[0.05] transition duration-300 ease-pop hover:-translate-y-1.5 hover:shadow-lift"
-          >
-            <div
-              class={`halo pointer-events-none absolute -right-8 -top-8 size-32 rounded-full ${c.halo}`}
+    {AUDIENCES.map((a, i) => {
+      const c = ACCENT[a.accent];
+      return (
+        <article
+          data-reveal
+          data-audience-rotator
+          style={`--reveal-delay:${i * 110}ms; --accent:${c.tint};`}
+          class="group relative flex flex-col overflow-hidden rounded-3xl bg-white p-7 shadow-card ring-1 ring-navy/[0.05]"
+        >
+          <div
+            class={`halo pointer-events-none absolute -right-8 -top-8 size-32 rounded-full ${c.halo}`}
+            aria-hidden="true"
+          />
+          <div class="relative">
+            <span
+              class={`grid size-14 place-items-center rounded-2xl text-3xl ${c.chip}`}
               aria-hidden="true"
-            />
-            <div class="relative">
-              <span
-                class={`grid size-14 place-items-center rounded-2xl text-3xl ${c.chip} transition-transform duration-300 ease-pop group-hover:-rotate-6`}
-                aria-hidden="true"
-              >
-                {a.emoji}
-              </span>
-              <h3 class="mt-4 font-display text-2xl font-semibold text-navy">{a.title}</h3>
-              <p class="mt-1.5 text-[0.97rem] leading-relaxed text-navy-soft">{a.blurb}</p>
-            </div>
-            <ul class="relative mt-5 space-y-2.5 border-t border-navy/[0.07] pt-5">
-              {a.points.map((p) => (
-                <li class="flex items-start gap-2.5">
-                  <span
-                    class={`mt-0.5 grid size-5 shrink-0 place-items-center rounded-full ${c.dot}`}
-                  >
-                    <Icon name="check" size={12} class="text-white" strokeWidth={3.5} />
-                  </span>
-                  <span class="text-[0.92rem] font-medium leading-snug text-navy-soft">{p}</span>
+            >
+              {a.emoji}
+            </span>
+            <h3 class="mt-4 font-display text-2xl font-semibold text-navy">{a.title}</h3>
+            <p class="mt-1.5 text-[0.97rem] leading-relaxed text-navy-soft">{a.blurb}</p>
+          </div>
+
+          {/* Rotating scenarios. All bullets stay in the DOM so screen
+              readers see the full list; visually only one shows at a
+              time and the row of stars below "collects" them. */}
+          <div class="relative mt-5 border-t border-navy/[0.07] pt-5">
+            <ul class="scenarios" data-rotator-list>
+              {a.points.map((p, idx) => (
+                <li class={`scenario ${idx === 0 ? 'is-active' : ''}`} data-index={idx}>
+                  <p class="font-display text-[1.02rem] font-medium leading-relaxed text-navy">
+                    {p}
+                  </p>
                 </li>
               ))}
             </ul>
-          </article>
-        );
-      })
-    }
+
+            <div
+              class="mt-5 flex items-center justify-center gap-1.5"
+              data-rotator-stars
+              role="tablist"
+              aria-label={`${a.title} scenarios`}
+            >
+              {a.points.map((_, idx) => (
+                <button
+                  type="button"
+                  class={`star-btn ${idx === 0 ? 'is-active is-collected' : ''}`}
+                  data-index={idx}
+                  role="tab"
+                  aria-selected={idx === 0 ? 'true' : 'false'}
+                  aria-label={`Scenario ${idx + 1} of ${a.points.length}`}
+                >
+                  <Icon name="star" size={20} />
+                </button>
+              ))}
+            </div>
+          </div>
+        </article>
+      );
+    })}
   </div>
 </Section>
+
+<style>
+  /* All scenarios share one grid cell so the card height stays steady
+     across short/long bullets. min-height keeps the card from popping
+     up if the first scenario happens to be the shortest. */
+  .scenarios {
+    display: grid;
+    min-height: 8.25rem;
+  }
+  .scenario {
+    grid-column: 1;
+    grid-row: 1;
+    opacity: 0;
+    transform: translateY(10px);
+    transition:
+      opacity 0.45s ease,
+      transform 0.55s var(--ease-pop);
+    pointer-events: none;
+  }
+  .scenario.is-active {
+    opacity: 1;
+    transform: none;
+    pointer-events: auto;
+  }
+
+  .star-btn {
+    display: grid;
+    place-items: center;
+    padding: 0.25rem;
+    border-radius: 9999px;
+    color: rgba(45, 49, 66, 0.18);
+    cursor: pointer;
+    background: transparent;
+    transition:
+      color 0.35s ease,
+      transform 0.3s var(--ease-pop),
+      filter 0.3s ease;
+  }
+  .star-btn:hover {
+    color: rgba(45, 49, 66, 0.42);
+  }
+  .star-btn.is-collected {
+    color: var(--accent, var(--color-coral));
+    filter: drop-shadow(0 2px 6px color-mix(in oklab, var(--accent, #ff6b6b) 35%, transparent));
+  }
+  .star-btn.is-active {
+    transform: scale(1.22);
+    animation: starPulse 1.7s ease-in-out infinite;
+  }
+  .star-btn:focus-visible {
+    outline: 2px solid var(--color-coral);
+    outline-offset: 3px;
+  }
+  @keyframes starPulse {
+    0%, 100% { transform: scale(1.22); }
+    50%      { transform: scale(1.36); }
+  }
+
+  /* Reduced motion: drop the carousel entirely, stack scenarios as a
+     plain list, freeze the active star. Screen-reader experience is
+     unchanged either way (all <li> items are always in the DOM). */
+  @media (prefers-reduced-motion: reduce) {
+    .scenarios {
+      display: block;
+      min-height: 0;
+    }
+    .scenario {
+      opacity: 1;
+      transform: none;
+      margin-bottom: 0.875rem;
+      pointer-events: auto;
+    }
+    .star-btn.is-active {
+      transform: none;
+      animation: none;
+    }
+  }
+</style>
+
+<script>
+  // ====================================================================
+  // ForFamilies rotator. Each audience card cycles its scenarios every
+  // ~4.5s and lights up a star per visited scenario — like collecting
+  // them in the app's reward economy. Pauses on hover/focus and when
+  // the card is offscreen. Respects prefers-reduced-motion via the CSS
+  // above; this script only attaches if motion is allowed.
+  // ====================================================================
+  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (!reduce) {
+    const rotators = document.querySelectorAll<HTMLElement>('[data-audience-rotator]');
+    rotators.forEach((rotator) => {
+      const items = rotator.querySelectorAll<HTMLElement>('[data-rotator-list] > li');
+      const stars = rotator.querySelectorAll<HTMLButtonElement>('[data-rotator-stars] .star-btn');
+      const total = items.length;
+      if (!total) return;
+
+      let idx = 0;
+      let timer: number | null = null;
+      let visible = false;
+      let paused = false;
+
+      const apply = (next: number) => {
+        items[idx].classList.remove('is-active');
+        stars[idx].classList.remove('is-active');
+        stars[idx].setAttribute('aria-selected', 'false');
+        idx = ((next % total) + total) % total;
+        items[idx].classList.add('is-active');
+        stars[idx].classList.add('is-active');
+        stars[idx].setAttribute('aria-selected', 'true');
+        // Light up every star up to (and including) the new index. When
+        // the rotation loops back to 0 this collapses to just the first
+        // star, which makes the "collecting" feel restart for the next
+        // pass — the same as earning a fresh set of stars each round.
+        stars.forEach((s, i) => s.classList.toggle('is-collected', i <= idx));
+      };
+
+      const advance = () => apply(idx + 1);
+
+      const start = () => {
+        if (timer !== null || !visible || paused) return;
+        timer = window.setInterval(advance, 4500);
+      };
+      const stop = () => {
+        if (timer === null) return;
+        clearInterval(timer);
+        timer = null;
+      };
+
+      rotator.addEventListener('pointerenter', () => {
+        paused = true;
+        stop();
+      });
+      rotator.addEventListener('pointerleave', () => {
+        paused = false;
+        start();
+      });
+      rotator.addEventListener('focusin', () => {
+        paused = true;
+        stop();
+      });
+      rotator.addEventListener('focusout', () => {
+        paused = false;
+        start();
+      });
+
+      if ('IntersectionObserver' in window) {
+        const io = new IntersectionObserver(
+          (entries) => {
+            for (const e of entries) {
+              visible = e.isIntersecting;
+              if (visible) start();
+              else stop();
+            }
+          },
+          { threshold: 0.25 },
+        );
+        io.observe(rotator);
+      } else {
+        visible = true;
+        start();
+      }
+
+      stars.forEach((s, i) => {
+        s.addEventListener('click', () => {
+          stop();
+          apply(i);
+          // Hold the user's pick for a beat before resuming, otherwise
+          // it can feel like the rotator races forward on top of them.
+          if (!paused) window.setTimeout(start, 700);
+        });
+      });
+    });
+  }
+</script>

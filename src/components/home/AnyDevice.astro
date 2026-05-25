@@ -1,0 +1,123 @@
+---
+// "Your devices, your way" — the cross-platform / BYOD message that
+// follows the KitchenShowcase section. The kitchen tablet is one option,
+// not a requirement; Hubbly runs on whatever phones and tablets the
+// family already owns, on both Android and iOS, and one email keeps the
+// family hub in step across all of them.
+import Section from '@/components/ui/Section.astro';
+import SectionHeading from '@/components/ui/SectionHeading.astro';
+import Icon from '@/components/ui/Icon.astro';
+
+const points = [
+  {
+    emoji: '🤝',
+    title: 'Android and Apple, side by side',
+    text: "Mum's iPhone, Dad's Pixel, the kids' old iPad, a Kindle Fire on the counter. Hubbly runs natively on both platforms, so every screen joins the same family.",
+  },
+  {
+    emoji: '✉️',
+    title: 'One email, your family on any device',
+    text: "Sign in with the same email anywhere and the whole hub is right there: routines, calendar, stars and lists. Lose a phone, get a new one, and your family is waiting.",
+  },
+  {
+    emoji: '💸',
+    title: 'No special hardware to buy',
+    text: "There is no Hubbly tablet to order, no dock to mount. Pop it on a spare iPad in a drawer, a £40 Fire tablet, or the phones you already use every day.",
+  },
+  {
+    emoji: '⚡',
+    title: 'In step, the moment it changes',
+    text: "Tick a chore off on a phone and the kitchen tablet updates moments later. Add a meal on the iPad and the kids see it on theirs before the next bell rings.",
+  },
+];
+
+// Compact device pill, used in the row visual.
+interface Device {
+  label: string;
+  emoji: string;
+  tint: string;
+  ring: string;
+}
+const devices: Device[] = [
+  { label: 'Android phone', emoji: '📱', tint: 'bg-mint/30', ring: 'ring-mint/30' },
+  { label: 'iPad', emoji: '🟫', tint: 'bg-sky/30', ring: 'ring-sky/30' },
+  { label: 'Fire tablet', emoji: '🟧', tint: 'bg-peach/35', ring: 'ring-peach/40' },
+  { label: 'iPhone', emoji: '📱', tint: 'bg-lavender/30', ring: 'ring-lavender/30' },
+];
+---
+<Section id="devices" pad="lg">
+  <SectionHeading eyebrow="Your devices, your way">
+    Bring the screens you <span class="text-gradient">already have</span>
+    <Fragment slot="lead">
+      Hubbly is built for every device your family already owns. Android or
+      Apple, phone or tablet, sign in once and the whole family hub follows
+      you, in step on every screen.
+    </Fragment>
+  </SectionHeading>
+
+  <!-- Cross-platform device row -->
+  <div
+    data-reveal
+    class="relative mt-10 mx-auto flex max-w-3xl items-center justify-center gap-3 sm:gap-5"
+  >
+    <div
+      class="halo pointer-events-none absolute left-1/2 top-1/2 size-64 -translate-x-1/2 -translate-y-1/2 rounded-full bg-sun/20"
+      aria-hidden="true"
+    >
+    </div>
+    {
+      devices.map((d, i) => (
+        <>
+          <div class="relative flex flex-col items-center">
+            <div
+              class={`grid size-16 place-items-center rounded-3xl bg-white text-3xl shadow-soft ring-1 ring-navy/[0.06] sm:size-20 sm:text-4xl ${d.tint}`}
+              aria-hidden="true"
+            >
+              <span>{d.emoji}</span>
+            </div>
+            <span class="mt-2 text-[11px] font-bold uppercase tracking-wide text-navy-soft sm:text-xs">
+              {d.label}
+            </span>
+          </div>
+          {i < devices.length - 1 && (
+            <div class="relative -mt-5 flex flex-1 items-center justify-center" aria-hidden="true">
+              <div class="h-px w-full bg-gradient-to-r from-coral/0 via-coral/50 to-coral/0" />
+              <div class="absolute grid size-6 place-items-center rounded-full bg-cream text-coral shadow-soft ring-1 ring-coral/30">
+                <Icon name="refresh" size={12} />
+              </div>
+            </div>
+          )}
+        </>
+      ))
+    }
+  </div>
+
+  <p
+    data-reveal
+    style="--reveal-delay:120ms"
+    class="mt-6 text-center text-sm font-semibold text-navy-soft"
+  >
+    Yes, your Android products and your Apple products. All on the same family hub.
+  </p>
+
+  <!-- Four supporting points -->
+  <ul class="mt-12 grid gap-5 sm:grid-cols-2">
+    {
+      points.map((p, i) => (
+        <li
+          data-reveal
+          style={`--reveal-delay:${i * 80}ms`}
+          class="card-surface flex items-start gap-4 rounded-[1.5rem] p-6"
+        >
+          <span class="grid size-12 shrink-0 place-items-center rounded-2xl bg-white text-2xl shadow-soft ring-1 ring-navy/[0.06]">
+            {p.emoji}
+          </span>
+          <div>
+            <h3 class="font-display text-lg font-semibold text-navy">{p.title}</h3>
+            <p class="mt-1.5 text-[0.97rem] leading-relaxed text-navy-soft">{p.text}</p>
+          </div>
+        </li>
+      ))
+    }
+  </ul>
+</Section>

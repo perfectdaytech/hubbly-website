@@ -97,9 +97,10 @@ in. Two store links remain, both pending the app listings going live:
 ### Decisions already taken
 - The brief referenced `hubbly-icon.jpg`; the real asset is the app's
   `assets/icon.png`, copied here as `hubbly-icon.png`.
-- The feature set is the **12 features actually in the app** (per `RECON.md` §4).
-  The app README's older list (Contacts/Bills/School/Reading/House) is outdated
-  and was not used.
+- The feature list is **13 cards**: the 12 features actually in the app
+  (per `RECON.md` §4) plus a Reading time card flagged for a near-term
+  release. The home page adds a 14th "And more coming…" tile to keep the
+  two-column layout even and signal that the roadmap keeps going.
 - The website itself ships with **no analytics and no tracking cookies**. The
   *app's* Sentry + PostHog analytics are disclosed in the privacy/cookie pages.
 

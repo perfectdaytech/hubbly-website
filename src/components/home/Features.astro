@@ -22,12 +22,12 @@ const TINT: Record<string, string> = {
 ---
 <Section id="features" pad="lg" class="bg-gradient-to-b from-cream to-paper/60">
   <SectionHeading eyebrow="Everything in one hub">
-    Twelve features. <span class="text-gradient">One tidy screen.</span>
+    Thirteen features. <span class="text-gradient">One tidy screen.</span>
     <Fragment slot="lead">
       Right now, the calendar lives in one app, the to-do list in another, the
-      chore chart on the fridge and the meal plan in someone's head. A gentle
-      few-minute setup wizard adds everyone in your family, then quietly pulls
-      it all into one warm hub.
+      chore chart on the fridge and the meal plan in someone's head. A short
+      setup wizard adds everyone in your family, then brings it all together
+      in one shared hub.
     </Fragment>
   </SectionHeading>
 
@@ -55,6 +55,18 @@ const TINT: Record<string, string> = {
             </li>
           ))
         }
+        <!-- 14th slot keeps the two columns even and hints that more is coming -->
+        <li class="flex items-center gap-2.5">
+          <span
+            class="grid size-9 shrink-0 place-items-center rounded-xl border border-dashed border-coral/40 bg-coral/[0.06] text-lg text-coral-deep"
+            aria-hidden="true"
+          >
+            ✨
+          </span>
+          <span class="font-display text-[0.95rem] font-medium italic leading-tight text-navy-soft">
+            And more coming…
+          </span>
+        </li>
       </ul>
       <p class="mt-7 flex items-center gap-2 text-sm font-semibold text-navy-soft">
         <Icon name="check-circle" size={16} class="text-mint" />

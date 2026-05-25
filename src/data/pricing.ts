@@ -47,7 +47,7 @@ export const FOREVER_PLAN: PricingPlan = {
   priceNote: 'A limited early-access offer. Hubbly Forever is £59.99 after launch.',
   features: [
     'Every feature included, no paywalls',
-    'Unlimited family members and devices',
+    'Whole family, up to 12 devices',
     'Backup and restore as a file',
     'Free updates while Hubbly runs',
   ],

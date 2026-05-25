@@ -10,33 +10,23 @@ import Icon from '@/components/ui/Icon.astro';
 const points = [
   {
     emoji: '🤝',
-    title: 'Android and Apple, no fuss',
-    text: "Mum's iPhone, Dad's Pixel, the kids' old iPad, a Fire tablet on the counter. Hubbly runs natively on both platforms, so every screen joins the same family hub.",
-  },
-  {
-    emoji: '🏷️',
-    title: 'Use what you already own',
-    text: "We are not going to push you into buying new tech. An old iPad in a drawer, a £40 Fire tablet, the phones already in your pockets, any of them works. Set the family up on the device you happen to be holding.",
+    title: 'Android, Apple, anything in the drawer',
+    text: "iPhone, Pixel, an old iPad, a £40 Fire tablet. Hubbly runs natively on both platforms, on whatever your family already owns. No new hardware, no Hubbly-specific tablet to buy.",
   },
   {
     emoji: '🛒',
-    title: 'Live across every screen',
-    text: "Plan tomorrow's tasks on the kitchen tablet, tick them off on your phone as the kids finish them. Forget an egg? Add it to the shopping list while you are already in the shop and it pops up for whoever is nearest the trolley.",
+    title: 'Live on every screen at once',
+    text: "Plan tomorrow on the kitchen tablet, tick chores off on your phone, add a forgotten egg to the shopping list while you're already in the shop. It pops up for whoever is nearest the trolley.",
   },
   {
     emoji: '🍳',
-    title: 'Kitchen mode, on any tablet',
-    text: "Switch it on and the screen stays awake all day, drifts into a photo screensaver when the room's quiet, and springs back to the family dashboard the moment someone walks up.",
-  },
-  {
-    emoji: '👀',
-    title: 'Glanceable from across the room',
-    text: "Big type, big tap targets, bright colours. Built to be understood at a glance while you're stirring the pasta with your other hand.",
+    title: 'Kitchen-ready, glanceable across the room',
+    text: "Switch on Kitchen mode and any spare tablet keeps the screen awake, drifts into a photo screensaver when it's quiet, and reads at a glance from across the kitchen.",
   },
   {
     emoji: '✉️',
     title: 'Email is optional, just a safety net',
-    text: "No sign-up forms to wade through. Add one email if you want to: it's a quiet recovery key in case every device in the family ever gets wiped at once. Apart from that, no email needed.",
+    text: "No sign-up forms. Add one email if you want, a quiet recovery key in case every device ever gets wiped at once. Otherwise, no email needed.",
   },
 ];
 
@@ -67,9 +57,8 @@ const ACCENT = '#FF6B6B';
   <SectionHeading eyebrow="Your devices, your way">
     Bring the screens you <span class="text-gradient">already have</span>
     <Fragment slot="lead">
-      Hubbly runs on every device your family already owns. Android or Apple,
-      phone or tablet, the same family hub on every screen, kept in step the
-      moment anything changes.
+      Hubbly runs on whatever your family already owns. Android and Apple,
+      phone and tablet, all on the same family hub.
     </Fragment>
   </SectionHeading>
 
@@ -169,16 +158,8 @@ const ACCENT = '#FF6B6B';
     }
   </div>
 
-  <p
-    data-reveal
-    style="--reveal-delay:120ms"
-    class="mt-6 text-center text-sm font-semibold text-navy-soft"
-  >
-    Yes, your Android products and your Apple products. All on the same family hub.
-  </p>
-
-  <!-- Six supporting points: 2x3 grid -->
-  <ul class="mt-12 grid gap-5 sm:grid-cols-2">
+  <!-- Four supporting points: 2x2 grid -->
+  <ul class="mt-10 grid gap-5 sm:grid-cols-2">
     {
       points.map((p, i) => (
         <li

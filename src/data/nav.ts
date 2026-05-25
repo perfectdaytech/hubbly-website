@@ -11,7 +11,7 @@ export interface NavLink {
 /** Primary nav — shown centred on desktop, in the mobile sheet under 768px. */
 export const NAV_LINKS: NavLink[] = [
   { label: 'Features', href: '/#features' },
-  { label: 'For Families', href: '/#families' },
+  { label: 'Parents & kids', href: '/#families' },
   { label: 'Pricing', href: '/#pricing' },
   { label: 'FAQ', href: '/#faq' },
 ];

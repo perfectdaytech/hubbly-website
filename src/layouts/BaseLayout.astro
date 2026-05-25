@@ -133,11 +133,16 @@ const schema = [organizationSchema(), ...extra];
       window.addEventListener('scroll', onScroll, { passive: true });
 
       // ---- Mobile menu ---------------------------------------------------
+      // Body scroll-lock: simple `overflow: hidden` on the body doesn't stop
+      // touch scrolling on iOS Safari — the gesture chains through to the
+      // page underneath. We use the position-fixed + saved-scrollY pattern,
+      // which is iOS-safe.
       const toggle = document.getElementById('menu-toggle');
       const menu = document.getElementById('mobile-menu');
       const openIcon = toggle?.querySelector('.js-menu-open');
       const closeIcon = toggle?.querySelector('.js-menu-close');
       let menuOpen = false;
+      let savedScrollY = 0;
       const setMenu = (v: boolean) => {
         menuOpen = v;
         menu?.classList.toggle('is-open', v);
@@ -146,7 +151,20 @@ const schema = [organizationSchema(), ...extra];
         toggle?.setAttribute('aria-label', v ? 'Close menu' : 'Open menu');
         openIcon?.classList.toggle('hidden', v);
         closeIcon?.classList.toggle('hidden', !v);
-        document.body.style.overflow = v ? 'hidden' : '';
+        const body = document.body;
+        if (v) {
+          savedScrollY = window.scrollY;
+          body.style.position = 'fixed';
+          body.style.top = `-${savedScrollY}px`;
+          body.style.left = '0';
+          body.style.right = '0';
+        } else {
+          body.style.position = '';
+          body.style.top = '';
+          body.style.left = '';
+          body.style.right = '';
+          window.scrollTo(0, savedScrollY);
+        }
       };
       toggle?.addEventListener('click', () => setMenu(!menuOpen));
       menu?.querySelectorAll('a').forEach((a) => a.addEventListener('click', () => setMenu(false)));

@@ -34,6 +34,8 @@ const points = [
 // frame and a tinted "screen" so they read clearly at small sizes.
 interface Device {
   label: string;
+  /** Shorter label used on small screens where the full one would clip. */
+  shortLabel: string;
   kind: 'phone' | 'tablet';
   /** Notch / camera treatment, picked so each of the four reads as itself. */
   variant: 'androidPhone' | 'iPhone' | 'iPad' | 'fire';
@@ -43,10 +45,10 @@ interface Device {
   halo: string;
 }
 const devices: Device[] = [
-  { label: 'Android phone', kind: 'phone', variant: 'androidPhone', screen: '#A8E6D2', halo: 'bg-mint/20' },
-  { label: 'iPad', kind: 'tablet', variant: 'iPad', screen: '#BFE4F1', halo: 'bg-sky/20' },
-  { label: 'Fire tablet', kind: 'tablet', variant: 'fire', screen: '#FFD2B5', halo: 'bg-peach/25' },
-  { label: 'iPhone', kind: 'phone', variant: 'iPhone', screen: '#DCC8FF', halo: 'bg-lavender/25' },
+  { label: 'Android phone', shortLabel: 'Android', kind: 'phone', variant: 'androidPhone', screen: '#A8E6D2', halo: 'bg-mint/20' },
+  { label: 'iPad', shortLabel: 'iPad', kind: 'tablet', variant: 'iPad', screen: '#BFE4F1', halo: 'bg-sky/20' },
+  { label: 'Fire tablet', shortLabel: 'Fire', kind: 'tablet', variant: 'fire', screen: '#FFD2B5', halo: 'bg-peach/25' },
+  { label: 'iPhone', shortLabel: 'iPhone', kind: 'phone', variant: 'iPhone', screen: '#DCC8FF', halo: 'bg-lavender/25' },
 ];
 
 const FRAME = '#2D3142';
@@ -141,8 +143,12 @@ const ACCENT = '#FF6B6B';
                 </svg>
               )}
             </div>
-            <span class="absolute left-1/2 top-full mt-2 -translate-x-1/2 whitespace-nowrap text-[11px] font-bold uppercase tracking-wide text-navy-soft sm:text-xs">
-              {d.label}
+            <span
+              class="absolute left-1/2 top-full mt-2 -translate-x-1/2 whitespace-nowrap text-[10px] font-bold uppercase tracking-wide text-navy-soft sm:text-xs"
+              aria-label={d.label}
+            >
+              <span class="sm:hidden">{d.shortLabel}</span>
+              <span class="hidden sm:inline">{d.label}</span>
             </span>
           </div>
           {i < devices.length - 1 && (

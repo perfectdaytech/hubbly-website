@@ -120,12 +120,6 @@ const ACCENT: Record<string, { halo: string; chip: string; tint: string }> = {
     transform: none;
     pointer-events: auto;
   }
-  /* During a finger / mouse drag the active scenario follows the pointer.
-     The transition is off so the position tracks 1:1; it comes back as
-     soon as the gesture ends, so a snap-back or settle still animates. */
-  .is-swiping .scenario.is-active {
-    transition: none;
-  }
 
   .star-btn {
     display: grid;
@@ -275,37 +269,34 @@ const ACCENT: Record<string, { halo: string; chip: string; tint: string }> = {
       });
 
       // ---- Swipe gestures -------------------------------------------------
-      // PointerEvents cover touch, mouse and pen with one path. Lock onto
-      // a horizontal drag only once motion is clearly sideways, so vertical
-      // page scrolling still works inside the card. Snap-threshold is 60px;
-      // shorter swipes settle back to the current scenario.
+      // Detect a horizontal swipe but leave the text alone during the drag.
+      // The earlier 1:1 follow felt fidgety because the text slid around
+      // inside a static card frame; now the gesture is read silently and
+      // the standard fade-slide transition fires only on commit. PointerEvents
+      // cover touch, mouse and pen with one code path.
       const list = rotator.querySelector<HTMLElement>('[data-rotator-list]');
       if (list) {
         let startX = 0;
         let startY = 0;
         let dragging = false;
         let pointerId: number | null = null;
-        let active: HTMLElement | null = null;
+        const COMMIT_PX = 45; // distance past which a swipe advances
+        const LOCK_PX = 12; // distance at which we commit to the swipe direction
 
         const reset = () => {
-          if (active) {
-            active.style.transform = '';
-            active.style.opacity = '';
-          }
           rotator.classList.remove('is-swiping');
           dragging = false;
           pointerId = null;
         };
 
         list.addEventListener('pointerdown', (e) => {
-          // Ignore right/middle mouse and any in-flight gesture.
+          // Ignore right / middle mouse and any in-flight gesture.
           if (e.pointerType === 'mouse' && e.button !== 0) return;
           if (pointerId !== null) return;
           startX = e.clientX;
           startY = e.clientY;
           pointerId = e.pointerId;
           dragging = false;
-          active = list.querySelector<HTMLElement>('.scenario.is-active');
         });
 
         list.addEventListener('pointermove', (e) => {
@@ -313,8 +304,10 @@ const ACCENT: Record<string, { halo: string; chip: string; tint: string }> = {
           const dx = e.clientX - startX;
           const dy = e.clientY - startY;
           if (!dragging) {
-            // Commit to a horizontal swipe only when sideways motion wins.
-            if (Math.abs(dx) > 8 && Math.abs(dx) > Math.abs(dy)) {
+            // Lock onto a swipe only once motion is clearly sideways. The
+            // LOCK_PX threshold keeps small wobbles from being interpreted
+            // as drags.
+            if (Math.abs(dx) > LOCK_PX && Math.abs(dx) > Math.abs(dy)) {
               dragging = true;
               rotator.classList.add('is-swiping');
               paused = true;
@@ -324,30 +317,27 @@ const ACCENT: Record<string, { halo: string; chip: string; tint: string }> = {
               } catch {
                 /* not supported, no-op */
               }
-            } else if (Math.abs(dy) > 8) {
-              // Vertical scroll wins — drop the gesture.
+            } else if (Math.abs(dy) > LOCK_PX) {
+              // Vertical scroll wins — drop the gesture so the page scrolls.
               pointerId = null;
             }
             return;
           }
+          // Suppress native gestures during a horizontal swipe but do not
+          // move the text — the user can see exactly the scenario they
+          // are committing to, and the snap on release feels intentional.
           if (e.cancelable) e.preventDefault();
-          if (active) {
-            const clamped = Math.max(-180, Math.min(180, dx));
-            active.style.transform = `translateX(${clamped}px)`;
-            active.style.opacity = `${1 - Math.min(Math.abs(clamped) / 240, 0.35)}`;
-          }
         });
 
         const finishSwipe = (e: PointerEvent) => {
           if (pointerId !== e.pointerId) return;
           const dx = dragging ? e.clientX - startX : 0;
           reset();
-          if (Math.abs(dx) > 60) {
-            // Swipe-left = next scenario, swipe-right = previous.
+          if (Math.abs(dx) > COMMIT_PX) {
             apply(idx + (dx < 0 ? 1 : -1));
           }
           paused = false;
-          if (!paused) window.setTimeout(start, 700);
+          window.setTimeout(start, 700);
         };
         list.addEventListener('pointerup', finishSwipe);
         list.addEventListener('pointercancel', (e) => {

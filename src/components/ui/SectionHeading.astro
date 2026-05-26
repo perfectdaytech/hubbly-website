@@ -24,12 +24,12 @@ const isCenter = align === 'center';
 const headingColor = tone === 'cream' ? 'text-cream' : 'text-navy';
 const sizeCls =
   size === 'lg'
-    ? 'text-[2rem] sm:text-4xl lg:text-[2.85rem]'
-    : 'text-[1.6rem] sm:text-3xl';
+    ? 'text-[2rem] sm:text-4xl lg:text-[2.85rem] xl:text-[3.2rem] 2xl:text-[3.5rem]'
+    : 'text-[1.6rem] sm:text-3xl xl:text-[2rem]';
 const hasLead = Astro.slots.has('lead');
 ---
 <div
-  class={`flex flex-col gap-4 ${isCenter ? 'items-center text-center mx-auto max-w-2xl' : 'items-start text-left max-w-xl'} ${cls}`}
+  class={`flex flex-col gap-4 ${isCenter ? 'items-center text-center mx-auto max-w-2xl xl:max-w-3xl' : 'items-start text-left max-w-xl xl:max-w-2xl'} ${cls}`}
 >
   {eyebrow && <Eyebrow tone={eyebrowTone}>{eyebrow}</Eyebrow>}
   <Heading class={`${sizeCls} font-semibold leading-[1.07] tracking-tight ${headingColor}`}>

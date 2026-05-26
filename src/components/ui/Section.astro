@@ -10,15 +10,19 @@ interface Props {
 }
 const { id, class: cls = '', innerClass = '', as = 'section', pad = 'lg' } = Astro.props;
 const Tag = as;
+// Vertical rhythm scales up on xl / 2xl so the section feels at home on
+// large monitors instead of marooned in whitespace.
 const pads: Record<string, string> = {
   none: '',
   sm: 'py-10 sm:py-12',
-  md: 'py-12 sm:py-16',
-  lg: 'py-16 sm:py-20',
+  md: 'py-12 sm:py-16 xl:py-20',
+  lg: 'py-16 sm:py-20 xl:py-24 2xl:py-28',
 };
 ---
 <Tag id={id} class={`relative ${pads[pad]} ${cls}`}>
-  <div class={`mx-auto w-full max-w-[1200px] px-5 sm:px-7 lg:px-8 ${innerClass}`}>
+  <div
+    class={`mx-auto w-full max-w-[1200px] px-5 sm:px-7 lg:px-8 xl:max-w-[1320px] xl:px-10 2xl:max-w-[1440px] 2xl:px-14 ${innerClass}`}
+  >
     <slot />
   </div>
 </Tag>

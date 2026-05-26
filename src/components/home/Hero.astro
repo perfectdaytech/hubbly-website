@@ -30,9 +30,9 @@ const avatars = ['👩', '👨', '🦄', '🦖'];
   </div>
 
   <Section pad="none" innerClass="pt-[calc(var(--nav-h)+2.5rem)] pb-14 sm:pb-20">
-    <div class="grid items-center gap-12 lg:grid-cols-[1.05fr_1fr] lg:gap-10">
+    <div class="grid items-center gap-12 lg:grid-cols-[1.05fr_1fr] lg:gap-10 xl:gap-16 2xl:gap-20">
       <!-- copy -->
-      <div class="max-w-xl">
+      <div class="max-w-xl xl:max-w-2xl">
         <div data-reveal>
           <Eyebrow>
             <Icon name="sparkles" size={13} slot="icon" />
@@ -43,7 +43,7 @@ const avatars = ['👩', '👨', '🦄', '🦖'];
         <h1
           data-reveal
           style="--reveal-delay:80ms"
-          class="mt-5 font-display text-[2.65rem] font-semibold leading-[1.05] tracking-tight text-navy sm:text-[3.4rem] lg:text-[3.85rem]"
+          class="mt-5 font-display text-[2.65rem] font-semibold leading-[1.05] tracking-tight text-navy sm:text-[3.4rem] lg:text-[3.85rem] xl:text-[4.4rem] 2xl:text-[4.85rem]"
         >
           A happy little home for your
           <span class="text-gradient">family's day</span>
@@ -55,7 +55,7 @@ const avatars = ['👩', '👨', '🦄', '🦖'];
         <p
           data-reveal
           style="--reveal-delay:160ms"
-          class="mt-5 text-lg leading-relaxed text-navy-soft"
+          class="mt-5 text-lg leading-relaxed text-navy-soft xl:text-xl"
         >
           Routines, calendars, meals, lists, star rewards and more, all in one
           warm app that syncs across the kitchen tablet and every family phone.
@@ -98,7 +98,7 @@ const avatars = ['👩', '👨', '🦄', '🦖'];
 
       <!-- device -->
       <div class="relative" data-tilt-zone>
-        <div class="relative mx-auto max-w-[560px] motion-safe:animate-float-y">
+        <div class="relative mx-auto max-w-[560px] xl:max-w-[620px] 2xl:max-w-[680px] motion-safe:animate-float-y">
           <div data-tilt class="transition-transform duration-300 ease-out will-change-transform">
             <TabletMockup />
           </div>

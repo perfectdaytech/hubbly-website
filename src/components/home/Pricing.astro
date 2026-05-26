@@ -22,7 +22,7 @@ const { withHeading = true } = Astro.props;
     )
   }
 
-  <div class={`mx-auto max-w-xl ${withHeading ? 'mt-12' : 'mt-4'}`} data-reveal>
+  <div class={`mx-auto max-w-xl xl:max-w-[34rem] ${withHeading ? 'mt-12' : 'mt-4'}`} data-reveal>
     <PricingCard plan={FOREVER_PLAN} headingLevel={withHeading ? 'h3' : 'h2'} />
   </div>
 

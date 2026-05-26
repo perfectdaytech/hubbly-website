@@ -16,7 +16,7 @@ interface Device {
   shortLabel: string;
   kind: 'phone' | 'tablet';
   /** Notch / camera treatment, picked so each of the four reads as itself. */
-  variant: 'androidPhone' | 'iPhone' | 'iPad' | 'fire';
+  variant: 'androidPhone' | 'iPhone' | 'iPad' | 'androidTablet';
   /** Screen tint hex. */
   screen: string;
   /** Ring tint applied to the card background. */
@@ -25,7 +25,7 @@ interface Device {
 const devices: Device[] = [
   { label: 'Android phone', shortLabel: 'Android', kind: 'phone', variant: 'androidPhone', screen: '#A8E6D2', halo: 'bg-mint/20' },
   { label: 'iPad', shortLabel: 'iPad', kind: 'tablet', variant: 'iPad', screen: '#BFE4F1', halo: 'bg-sky/20' },
-  { label: 'Fire tablet', shortLabel: 'Fire', kind: 'tablet', variant: 'fire', screen: '#FFD2B5', halo: 'bg-peach/25' },
+  { label: 'Android tablet', shortLabel: 'Tablet', kind: 'tablet', variant: 'androidTablet', screen: '#FFD2B5', halo: 'bg-peach/25' },
   { label: 'iPhone', shortLabel: 'iPhone', kind: 'phone', variant: 'iPhone', screen: '#DCC8FF', halo: 'bg-lavender/25' },
 ];
 
@@ -37,10 +37,9 @@ const ACCENT = '#FF6B6B';
   <SectionHeading eyebrow="Your devices, your way">
     Bring the screens you <span class="text-gradient">already have</span>
     <Fragment slot="lead">
-      Hubbly runs natively on Android and Apple, phone and tablet, all on the
-      same family hub. The phones in your pockets and the spare iPad in the
-      drawer are all you need: no new hardware to buy from us, no
-      Hubbly-specific tablet to chase.
+      If you have a phone or tablet that runs the App Store or Play Store, you
+      have Hubbly. Android or Apple, the same family hub on every screen.
+      No new hardware to buy from us, no Hubbly-specific tablet to chase.
     </Fragment>
   </SectionHeading>
 
@@ -104,12 +103,14 @@ const ACCENT = '#FF6B6B';
                   <rect x="1" y="1" width="54" height="42" rx="4.5" fill={FRAME} />
                   {/* screen */}
                   <rect x="3.5" y="4" width="49" height="36" rx="2.5" fill={d.screen} />
-                  {/* camera dot — iPad: top-centre; Fire: side-centre (landscape default) */}
+                  {/* camera dot — iPad keeps a centred dot, Android tablet
+                      mirrors the phone hole-punch (off-centre) to make the
+                      pair read as a family. */}
                   {d.variant === 'iPad' && (
                     <circle cx="28" cy="6.2" r="0.9" fill={SCREEN_DOT} />
                   )}
-                  {d.variant === 'fire' && (
-                    <circle cx="5" cy="22" r="0.9" fill={SCREEN_DOT} />
+                  {d.variant === 'androidTablet' && (
+                    <circle cx="22" cy="6.4" r="1" fill={SCREEN_DOT} />
                   )}
                   {/* dashboard hint */}
                   <rect x="6" y="9" width="14" height="2.2" rx="1.1" fill={ACCENT} opacity="0.85" />

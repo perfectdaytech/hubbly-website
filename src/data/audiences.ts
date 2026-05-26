@@ -36,7 +36,7 @@ export const AUDIENCES: Audience[] = [
     points: [
       'Wake up to a friendly checklist: brush teeth, get dressed, pack the bag. Tick, tick, tick.',
       'Every job done earns a star, with a mini celebration when the whole routine is finished.',
-      'Spend stars in a shop the grown-ups set: extra screen time, choose dinner, a trip to the park.',
+      'Spend stars in a shop the grown-ups set: extra screen time, choose dinner, or pick something from your wishlist.',
       'Plant a star tree and watch it grow over the week as the stars stack up.',
       'A streak badge for keeping the routine going five mornings in a row.',
       'Bedtime that ends with a soft photo screensaver, not a glowing screen.',

@@ -27,6 +27,8 @@ export interface PricingPlan {
   badge?: string;
   /** Small print under the CTA. */
   note?: string;
+  /** Sparkle line about ways to extend the free trial. */
+  trialBonus?: string;
 }
 
 export const PRICING_NOTE =
@@ -53,4 +55,6 @@ export const FOREVER_PLAN: PricingPlan = {
   ],
   cta: 'Start your free trial',
   note: 'No card to start the trial, no subscription, nothing renews on its own.',
+  trialBonus:
+    'Invite friends or set up your whole family during the trial to extend it for free.',
 };

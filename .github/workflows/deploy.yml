@@ -33,7 +33,12 @@ jobs:
           cache: npm
 
       - name: Install dependencies
-        run: npm ci
+        # npm install, not npm ci: the wasm-fallback packages (@emnapi /
+        # @tailwindcss/oxide-wasm32-wasi bundled deps) trip a long-standing
+        # arborist bug where npm ci rejects lockfiles npm itself generated.
+        # install resolves from the same lockfile and heals instead of
+        # refusing - fine for a static marketing site.
+        run: npm install --no-audit --no-fund
 
       - name: Build site
         run: npm run build

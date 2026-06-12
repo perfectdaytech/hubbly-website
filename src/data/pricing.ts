@@ -46,15 +46,16 @@ export const FOREVER_PLAN: PricingPlan = {
   period: 'one-time',
   badge: 'Founders early access',
   tagline: 'Every feature, for the whole household.',
-  priceNote: 'A limited founders offer for early households. Hubbly Forever is £59.99 after launch.',
+  priceNote:
+    'A limited founders offer for the first 100 families. Hubbly Forever is £59.99 afterwards.',
   features: [
     'Every feature included, no paywalls',
-    'Whole family, up to 12 devices',
-    'Backup and restore as a file',
+    'The kitchen tablet and everyone\'s phones',
+    'Works offline, syncs in real time',
     'Every future update included',
   ],
   cta: 'Start your free trial',
   note: 'No card to start the trial, no subscription, nothing renews on its own.',
   trialBonus:
-    'Invite friends or set up your whole family during the trial to extend it for free.',
+    'Invite friends or connect your email during the trial to extend it for free.',
 };

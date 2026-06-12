@@ -12,6 +12,12 @@ const faqs = await Promise.all(
     Content: (await render(e)).Content,
   })),
 );
+
+// The money questions (trial, pricing, refunds) stay above the fold; the
+// rest sit behind a "show all" toggle so the section scans quickly.
+const VISIBLE_COUNT = 7;
+const visible = faqs.slice(0, VISIBLE_COUNT);
+const hidden = faqs.slice(VISIBLE_COUNT);
 ---
 <Section id="faq" pad="lg">
   <SectionHeading eyebrow="Questions, answered">
@@ -26,7 +32,7 @@ const faqs = await Promise.all(
 
   <div class="mx-auto mt-10 max-w-3xl space-y-3">
     {
-      faqs.map((f, i) => (
+      visible.map((f, i) => (
         <details
           class="faq group/faq overflow-hidden rounded-2xl bg-white shadow-soft ring-1 ring-navy/[0.05] transition-shadow open:shadow-card hover:shadow-card"
           open={i === 0}
@@ -45,5 +51,46 @@ const faqs = await Promise.all(
         </details>
       ))
     }
+
+    <div id="faq-more" class="hidden space-y-3">
+      {
+        hidden.map((f) => (
+          <details class="faq group/faq overflow-hidden rounded-2xl bg-white shadow-soft ring-1 ring-navy/[0.05] transition-shadow open:shadow-card hover:shadow-card">
+            <summary class="flex cursor-pointer list-none items-center justify-between gap-4 px-5 py-4 sm:px-6 [&::-webkit-details-marker]:hidden">
+              <span class="font-display text-[1.05rem] font-semibold text-navy">{f.question}</span>
+              <span class="grid size-8 shrink-0 place-items-center rounded-full bg-coral/[0.12] text-coral-deep transition-transform duration-300 ease-pop group-open/faq:rotate-180">
+                <Icon name="chevron-down" size={18} />
+              </span>
+            </summary>
+            <div class="px-5 pb-5 text-[0.97rem] leading-relaxed text-navy-soft sm:px-6 [&_a]:font-semibold [&_a]:text-coral-deep [&_a]:underline [&_p]:m-0">
+              <f.Content />
+            </div>
+          </details>
+        ))
+      }
+    </div>
+
+    <div class="pt-2 text-center">
+      <button
+        id="faq-toggle"
+        type="button"
+        class="inline-flex items-center gap-2 rounded-full bg-navy/[0.05] px-5 py-2.5 font-display text-[0.95rem] font-semibold text-navy transition-colors duration-200 hover:bg-navy/[0.09]"
+        aria-expanded="false"
+        aria-controls="faq-more"
+      >
+        Show all {faqs.length} questions
+        <Icon name="chevron-down" size={16} class="text-coral-deep" />
+      </button>
+    </div>
   </div>
 </Section>
+
+<script>
+  const toggle = document.getElementById('faq-toggle');
+  const more = document.getElementById('faq-more');
+  toggle?.addEventListener('click', () => {
+    more?.classList.remove('hidden');
+    toggle.setAttribute('aria-expanded', 'true');
+    toggle.parentElement?.classList.add('hidden');
+  });
+</script>

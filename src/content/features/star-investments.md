@@ -4,8 +4,8 @@ icon: "🌱"
 color: mint
 order: 6
 span: 2
-chips: ["Save & grow", "A plant to nurture"]
+chips: ["Save & grow", "A bonus for waiting"]
 ---
 
-Children can invest stars for a few days and watch a little plant grow: a
-gentle, hands-on first lesson in saving and patience.
+Children can tuck their stars away for a few days and earn a little bonus
+when the time is up: a gentle, hands-on first lesson in saving and patience.

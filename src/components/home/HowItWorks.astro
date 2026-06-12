@@ -1,0 +1,54 @@
+---
+// "How it works" — the one-code, every-device model in three steps.
+import Section from '@/components/ui/Section.astro';
+import SectionHeading from '@/components/ui/SectionHeading.astro';
+
+const steps = [
+  {
+    emoji: '📲',
+    title: 'Create your family',
+    text: 'Download Hubbly on one phone or tablet and run the quick setup wizard: add everyone, pick their colours and emoji, done.',
+  },
+  {
+    emoji: '🔑',
+    title: 'Share the 6-digit code',
+    text: "Every other device joins by typing one little code. No accounts, no email addresses, no passwords for anyone, kids included.",
+  },
+  {
+    emoji: '✨',
+    title: 'Watch it all sync',
+    text: 'Pop a tablet on the kitchen counter if you have one. Add something anywhere and every screen shows it the moment you save.',
+  },
+];
+---
+<Section id="how" pad="lg">
+  <SectionHeading eyebrow="Up and running in minutes">
+    One code, and <span class="text-gradient">everyone's in</span>
+    <Fragment slot="lead">
+      No sign-up forms, no inviting people by email. Hubbly joins your
+      family's devices together with a single code, and the same hub appears
+      on all of them.
+    </Fragment>
+  </SectionHeading>
+
+  <ol class="mx-auto mt-12 grid max-w-5xl gap-5 sm:grid-cols-3">
+    {
+      steps.map((s, i) => (
+        <li
+          data-reveal
+          style={`--reveal-delay:${i * 90}ms`}
+          class="relative flex flex-col items-start rounded-3xl bg-white p-6 pt-8 shadow-soft ring-1 ring-navy/[0.05]"
+        >
+          <span class="absolute -top-4 left-6 grid size-9 place-items-center rounded-full bg-coral-deep font-display text-base font-bold text-white shadow-card">
+            {i + 1}
+          </span>
+          <span class="text-3xl" aria-hidden="true">
+            {s.emoji}
+          </span>
+          <h3 class="mt-3 font-display text-xl font-semibold text-navy">{s.title}</h3>
+          <p class="mt-2 text-[0.95rem] leading-relaxed text-navy-soft">{s.text}</p>
+        </li>
+      ))
+    }
+  </ol>
+</Section>

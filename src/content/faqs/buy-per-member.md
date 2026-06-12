@@ -4,5 +4,6 @@ order: 6
 ---
 
 No. One Hubbly Forever purchase covers your whole household. Parents, kids,
-grandparents, carers: everyone joins with a family code. Up to 12 devices can
-be on the family hub at once, plenty of room for a typical family.
+grandparents, carers: everyone joins with a family code. Up to 5 devices can
+be on the family hub at once, the kitchen tablet plus everyone's phones, and
+you can swap an old device out for a new one whenever you like.

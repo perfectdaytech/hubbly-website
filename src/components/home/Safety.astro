@@ -1,0 +1,43 @@
+---
+// Trust section — the four reassurance points from src/data/safety.ts,
+// placed next to pricing where the "can I trust this?" question peaks.
+import Section from '@/components/ui/Section.astro';
+import SectionHeading from '@/components/ui/SectionHeading.astro';
+import { SAFETY_POINTS } from '@/data/safety';
+---
+<Section id="safety" pad="lg" class="bg-gradient-to-b from-cream to-paper/50">
+  <SectionHeading eyebrow="Safe as houses">
+    Your family's data is <span class="text-gradient">family business</span>
+    <Fragment slot="lead">
+      Hubbly holds the little details of your family's day, so we treat it
+      with the care it deserves. Here's the short version; the long version
+      is in our plain-English privacy policy.
+    </Fragment>
+  </SectionHeading>
+
+  <ul class="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+    {
+      SAFETY_POINTS.map((p, i) => (
+        <li
+          data-reveal
+          style={`--reveal-delay:${i * 80}ms`}
+          class="flex flex-col rounded-3xl bg-white p-6 shadow-soft ring-1 ring-navy/[0.05]"
+        >
+          <span
+            class="grid size-11 place-items-center rounded-2xl bg-navy/[0.06] text-xl"
+            aria-hidden="true"
+          >
+            {p.emoji}
+          </span>
+          <h3 class="mt-3.5 font-display text-lg font-semibold leading-snug text-navy">{p.title}</h3>
+          <p class="mt-2 text-[0.93rem] leading-relaxed text-navy-soft">{p.text}</p>
+        </li>
+      ))
+    }
+  </ul>
+
+  <p class="mt-9 text-center text-sm font-semibold text-navy-soft">
+    The full story, in plain English:
+    <a href="/privacy" class="text-coral-deep underline">Privacy Policy</a>
+  </p>
+</Section>

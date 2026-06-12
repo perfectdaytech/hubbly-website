@@ -63,6 +63,14 @@ const Heading = headingLevel;
     plan.note && <p class="mt-2.5 text-xs leading-relaxed text-white">{plan.note}</p>
   }
 
+  <a
+    href="#get"
+    class="mt-6 inline-flex w-full items-center justify-center gap-2 rounded-2xl bg-white px-6 py-3.5 font-display text-lg font-bold text-coral-deep shadow-card transition duration-200 ease-pop hover:-translate-y-0.5 hover:shadow-lift"
+  >
+    {plan.cta}
+    <Icon name="arrow-right" size={18} />
+  </a>
+
   <ul class="mt-7 grid gap-3 border-t border-white/25 pt-7 sm:grid-cols-2">
     {
       plan.features.map((feat) => (

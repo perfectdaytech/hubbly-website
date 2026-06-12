@@ -1,6 +1,6 @@
 ---
 question: What about notifications?
-order: 13
+order: 14
 ---
 
 Reminders are **opt-in and gentle**. Hubbly can nudge you before an event (with

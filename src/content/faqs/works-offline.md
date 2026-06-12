@@ -1,6 +1,6 @@
 ---
 question: Does Hubbly work without internet?
-order: 9
+order: 10
 ---
 
 Yes. Your family's data is saved on the device as well as synced to the cloud,

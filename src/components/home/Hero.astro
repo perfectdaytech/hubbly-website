@@ -4,7 +4,7 @@ import Eyebrow from '@/components/ui/Eyebrow.astro';
 import Icon from '@/components/ui/Icon.astro';
 import StoreButtons from '@/components/ui/StoreButtons.astro';
 import TabletMockup from './TabletMockup.astro';
-import { SITE } from '@/data/site';
+import { FOREVER_PLAN } from '@/data/pricing';
 
 const avatars = ['👩', '👨', '🦄', '🦖'];
 ---
@@ -36,7 +36,7 @@ const avatars = ['👩', '👨', '🦄', '🦖'];
         <div data-reveal>
           <Eyebrow>
             <Icon name="sparkles" size={13} slot="icon" />
-            {SITE.launchStatus}
+            Founders offer · {FOREVER_PLAN.price} for the first 100 families
           </Eyebrow>
         </div>
 

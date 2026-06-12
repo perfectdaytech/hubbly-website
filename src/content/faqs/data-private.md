@@ -1,6 +1,6 @@
 ---
 question: Is my family's data private and safe?
-order: 10
+order: 11
 ---
 
 Privacy is built into how Hubbly works. Hubbly has **no adverts**, never sells your data, and never profiles

@@ -1,10 +1,10 @@
 ---
 layout: ../layouts/LegalLayout.astro
 title: Cookie Policy
-description: "How cookies work on the Hubbly website. The short version: gethubbly.app uses no tracking and no non-essential cookies at all."
+description: "How cookies work on the Hubbly website. The short version: gethubbly.app sets no cookies at all, and visit statistics are anonymous and cookieless."
 eyebrow: Legal
-updated: 20 May 2026
-intro: "This is a short, honest page. The Hubbly website does not track you and uses no advertising or analytics cookies."
+updated: 12 June 2026
+intro: "This is a short, honest page. The Hubbly website sets no cookies, stores nothing on your device, and counts visits anonymously."
 ---
 import Callout from '../components/legal/Callout.astro';
 import { COMPANY, CONTACT, SITE } from '@/data/site';
@@ -16,7 +16,7 @@ This Cookie Policy explains how cookies and similar technologies are (and are no
 It sits alongside our [Privacy Policy](/privacy), which describes how the Hubbly app handles your family's data more broadly.
 
 <Callout type="plain">
-The short version: this website does not track you. There are no advertising or analytics cookies on gethubbly.app.
+The short version: gethubbly.app sets no cookies and stores nothing on your device. We count visits anonymously, and we can never tell who you are from it.
 </Callout>
 
 ## 2. What cookies are
@@ -32,16 +32,16 @@ A **cookie** is a small text file that a website can store on your device when y
 
 The Hubbly marketing website is a simple, static informational site. We have deliberately built it to be **privacy-friendly**:
 
-- it uses **no analytics or tracking** of any kind: no Google Analytics, no advertising pixels, no behavioural tracking;
-- it sets **no non-essential cookies**;
-- it does **not** build a profile of you or follow you around the web; and
-- there is therefore **no cookie consent banner**, because there is nothing non-essential to consent to.
+- it sets **no cookies at all**, essential or otherwise, and stores nothing in your browser's local storage;
+- it uses **anonymous, cookieless visit statistics** (PostHog, EU-hosted) to count pages viewed, clicks, scroll depth and where visitors came from. This runs in memory only, identifies nobody, builds no profile, and discards IP addresses; it honours your browser's "Do Not Track" signal;
+- there are **no advertising pixels and no behavioural tracking**: we do not follow you around the web; and
+- there is **no cookie consent banner**, because nothing is stored on your device, so there is nothing to consent to.
 
-The only technology that may be involved is whatever is **strictly necessary** for our hosting provider to deliver the site securely and reliably to your browser. This does not identify you and is not used to track you.
+Beyond that, the only technology involved is whatever is **strictly necessary** for our hosting provider to deliver the site securely and reliably to your browser. How the visit statistics work is described in full in our [Privacy Policy](/privacy) (section 12).
 
 ## 4. Cookie table
 
-For full transparency, here is what the website may use. In practice the static site sets essentially nothing of its own.
+For full transparency, here is what the website may use. In practice the static site sets no cookies of its own; the analytics described above is cookieless and stores nothing on your device, so it does not appear in this table.
 
 | Name | Provider | Purpose | Type | Expiry |
 |---|---|---|---|---|
@@ -53,7 +53,7 @@ If this ever changes, we will update the table above and this policy.
 
 It is worth being clear about the difference between the **website** and the **app**:
 
-- The **website** (gethubbly.app) uses no analytics and no tracking, as described above.
+- The **website** (gethubbly.app) counts visits anonymously and without cookies, as described above.
 - The **Hubbly app** does use two services to help us keep it working well: **Sentry** for crash and error diagnostics, and **PostHog** for product analytics (understanding which features are used). These operate **inside the app**: they are not website cookies, and they are not used for advertising. PostHog is configured to avoid collecting personal information that identifies your family members.
 
 How the app handles data, including these two services, is explained in full in our [Privacy Policy](/privacy).

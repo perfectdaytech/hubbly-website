@@ -35,6 +35,13 @@ jobs:
 
       - name: Build site
         run: npm run build
+        env:
+          # Cookieless anonymous analytics (PostHog EU, "Hubbly Website"
+          # project). phc_ project keys are public by design - they end up
+          # in the page source either way. Only production builds get them;
+          # local/dev builds collect nothing.
+          PUBLIC_POSTHOG_KEY: phc_CpF3cyjPydZ7m3aFsvhsnTh8FdTaTJPnowHkiQdsuFAJ
+          PUBLIC_POSTHOG_HOST: https://eu.i.posthog.com
 
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3

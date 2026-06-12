@@ -141,7 +141,7 @@ We do not sell your personal data and we never share it with advertisers. We do 
 | **RevenueCat** (RevenueCat, Inc.) | Verifies and manages the one-time purchase so it unlocks Hubbly for your household. | An anonymous app identifier and purchase information from your app store (product, price, currency, date). Never your card details. |
 | **Open-Meteo** | Provides weather forecasts and city search. No API key or account is used. | Approximate coordinates (latitude/longitude) for a forecast lookup only. |
 | **Sentry** (Functional Software, Inc.) | Crash and error diagnostics. | Technical crash/error data and basic device and app-version information. |
-| **PostHog** (PostHog Inc.) | Product analytics: understanding feature usage. | Limited usage events, configured to avoid personal information identifying family members. |
+| **PostHog** (PostHog Inc.) | Product analytics for the app, and anonymous, cookieless visit statistics for the website (both EU-hosted). | App: limited usage events, configured to avoid personal information identifying family members. Website: anonymous pageviews, clicks, scroll depth and referrers; no cookies, IP addresses discarded (see section 12). |
 | **Expo / EAS** (650 Industries) | Build and delivery infrastructure for the app. | Build-time data only; not your family content. |
 | **Google Play / Apple App Store** | App distribution, downloads, updates and any in-app purchases. | Download, device and (where applicable) purchase information governed by their own privacy policies. |
 
@@ -234,14 +234,22 @@ To make a request, email us at [{CONTACT.privacy}](mailto:{CONTACT.privacy}). Pl
 
 We may ask you for information to **verify your identity**, so that we do not disclose data to the wrong person; this is for your protection. We will respond **within one month** of a valid request under the UK/EU GDPR (extendable by two further months for complex requests, and we will tell you if so), and **within 45 days** for a request under California law. Exercising your rights is **free of charge**, except where a request is manifestly unfounded or excessive, in which case we may charge a reasonable fee or decline it and explain why.
 
-## 12. Cookies & tracking
+## 12. Cookies & website analytics
 
-The **Hubbly website** at [gethubbly.app]({SITE.url}) uses **no non-essential cookies and no analytics or tracking** of any kind. Only strictly necessary technology that the website host needs to serve the site may be used.
+The **Hubbly website** at [gethubbly.app]({SITE.url}) sets **no cookies** and stores **nothing on your device**: no analytics cookies, no advertising pixels, no local storage. Because nothing is stored on your device, there is no cookie consent banner; there is nothing to consent to.
 
-In-app analytics are a separate matter: the **Hubbly app** uses Sentry and PostHog as described in this policy. These operate inside the app and are not website cookies. For full details, see our [Cookie Policy](/cookies).
+To understand how the website is doing, we collect **anonymous, cookieless usage statistics** using **PostHog**, hosted in the **EU**. For each visit this records: the pages viewed, anonymous clicks and taps, how far down a page you scrolled, the site or link you arrived from (including campaign tags), your browser and device type, and a country-level location. It works like this:
+
+- **No cookies and no device storage**: the analytics runs in memory only, so nothing identifies you across visits. Each visit is counted afresh.
+- **No identification**: we never tie website visits to a name, an email address or a Hubbly family. No advertising profiles are built and nothing is shared with advertisers.
+- **IP addresses are not retained**: your IP address is technically processed to deliver the request and derive a country-level location, and our analytics is configured to discard it rather than store it.
+- **Do Not Track is honoured**: if your browser sends the "Do Not Track" signal, analytics stays off for your visit.
+- **No session recordings**: we never record your screen, keystrokes or form input.
+
+Our lawful basis for these statistics is our **legitimate interest** (Article 6(1)(f)) in understanding and improving our own website; the data involved is anonymous and minimal. In-app analytics are described separately in this policy (the **Hubbly app** uses Sentry and PostHog as set out above). For full details, see our [Cookie Policy](/cookies).
 
 <Callout type="plain">
-Browsing our website does not get you tracked: there are no marketing or analytics cookies on gethubbly.app at all.
+The website sets no cookies and stores nothing on your device. We count visits anonymously (pages, clicks, scroll, where visitors came from) to see what's working, and we can never tell who you are from it.
 </Callout>
 
 ## 13. Security measures

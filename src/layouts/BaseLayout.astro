@@ -67,6 +67,12 @@ const schema = [organizationSchema(), ...extra];
     <Footer />
 
     <script>
+      // Cookieless anonymous analytics - no-op unless PUBLIC_POSTHOG_KEY
+      // is set at build time. See src/scripts/analytics.ts.
+      import '@/scripts/analytics';
+    </script>
+
+    <script>
       // ====================================================================
       // Site interactions — one small bundle. Honours reduced motion.
       // ====================================================================

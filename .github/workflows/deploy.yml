@@ -24,10 +24,12 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Set up Node 20
+      - name: Set up Node 24
         uses: actions/setup-node@v4
         with:
-          node-version: 20
+          # Matches local dev (.nvmrc). npm 10 (Node 20) rejects lockfiles
+          # written by npm 11, which is what broke deploys before.
+          node-version: 24
           cache: npm
 
       - name: Install dependencies

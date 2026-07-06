@@ -1,5 +1,5 @@
 ---
-// The single Hubbly Forever pricing card — a confident coral panel.
+// A single subscription pricing card - a confident coral panel.
 // All text is full white for AA contrast on the coral-deep background;
 // hierarchy comes from size + weight, not opacity.
 import Icon from '@/components/ui/Icon.astro';
@@ -32,13 +32,6 @@ const Heading = headingLevel;
     )
   }
   <div class={`flex flex-wrap items-end gap-x-2.5 gap-y-1 ${plan.trialLabel ? 'mt-1' : 'mt-6'}`}>
-    {
-      plan.priceWas && (
-        <span class="pb-2 font-display text-xl font-bold text-white line-through decoration-2">
-          {plan.priceWas}
-        </span>
-      )
-    }
     <span class="font-display text-[3.4rem] font-bold leading-none">{plan.price}</span>
     <span class="pb-1.5 text-sm font-semibold text-white">{plan.period}</span>
   </div>
@@ -66,6 +59,7 @@ const Heading = headingLevel;
   <a
     href="#get"
     data-analytics="pricing_cta_click"
+    data-platform={plan.id}
     class="mt-6 inline-flex w-full items-center justify-center gap-2 rounded-2xl bg-white px-6 py-3.5 font-display text-lg font-bold text-coral-deep shadow-card transition duration-200 ease-pop hover:-translate-y-0.5 hover:shadow-lift"
   >
     {plan.cta}

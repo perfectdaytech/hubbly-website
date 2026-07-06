@@ -3,7 +3,7 @@ layout: ../layouts/LegalLayout.astro
 title: Privacy Policy
 description: "How Hubbly collects, uses and protects your family's data, written in plain English, covering UK & EU GDPR, CCPA and children's privacy."
 eyebrow: Legal
-updated: 12 June 2026
+updated: 5 July 2026
 intro: "Hubbly is a family organiser, so we take your family's privacy seriously. This policy explains, in plain English, what data Hubbly handles, why, and the choices and rights you have."
 ---
 import Callout from '../components/legal/Callout.astro';
@@ -51,7 +51,8 @@ You are never required to use the medication or mood features. They exist only b
 
 - **PIN**: the 4-digit PIN that protects the Settings screen. It is stored within the app's local data on the device. It is not encrypted separately beyond the protection your device's operating system provides.
 - **Photos**: images you add for the kitchen-display screensaver. These are resized and stored in the app's private folder on the device.
-- **Approximate location**: the weather location you choose (place name, latitude, longitude and country code). It is stored on the device so weather works offline and is sent only to our weather provider to fetch a forecast (see section 6).
+- **Approximate location**: the weather location you choose (place name, latitude, longitude and country code). It is stored on the device so weather works offline and is sent only to our weather provider to fetch a forecast (see section 6). When you **search for a place** (for example to set your weather location), the text you type is sent via our server to Google Places to return suggestions; the searches themselves are not stored.
+- **Push notification token**: if you enable notifications, each of your family's devices is issued a **push token** (a device identifier issued by Google) so that cross-device notifications can reach it. The token is stored per device, linked to your family, and is deleted when the device is removed from the family or the family is deleted.
 - **Device information**: a randomly generated device identifier, the device's role or label, and app settings such as sound and notification toggles and onboarding flags.
 - **Sync identifiers**: to sync your family's data across devices, an **anonymous Firebase user ID**, a **family identifier**, and a **6-digit family join code**.
 - **Optional recovery sign-in**: if you choose to link a **Google or Apple sign-in** to your family, the linked **email address** is stored with your family record and is used only to label the link and to restore your family's data if every device is lost. Hubbly works fully without it.
@@ -117,7 +118,7 @@ We only ever process your data for a reason the law recognises, mainly to run th
 We use the data described above to:
 
 - **Run Hubbly and sync it**: store your family's content and mirror it securely to your family's private space so it stays consistent across your devices.
-- **Send reminders**: generate event and medication reminders as local notifications on your device.
+- **Send reminders and updates**: generate event and medication reminders as local notifications on your device, and deliver **cross-device notifications** (for example, letting your phone know about a change made on the kitchen tablet) via Google's Firebase Cloud Messaging.
 - **Improve and fix the app**: use Sentry to detect and resolve crashes and errors, and PostHog to understand which features are used so we can make Hubbly better.
 - **Provide support**: respond to questions and help you when you contact us.
 - **Keep Hubbly secure**: protect against unauthorised access, abuse and technical problems.
@@ -135,11 +136,13 @@ We do not sell your personal data and we never share it with advertisers. We do 
 
 | Provider | What they do | What they receive |
 |---|---|---|
-| **Firebase / Google** (Google LLC): Authentication, Cloud Firestore, Cloud Storage | Anonymous sign-in and hosting/syncing your family dataset. Firestore is set up in a European region (`eur3`). | Your family's content and an anonymous user ID, synced so it stays in step across your devices. |
+| **Firebase / Google** (Google LLC): Authentication, Cloud Firestore, Cloud Functions | Anonymous sign-in and hosting/syncing your family dataset. Firestore is set up in a European region, and our backend functions run in London (`europe-west2`). | Your family's content and an anonymous user ID, synced so it stays in step across your devices. |
 | **Google Calendar API** (Google LLC) | Provides events from any Google calendars you choose to connect, read-only; Hubbly cannot change your Google Calendar. | A read-only, authorised request for your calendar list and event details, sent only if you connect a Google calendar. |
 | **Microsoft Graph API** (Microsoft Corporation) | Provides events from any Outlook calendars you choose to connect, read-only; Hubbly cannot change your Outlook calendar. | A read-only, authorised request for your calendar list and event details, sent only if you connect an Outlook calendar. |
-| **RevenueCat** (RevenueCat, Inc.) | Verifies and manages the one-time purchase so it unlocks Hubbly for your household. | An anonymous app identifier and purchase information from your app store (product, price, currency, date). Never your card details. |
-| **Open-Meteo** | Provides weather forecasts and city search. No API key or account is used. | Approximate coordinates (latitude/longitude) for a forecast lookup only. |
+| **Firebase Cloud Messaging** (Google LLC) | Delivers cross-device notifications to your family's devices, as our processor. | A per-device push token and the content of the notification being delivered. Tokens are deleted when a device is removed or the family is deleted. |
+| **Google Places API** (Google LLC) | Returns place suggestions when you search for a location, for example when setting your weather location. Requests go via our server. | The text of your place search, used only to return suggestions; searches are not stored. |
+| **RevenueCat** (RevenueCat, Inc.) | Verifies and manages your subscription and any one-time packs so they unlock Hubbly for your household. | An anonymous app identifier and purchase information from your app store (product, price, currency, date). Never your card details. |
+| **Open-Meteo** | Provides weather forecasts. Requests go via our server, which caches one shared forecast per local area so many families share a single lookup. | Approximate coordinates (latitude/longitude) for a forecast lookup only; no account or personal identifier accompanies the request. |
 | **Sentry** (Functional Software, Inc.) | Crash and error diagnostics. | Technical crash/error data and basic device and app-version information. |
 | **PostHog** (PostHog Inc.) | Product analytics for the app, and anonymous, cookieless visit statistics for the website (both EU-hosted). | App: limited usage events, configured to avoid personal information identifying family members. Website: anonymous pageviews, clicks, scroll depth and referrers; no cookies, IP addresses discarded (see section 12). |
 | **Expo / EAS** (650 Industries) | Build and delivery infrastructure for the app. | Build-time data only; not your family content. |
@@ -148,7 +151,7 @@ We do not sell your personal data and we never share it with advertisers. We do 
 Each provider acts under a contract that requires them to protect the data and to use it only for the purposes we specify. We may also disclose data where we are legally required to, or to protect the rights, safety or property of Hubbly, our users or others.
 
 <Callout type="plain">
-We work with a handful of trusted suppliers, mainly Google's Firebase for sync, plus Open-Meteo for weather, Sentry and PostHog for diagnostics, RevenueCat for the one-time purchase, and the Google or Microsoft calendar APIs if you connect a calendar. We never sell your data and there are no advertisers in the picture.
+We work with a handful of trusted suppliers, mainly Google's Firebase for sync and notifications, plus Open-Meteo for weather, Google Places for place search, Sentry and PostHog for diagnostics, RevenueCat for the subscription and packs, and the Google or Microsoft calendar APIs if you connect a calendar. We never sell your data and there are no advertisers in the picture.
 </Callout>
 
 ## 7. Children's data
@@ -184,8 +187,9 @@ Your synced data is stored in Europe. Where any data does travel abroad, we make
 We keep personal data only for as long as we need it.
 
 - **Your family content**: kept on your device and synced to your family's private Firestore space for as long as you use Hubbly. When your family is deleted, the synced copy is deleted.
-- **If your free trial ends and you decide not to buy**: your synced family data is kept for **30 days** after the trial ends so you can pick up where you left off, and is then **permanently deleted**, along with the family's anonymous accounts. The app shows you this clearly, and you can choose to delete everything immediately instead.
-- **Connected calendars**: a calendar you connect stays connected, and its events refresh, until you remove it. Removing a connected calendar in Settings stops the sync and deletes that calendar's events from Hubbly. You can also withdraw Hubbly's access from your Google or Microsoft account's security settings at any time.
+- **If your trial ends without a subscription, or your subscription ends**: you keep access until the end of the trial or the period you have paid for. After that, your synced family data is kept for **30 days** so you can pick up where you left off, and is then **permanently deleted**, along with the family's anonymous accounts. The app shows you this clearly, and you can choose to delete everything immediately instead.
+- **Connected calendars**: a calendar you connect stays connected, and its events refresh, until you disconnect it, which you can do in Settings at any time. Disconnecting a calendar stops the sync and deletes that calendar's events from Hubbly, and disconnecting the **last calendar of a connected account** also revokes Hubbly's access with the provider and deletes the stored credential. You can also withdraw Hubbly's access from your Google or Microsoft account's security settings at any time.
+- **Push tokens**: a device's push notification token is deleted when that device is removed from the family or when the family is deleted.
 - **On uninstall**: removing the app deletes the Hubbly data stored locally on that device. Your other devices and the synced copy are separate; delete the family to remove the synced copy.
 - **Backups**: synced data may persist briefly in routine system backups before being overwritten or expiring in the ordinary course.
 - **Diagnostics and analytics**: crash data (Sentry) and usage data (PostHog) are kept only as long as needed to investigate issues and understand trends, after which they are deleted or aggregated, in line with each provider's standard retention windows.
@@ -257,7 +261,7 @@ The website sets no cookies and stores nothing on your device. We count visits a
 We take reasonable and appropriate steps to protect personal data:
 
 - **In transit**: all communication with Firebase and our other providers uses **HTTPS/TLS encryption**.
-- **At rest**: data synced to Firestore and Cloud Storage is **encrypted at rest (AES-256)** by Google.
+- **At rest**: data synced to Firestore is **encrypted at rest (AES-256)** by Google, and connected-calendar credentials are additionally encrypted with a dedicated key (Cloud KMS) before storage.
 - **On your device**: local Hubbly data sits inside your operating system's **app sandbox**, protected by your device's own security; Settings are further protected by a **4-digit PIN gate**.
 - **Access control**: sync uses **anonymous authentication**, and Firestore **security rules** ensure that only members of a family can read or write that family's data. Family join codes are write-once and cannot be repointed. Calendar-connection credentials, such as Google and Microsoft refresh tokens, are held only in our backend, in records that no app or device can read.
 

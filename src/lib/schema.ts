@@ -19,7 +19,7 @@ export function organizationSchema() {
     description: SITE.description,
     address: {
       '@type': 'PostalAddress',
-      streetAddress: '71–75 Shelton Street, Covent Garden',
+      streetAddress: '71-75 Shelton Street, Covent Garden',
       addressLocality: 'London',
       postalCode: 'WC2H 9JQ',
       addressCountry: 'GB',
@@ -41,9 +41,21 @@ export function softwareApplicationSchema() {
     url: SITE.url,
     image: `${SITE.url}/og-image.png`,
     inLanguage: 'en-GB',
-    // No `offers` block until the app is downloadable: advertising a buyable
-    // price for an unreleased app would overstate availability. Re-add at
-    // launch with the live price and an availability value.
+    // One household subscription, monthly or annual, after a 30-day free trial.
+    offers: [
+      {
+        '@type': 'Offer',
+        name: 'Monthly subscription',
+        price: '4.99',
+        priceCurrency: 'GBP',
+      },
+      {
+        '@type': 'Offer',
+        name: 'Annual subscription',
+        price: '44.99',
+        priceCurrency: 'GBP',
+      },
+    ],
     publisher: { '@id': ORG_ID },
   };
 }

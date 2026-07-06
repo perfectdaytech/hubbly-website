@@ -1,8 +1,9 @@
 ---
 import Section from '@/components/ui/Section.astro';
 import SectionHeading from '@/components/ui/SectionHeading.astro';
+import Icon from '@/components/ui/Icon.astro';
 import PricingCard from './PricingCard.astro';
-import { FOREVER_PLAN, PRICING_NOTE } from '@/data/pricing';
+import { MONTHLY_PLAN, ANNUAL_PLAN, FOUNDERS_LINE, PRICING_NOTE } from '@/data/pricing';
 
 interface Props {
   /** Hide the section heading when the page already has its own. */
@@ -14,19 +15,35 @@ const { withHeading = true } = Astro.props;
   {
     withHeading && (
       <SectionHeading eyebrow="Simple, honest pricing">
-        Free to try. <span class="text-gradient">Yours to keep.</span>
+        Free to try. <span class="text-gradient">Fair to keep.</span>
         <Fragment slot="lead">
-          Free for 30 days. If Hubbly earns its place, one payment makes it yours.
+          Free for 30 days, no card. If Hubbly earns its place at your table,
+          it's one small subscription for the whole household.
         </Fragment>
       </SectionHeading>
     )
   }
 
-  <div class={`mx-auto max-w-xl xl:max-w-[34rem] ${withHeading ? 'mt-12' : 'mt-4'}`} data-reveal>
-    <PricingCard plan={FOREVER_PLAN} headingLevel={withHeading ? 'h3' : 'h2'} />
+  <div
+    class={`mx-auto grid max-w-5xl items-start gap-6 md:grid-cols-2 md:gap-7 ${withHeading ? 'mt-12' : 'mt-4'}`}
+    data-reveal
+  >
+    <PricingCard plan={MONTHLY_PLAN} headingLevel={withHeading ? 'h3' : 'h2'} />
+    <!-- Annual is the plan we gently nudge towards: badge + a sun ring. -->
+    <div class="rounded-[2rem] ring-2 ring-sun/70 ring-offset-4 ring-offset-transparent">
+      <PricingCard plan={ANNUAL_PLAN} headingLevel={withHeading ? 'h3' : 'h2'} />
+    </div>
   </div>
 
-  <p class="mx-auto mt-9 max-w-lg text-center text-[0.82rem] leading-relaxed text-navy-soft">
+  <p
+    class="mx-auto mt-9 flex max-w-2xl items-start gap-2.5 rounded-2xl bg-sun/20 px-5 py-4 text-[0.95rem] font-semibold leading-relaxed text-navy ring-1 ring-sun/40"
+    data-reveal
+  >
+    <Icon name="star" size={17} class="mt-0.5 shrink-0 text-coral-deep" />
+    <span>{FOUNDERS_LINE}</span>
+  </p>
+
+  <p class="mx-auto mt-6 max-w-2xl text-center text-[0.82rem] leading-relaxed text-navy-soft">
     {PRICING_NOTE}
   </p>
 </Section>

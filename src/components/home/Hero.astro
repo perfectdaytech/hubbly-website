@@ -4,7 +4,6 @@ import Eyebrow from '@/components/ui/Eyebrow.astro';
 import Icon from '@/components/ui/Icon.astro';
 import StoreButtons from '@/components/ui/StoreButtons.astro';
 import TabletMockup from './TabletMockup.astro';
-import { FOREVER_PLAN } from '@/data/pricing';
 
 const avatars = ['👩', '👨', '🦄', '🦖'];
 ---
@@ -36,7 +35,7 @@ const avatars = ['👩', '👨', '🦄', '🦖'];
         <div data-reveal>
           <Eyebrow>
             <Icon name="sparkles" size={13} slot="icon" />
-            Founders offer · {FOREVER_PLAN.price} for the first 100 families
+            Founders rate · £2.99/month for the first 100 households
           </Eyebrow>
         </div>
 
@@ -66,7 +65,7 @@ const avatars = ['👩', '👨', '🦄', '🦖'];
           <StoreButtons />
           <p class="mt-3 flex items-center gap-1.5 text-sm font-semibold text-navy-soft">
             <Icon name="check-circle" size={15} class="text-mint" />
-            Free for 30 days, then one simple purchase to keep Hubbly.
+            Free for 30 days, then one small subscription for the whole household.
           </p>
         </div>
 

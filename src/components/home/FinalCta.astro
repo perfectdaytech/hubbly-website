@@ -2,6 +2,9 @@
 import Section from '@/components/ui/Section.astro';
 import StoreButtons from '@/components/ui/StoreButtons.astro';
 import Icon from '@/components/ui/Icon.astro';
+import { CONTACT } from '@/data/site';
+
+const notifyHref = `mailto:${CONTACT.general}?subject=${encodeURIComponent('Tell me when Hubbly launches')}`;
 ---
 <Section id="get" pad="lg">
   <div
@@ -38,9 +41,18 @@ import Icon from '@/components/ui/Icon.astro';
       </h2>
       <p class="mx-auto mt-4 max-w-xl text-lg leading-relaxed text-white/90">
         It's coming soon to Android and iOS. When it lands, the whole app is
-        free to use for 30 days, then a one-time purchase to keep it.
+        free to use for 30 days, then one small subscription for the whole
+        household.
       </p>
       <StoreButtons tone="light" align="center" class="mt-8" />
+      <p class="mt-4 text-sm font-medium text-white/90">
+        Want a nudge when we launch?
+        <a
+          href={notifyHref}
+          data-analytics="notify_me_click"
+          class="font-bold text-white underline underline-offset-2 transition-opacity hover:opacity-80"
+        >Email us and we'll tell you first</a>.
+      </p>
       <p class="mt-4 flex items-center justify-center gap-1.5 text-sm font-semibold text-white">
         <Icon name="check-circle" size={15} />
         No ads · No data sold · No surprises

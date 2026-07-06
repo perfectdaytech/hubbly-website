@@ -3,7 +3,6 @@ import Logo from '@/components/ui/Logo.astro';
 import Icon from '@/components/ui/Icon.astro';
 import StoreButtons from '@/components/ui/StoreButtons.astro';
 import { NAV_LINKS } from '@/data/nav';
-import { FOREVER_PLAN } from '@/data/pricing';
 ---
 <header id="site-nav" class="fixed inset-x-0 top-0 z-50">
   <div class="relative z-[1] mx-auto w-full max-w-[1200px] px-5 sm:px-7 lg:px-8 xl:max-w-[1320px] xl:px-10 2xl:max-w-[1440px] 2xl:px-14">
@@ -36,7 +35,7 @@ import { FOREVER_PLAN } from '@/data/pricing';
           class="hidden items-center gap-1.5 rounded-full bg-coral/10 px-4 py-2 text-sm font-bold text-coral-deep transition-colors duration-200 hover:bg-coral/[0.16] md:inline-flex"
         >
           <Icon name="sparkles" size={14} />
-          {FOREVER_PLAN.price} founders offer
+          £2.99/month founders rate
         </a>
         <button
           id="menu-toggle"

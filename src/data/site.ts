@@ -24,10 +24,10 @@ export const COMPANY = {
   governingLaw: 'the laws of England & Wales',
   // UK company — confirmed on the Companies House register.
   registrationNumber: '16952922',
-  registeredAddress: '71–75 Shelton Street, Covent Garden, London, WC2H 9JQ, United Kingdom',
+  registeredAddress: '71-75 Shelton Street, Covent Garden, London, WC2H 9JQ, United Kingdom',
   /** Date the current legal documents took effect. */
-  legalEffectiveDate: '2026-05-20',
-  legalEffectiveDateLabel: '20 May 2026',
+  legalEffectiveDate: '2026-07-05',
+  legalEffectiveDateLabel: '5 July 2026',
 } as const;
 
 export const CONTACT = {

@@ -3,7 +3,8 @@ layout: ../layouts/LegalLayout.astro
 title: Cookie Policy
 description: "How cookies work on the Hubbly website. The short version: gethubbly.app sets no cookies at all, and visit statistics are anonymous and cookieless."
 eyebrow: Legal
-updated: 12 June 2026
+updated: 12 October 2026
+contact: privacy@gethubbly.app
 intro: "This is a short, honest page. The Hubbly website sets no cookies, stores nothing on your device, and counts visits anonymously."
 ---
 import Callout from '../components/legal/Callout.astro';
@@ -11,7 +12,7 @@ import { COMPANY, CONTACT, SITE } from '@/data/site';
 
 ## 1. About this policy
 
-This Cookie Policy explains how cookies and similar technologies are (and are not) used on the **Hubbly website** at [gethubbly.app]({SITE.url}), operated by {COMPANY.legalName}.
+This Cookie Policy explains how cookies and similar technologies are (and are not) used on the **Hubbly website** at <a href={SITE.url}>gethubbly.app</a>, operated by {COMPANY.legalName}.
 
 It sits alongside our [Privacy Policy](/privacy), which describes how the Hubbly app handles your family's data more broadly.
 
@@ -33,7 +34,8 @@ A **cookie** is a small text file that a website can store on your device when y
 The Hubbly marketing website is a simple, static informational site. We have deliberately built it to be **privacy-friendly**:
 
 - it sets **no cookies at all**, essential or otherwise, and stores nothing in your browser's local storage;
-- it uses **anonymous, cookieless visit statistics** (PostHog, EU-hosted) to count pages viewed, clicks, scroll depth and where visitors came from. This runs in memory only, identifies nobody, builds no profile, and discards IP addresses; it honours your browser's "Do Not Track" signal;
+- The waitlist form is plain HTML. It doesn't load MailerLite's script, reCAPTCHA or any advertising or tracking code. The only analytics is PostHog, which runs in memory without cookies.
+- it uses **anonymous, cookieless visit statistics** (PostHog, EU-hosted) to count pages viewed, clicks, scroll depth and where visitors came from. This runs in memory only, identifies nobody, builds no profile, and discards IP addresses; it honours your browser's "Do Not Track" signal. Waitlist events do not include an email address, a name or a referral code;
 - there are **no advertising pixels and no behavioural tracking**: we do not follow you around the web; and
 - there is **no cookie consent banner**, because nothing is stored on your device, so there is nothing to consent to.
 
@@ -76,4 +78,4 @@ Browser settings only affect websites. To manage the app's diagnostics and analy
 
 We may update this Cookie Policy if our website changes, for example if we ever add a feature that needs a cookie. Any update will be reflected here, with a revised **"last updated"** date at the top of the page.
 
-Questions about this policy? Contact {COMPANY.legalName} at [{CONTACT.privacy}](mailto:{CONTACT.privacy}).
+Questions about this policy? Contact {COMPANY.legalName} at <a href={`mailto:${CONTACT.privacy}`}>{CONTACT.privacy}</a>.

@@ -41,21 +41,6 @@ export function softwareApplicationSchema() {
     url: SITE.url,
     image: `${SITE.url}/og-image.png`,
     inLanguage: 'en-GB',
-    // One household subscription, monthly or annual, after a 30-day free trial.
-    offers: [
-      {
-        '@type': 'Offer',
-        name: 'Monthly subscription',
-        price: '4.99',
-        priceCurrency: 'GBP',
-      },
-      {
-        '@type': 'Offer',
-        name: 'Annual subscription',
-        price: '44.99',
-        priceCurrency: 'GBP',
-      },
-    ],
     publisher: { '@id': ORG_ID },
   };
 }

@@ -31,11 +31,12 @@ export const COMPANY = {
 } as const;
 
 export const CONTACT = {
-  // TODO(founder): split into support@/privacy@ if you want dedicated routes.
-  general: 'contact@gethubbly.app',
-  privacy: 'contact@gethubbly.app',
-  support: 'contact@gethubbly.app',
-  safety: 'contact@gethubbly.app',
+  // General enquiries use hello@. Help and problems use support@. Data rights use privacy@.
+  general: 'hello@gethubbly.app',
+  privacy: 'privacy@gethubbly.app',
+  hello: 'hello@gethubbly.app',
+  support: 'support@gethubbly.app',
+  safety: 'support@gethubbly.app',
 } as const;
 
 export const STORES = {
@@ -48,9 +49,12 @@ export const STORES = {
   iosLive: false,
 } as const;
 
+export { CONTROLLER_STATEMENT } from '../lib/waitlist/copy.mjs';
+
 /** UK regulator details, used in the privacy policy. */
 export const REGULATOR = {
   name: "Information Commissioner's Office (ICO)",
   url: 'https://ico.org.uk/make-a-complaint/',
   helpline: '0303 123 1113',
+  registrationNumber: 'ZC144477',
 } as const;

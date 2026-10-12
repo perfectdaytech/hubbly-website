@@ -1,0 +1,13 @@
+---
+import { TRIAL_SHORT } from '@/data/waitlist';
+
+interface Props {
+  tone?: 'navy' | 'white';
+  class?: string;
+}
+const { tone = 'navy', class: cls = '' } = Astro.props;
+const color = tone === 'white' ? 'text-white' : 'text-navy';
+---
+<p class:list={['text-base font-semibold leading-relaxed', color, cls]}>
+  {TRIAL_SHORT}
+</p>

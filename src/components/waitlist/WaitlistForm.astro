@@ -1,0 +1,151 @@
+---
+import TrialNotice from '@/components/waitlist/TrialNotice.astro';
+import WaitlistScript from '@/components/waitlist/WaitlistScript.astro';
+import {
+  CHECKBOX_AGE,
+  CHECKBOX_BETA,
+  CHECKBOX_TIPS,
+  FORM_STATEMENT,
+  FORM_VERSION,
+  GIFT_LINE,
+  MAILERLITE_FORM_ACTION,
+  WAITLIST_MOCK,
+  WAITLIST_NO_PLACE,
+} from '@/data/waitlist';
+
+const inputClass =
+  'mt-2 w-full rounded-2xl border border-navy/15 bg-white px-4 py-3 text-base text-navy shadow-soft';
+---
+<form
+  id="waitlist-form"
+  class="ph-no-capture relative mx-auto mt-2 max-w-xl rounded-[2rem] bg-white p-4 text-left shadow-card ring-1 ring-navy/[0.06] sm:mt-8 sm:p-8"
+  method="post"
+  action={WAITLIST_MOCK ? '/nearly' : MAILERLITE_FORM_ACTION}
+  data-waitlist-form
+  data-mock={WAITLIST_MOCK ? 'true' : 'false'}
+>
+  <div>
+    <label for="waitlist-email" class="font-semibold text-navy">Email address</label>
+    <input
+      id="waitlist-email"
+      name="fields[email]"
+      type="text"
+      inputmode="email"
+      autocomplete="email"
+      autocapitalize="none"
+      spellcheck="false"
+      maxlength="254"
+      required
+      class={inputClass}
+      aria-describedby="email-error"
+    />
+    <p id="email-error" data-error-for="email" role="alert" hidden class="mt-2 text-sm font-semibold text-coral-deep"></p>
+  </div>
+
+  <div class="mt-5">
+    <label for="waitlist-name" class="font-semibold text-navy">
+      First name <span class="font-medium text-navy-soft">(optional)</span>
+    </label>
+    <input id="waitlist-name" name="fields[name]" type="text" autocomplete="given-name" class={inputClass} />
+  </div>
+
+  <fieldset class="mt-5">
+    <legend class="font-semibold text-navy">Where will you get Hubbly?</legend>
+    <div class="mt-3 grid gap-2">
+      {
+        [
+          ['google_play', 'Google Play'],
+          ['app_store', 'App Store'],
+          ['both', 'Both'],
+        ].map(([value, label], index) => (
+          <label class="flex items-center gap-3 rounded-2xl bg-cream px-4 py-3 text-navy">
+            <input
+              type="radio"
+              name="fields[store_pref]"
+              value={value}
+              required={index === 0}
+              class="size-5 accent-[#b93c37]"
+              aria-describedby="store-error"
+            />
+            <span>{label}</span>
+          </label>
+        ))
+      }
+    </div>
+    <p id="store-error" data-error-for="store" role="alert" hidden class="mt-2 text-sm font-semibold text-coral-deep"></p>
+  </fieldset>
+
+  <div class="mt-5 grid gap-1">
+    <label class="flex items-start gap-3 py-3 text-base leading-relaxed text-navy">
+      <input
+        id="age-18"
+        name="fields[age_18]"
+        type="checkbox"
+        value="yes"
+        required
+        class="mt-1 size-5 shrink-0 accent-[#b93c37]"
+        aria-describedby="age-error"
+      />
+      <span>{CHECKBOX_AGE}</span>
+    </label>
+    <p id="age-error" data-error-for="age" role="alert" hidden class="text-sm font-semibold text-coral-deep"></p>
+    <label class="flex items-start gap-3 py-3 text-base leading-relaxed text-navy">
+      <input name="fields[beta_optin]" type="checkbox" value="yes" class="mt-1 size-5 shrink-0 accent-[#b93c37]" />
+      <span>{CHECKBOX_BETA}</span>
+    </label>
+    <label class="flex items-start gap-3 py-3 text-base leading-relaxed text-navy">
+      <input name="fields[tips_optin]" type="checkbox" value="yes" class="mt-1 size-5 shrink-0 accent-[#b93c37]" />
+      <span>{CHECKBOX_TIPS}</span>
+    </label>
+  </div>
+
+  <p class="mt-4 text-base leading-relaxed text-navy">
+    {FORM_STATEMENT.replace('privacy notice.', '')}
+    <a class="font-semibold text-coral-deep underline" href="/privacy">privacy notice</a>.
+  </p>
+
+  <input id="ref_code" type="hidden" name="fields[ref_code]" value="" />
+  <input id="referred_by" type="hidden" name="fields[referred_by]" value="" />
+  <input type="hidden" name="fields[form_version]" value={FORM_VERSION} />
+
+  <div class="sr-only" aria-hidden="true">
+    <label for="hp-field">Company website</label>
+    <input id="hp-field" data-hp name="bot-field" type="text" tabindex="-1" autocomplete="off" />
+  </div>
+
+  <button
+    type="submit"
+    class="mt-6 inline-flex min-h-12 w-full items-center justify-center rounded-full bg-coral-deep px-7 font-display text-base font-semibold text-white shadow-coral disabled:cursor-not-allowed disabled:opacity-60"
+  >
+    Join the waitlist
+  </button>
+
+  <div class="mt-6 grid gap-3 border-t border-navy/10 pt-6">
+    <p class="text-base leading-relaxed text-navy">{GIFT_LINE}</p>
+    <TrialNotice />
+    <p class="text-base leading-relaxed text-navy">
+      {WAITLIST_NO_PLACE}{' '}
+      <a class="font-semibold text-coral-deep underline" href="/founders-terms">Founders' terms</a>.
+    </p>
+  </div>
+
+  <p class="mt-4 text-sm leading-relaxed text-navy-soft">
+    {
+      WAITLIST_MOCK
+        ? 'Preview mode: this page does not email anyone or save your address. Connect MailerLite before real sign-ups.'
+        : 'We will email you a confirmation link. Nothing is stored in this browser.'
+    }
+  </p>
+</form>
+
+<noscript>
+  <p class="mx-auto mt-4 max-w-xl text-sm text-navy-soft">
+    {
+      WAITLIST_MOCK
+        ? 'This preview needs JavaScript to move to the next page. No email is sent.'
+        : 'You can still send the form. Your share code is added when JavaScript is available.'
+    }
+  </p>
+</noscript>
+
+<WaitlistScript />

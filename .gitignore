@@ -19,6 +19,10 @@ pnpm-debug.log*
 .env.production
 .env.local
 
+# local MailerLite exports contain full IP addresses. Delete after each tally.
+data/
+exports/
+
 # macOS / Windows / editors
 .DS_Store
 Thumbs.db

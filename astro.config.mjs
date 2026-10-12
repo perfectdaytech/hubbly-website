@@ -2,6 +2,7 @@ import { defineConfig } from 'astro/config';
 import mdx from '@astrojs/mdx';
 import sitemap from '@astrojs/sitemap';
 import tailwindcss from '@tailwindcss/vite';
+import { rehypeScrollRegion } from './scripts/rehype-scroll-region.mjs';
 
 // https://astro.build
 export default defineConfig({
@@ -11,9 +12,9 @@ export default defineConfig({
   base: '/',
   trailingSlash: 'ignore',
   integrations: [
-    mdx(),
+    mdx({ rehypePlugins: [rehypeScrollRegion] }),
     sitemap({
-      filter: (page) => !page.includes('/404'),
+      filter: (page) => !page.includes('/404') && !page.includes('/nearly') && !page.includes('/confirmed'),
     }),
   ],
   vite: {

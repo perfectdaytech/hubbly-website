@@ -3,17 +3,18 @@ layout: ../layouts/LegalLayout.astro
 title: Terms of Use
 description: "The terms for using the Hubbly family-organiser app: eligibility, family accounts, the free trial, the household subscription, refunds, acceptable use and your legal rights."
 eyebrow: Legal
-updated: 5 July 2026
+updated: 12 October 2026
+contact: hello@gethubbly.app
 intro: "These terms are the agreement between your family and Hubbly. They are written in plain English so you know where you stand before you start."
 ---
 import Callout from '../components/legal/Callout.astro';
-import { COMPANY, CONTACT, SITE } from '@/data/site';
+import { COMPANY, CONTACT, CONTROLLER_STATEMENT, SITE } from '@/data/site';
 
 ## 1. Acceptance of these terms
 
-These Terms of Use ("Terms") are a legal agreement between you and {COMPANY.legalName} ("Hubbly", "we", "us" or "our"), a company registered in {COMPANY.jurisdiction} (company number {COMPANY.registrationNumber}), registered office {COMPANY.registeredAddress}.
+These Terms of Use ("Terms") are a legal agreement between you and {CONTROLLER_STATEMENT} ("Hubbly", "we", "us" or "our").
 
-They govern your use of the **Hubbly** mobile app and the website at [gethubbly.app]({SITE.url}). By downloading, installing or using Hubbly, you confirm that you have read, understood and agree to these Terms and to our [Privacy Policy](/privacy). If you do not agree, please do not use Hubbly.
+They govern your use of the **Hubbly** mobile app and the website at <a href={SITE.url}>gethubbly.app</a>. By downloading, installing or using Hubbly, you confirm that you have read, understood and agree to these Terms and to our [Privacy Policy](/privacy). If you do not agree, please do not use Hubbly.
 
 ## 2. Eligibility
 
@@ -47,7 +48,7 @@ The adult who creates the family is the **account holder** and is responsible fo
 
 Hubbly is an **auto-renewing subscription**, available as a **monthly plan** or an **annual plan**, purchased through the Google Play Store or the Apple App Store. One subscription covers your whole household and its joined devices.
 
-- **Free trial.** When you download Hubbly, the full app is free to use for **30 days**, with every feature unlocked. The trial is managed by the app rather than by your app store, and **no payment details are required** to begin it. Certain in-app activities (for example inviting another household or connecting a calendar) can **extend the trial** by a number of days; the current offers and amounts are shown in the app and may change over time. If you reach the end of the trial and decide not to subscribe, you will not be charged.
+- **Free trial.** When you download Hubbly, the full app is free to use for **30 days**, with every feature unlocked. The trial is managed by the app rather than by your app store, and **no payment details are required** to begin it. Certain in-app activities (for example inviting another household or connecting a calendar) can **extend the trial** by a number of days; the current offers and amounts are shown in the app and may change over time. If you reach the end of the trial and decide not to subscribe, you will not be charged. After that, keeping Hubbly needs a subscription. You'll see the price in the app before you choose, and you're never charged unless you subscribe.
 - **The subscription.** To keep using Hubbly after the trial, you take out a monthly or annual subscription. The subscription **renews automatically** at the end of each billing period, and continues to renew until you cancel it.
 - **Cancelling.** You can cancel at any time from your app store's **subscriptions page** (Google Play or the App Store). Cancelling stops future renewals; you keep access until the end of the period you have already paid for, and you are not billed again after that.
 
@@ -58,7 +59,7 @@ The subscription is purchased and processed through the **Google Play Store** or
 We may change subscription prices from time to time. Any change to the price of an existing subscription is handled through your app store, which will notify you in accordance with its rules before a changed price takes effect, and you can cancel before it does.
 
 <Callout type="note">
-Hubbly is free to try for 30 days, with no card needed. If you subscribe, the price is shown at the Google Play or App Store checkout, the subscription renews until you cancel, and you can cancel any time from your store's subscriptions page.
+30-day free trial in the app, no card needed to start. After that, keeping Hubbly needs a subscription. You'll see the price in the app before you choose, and you're never charged unless you subscribe. If you subscribe, the price is shown at the Google Play or App Store checkout, the subscription renews until you cancel, and you can cancel any time from your store's subscriptions page.
 </Callout>
 
 <Callout type="plain">
@@ -70,6 +71,8 @@ Try Hubbly free for 30 days. If you keep it, it is one small subscription for th
 Because purchases are processed by the **Google Play Store** and the **Apple App Store**, refunds are handled under **their** refund policies, and refund requests should be made to the relevant store.
 
 Nothing in this section affects your **statutory rights**. If you are a consumer in the UK or EU, you keep the rights given to you by consumer protection law, and we will honour any refund we are legally required to provide.
+
+If you subscribe and change your mind, you can cancel within 14 days of your first payment and ask for a refund (less anything you've used) through Google Play or the App Store. Store refunds are made by Google or Apple. If the store will not make a refund we still owe, email [hello@gethubbly.app](mailto:hello@gethubbly.app).
 
 <Callout type="plain">
 To request a refund, go through Google Play or Apple: they take the payments, so they handle the money back. Your legal consumer rights still apply on top of that.
@@ -164,7 +167,7 @@ These Terms, and any dispute or claim arising out of or in connection with them,
 
 ## 17. Dispute resolution
 
-If you have a problem, please **contact us first** at [{CONTACT.support}](mailto:{CONTACT.support}); most issues can be resolved quickly and informally, and we genuinely want to help.
+If you have a problem, please **contact us first** at <a href={`mailto:${CONTACT.support}`}>{CONTACT.support}</a>; most issues can be resolved quickly and informally, and we genuinely want to help.
 
 If a dispute cannot be resolved that way, you and we agree to submit to the **courts of England & Wales**. If you are a consumer, you may also be entitled to bring proceedings in the courts of the country where you live, and you keep any mandatory protections available to you under your local law.
 
@@ -183,6 +186,7 @@ Questions about these Terms? Contact us:
 - **Company:** {COMPANY.legalName}
 - **Registered office:** {COMPANY.registeredAddress}
 - **Company number:** {COMPANY.registrationNumber}
-- **Email:** [{CONTACT.support}](mailto:{CONTACT.support})
+- **Email:** <a href={`mailto:${CONTACT.hello}`}>{CONTACT.hello}</a>
+- **Support:** <a href={`mailto:${CONTACT.support}`}>{CONTACT.support}</a>
 
 These Terms are effective from **5 July 2026**.

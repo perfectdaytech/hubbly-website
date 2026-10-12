@@ -1,0 +1,61 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import Section from '@/components/ui/Section.astro';
+import Eyebrow from '@/components/ui/Eyebrow.astro';
+import { FREEBIES } from '@/data/freebies';
+import { webPageSchema } from '@/lib/schema';
+
+const library = FREEBIES.filter((item) => item.kind === 'library');
+---
+<BaseLayout
+  title="Free printables"
+  description="Free Hubbly printables for family routines, chores and calm bedtimes. Email starts only if you join the waitlist and confirm."
+  jsonLd={webPageSchema({
+    name: 'Free Hubbly printables',
+    description: 'A library of free family printables.',
+    path: '/freebies',
+  })}
+>
+  <header class="bg-gradient-to-b from-paper to-cream pt-[calc(var(--nav-h)+3rem)] pb-10">
+    <div class="mx-auto w-full max-w-[1200px] px-5 sm:px-7 lg:px-8">
+      <Eyebrow>Free printables</Eyebrow>
+      <h1 class="mt-4 max-w-3xl font-display text-4xl font-semibold tracking-tight text-navy sm:text-5xl">
+        The freebie library
+      </h1>
+      <p class="mt-4 max-w-2xl text-lg leading-relaxed text-navy-soft">
+        These files are free to download. Downloading one does not put you on an email list. Hubbly emails start only if you
+        <a class="font-semibold text-coral-deep underline" href="/waitlist">join the waitlist</a>
+        and confirm.
+      </p>
+    </div>
+  </header>
+
+  <Section pad="md">
+    <ul class="grid gap-5 md:grid-cols-2">
+      {
+        library.map((item) => (
+          <li class="rounded-[1.5rem] bg-white p-6 shadow-card ring-1 ring-navy/[0.06]">
+            {item.keyword && (
+              <p class="text-xs font-extrabold uppercase tracking-[0.14em] text-coral-deep">{item.keyword}</p>
+            )}
+            <h2 class="mt-2 font-display text-2xl font-semibold text-navy">{item.title}</h2>
+            <p class="mt-2 text-base leading-relaxed text-navy-soft">{item.summary}</p>
+            {item.safety && <p class="mt-2 text-base font-semibold leading-relaxed text-navy">{item.safety}</p>}
+            <a class="mt-4 inline-flex font-semibold text-coral-deep underline" href={item.href}>
+              Download {item.title}
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+
+    <div class="mt-12 max-w-3xl">
+      <h2 class="font-display text-3xl font-semibold text-navy">Referral rewards</h2>
+      <p class="mt-3 text-base leading-relaxed text-navy">
+        Referral rewards: 3 confirmed referrals get Calm-down cards; 5 get Family adventure bingo.
+        They're sent by email by Fri 15 Jan 2027 and aren't in this library.
+        <a class="font-semibold text-coral-deep underline" href="/referral-terms">Referral terms</a>.
+      </p>
+    </div>
+  </Section>
+</BaseLayout>

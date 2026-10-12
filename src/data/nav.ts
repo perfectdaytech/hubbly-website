@@ -10,6 +10,8 @@ export interface NavLink {
 
 /** Primary nav — shown centred on desktop, in the mobile sheet under 768px. */
 export const NAV_LINKS: NavLink[] = [
+  { label: 'Waitlist', href: '/waitlist' },
+  { label: 'Printables', href: '/freebies' },
   { label: 'Features', href: '/#features' },
   { label: 'How it works', href: '/#how' },
   { label: 'Parents & kids', href: '/#families' },
@@ -26,6 +28,8 @@ export const FOOTER_COLUMNS: FooterColumn[] = [
   {
     title: 'Product',
     links: [
+      { label: 'Waitlist', href: '/waitlist' },
+      { label: 'Printables', href: '/freebies' },
       { label: 'Features', href: '/#features' },
       { label: 'Meet Hubbly', href: '/#meet' },
       { label: 'For families', href: '/#families' },
@@ -45,6 +49,8 @@ export const FOOTER_COLUMNS: FooterColumn[] = [
       { label: 'Privacy Policy', href: '/privacy' },
       { label: 'Terms of Use', href: '/terms' },
       { label: 'Cookie Policy', href: '/cookies' },
+      { label: 'Referral terms', href: '/referral-terms' },
+      { label: "Founders' terms", href: '/founders-terms' },
     ],
   },
 ];

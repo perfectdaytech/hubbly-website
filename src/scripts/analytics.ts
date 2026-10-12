@@ -10,6 +10,13 @@
 // The PostHog project is additionally configured server-side to
 // discard client IP addresses at ingestion.
 // ============================================================
+import {
+  buildWaitlistSubmitProps,
+  errorProps,
+  scrubAnalyticsEvent,
+  shareClickProps,
+} from '../lib/waitlist/analytics.mjs';
+
 const key = import.meta.env.PUBLIC_POSTHOG_KEY as string | undefined;
 
 // Lazy: posthog-js is its own chunk, fetched only when a key exists and
@@ -34,6 +41,11 @@ async function start(): Promise<void> {
     disable_session_recording: true,
     disable_surveys: true,
     respect_dnt: true,
+    before_send: (event) => {
+      if (!event) return null;
+      scrubAnalyticsEvent(event);
+      return event;
+    },
   });
 
   // ---- Named events ---------------------------------------------------
@@ -46,12 +58,20 @@ async function start(): Promise<void> {
 
     const tagged = target.closest('[data-analytics]');
     if (tagged) {
-      const props: Record<string, string> = {};
-      const platform = tagged.getAttribute('data-platform');
-      const live = tagged.getAttribute('data-live');
-      if (platform) props.platform = platform;
-      if (live) props.live = live;
-      posthog.capture(tagged.getAttribute('data-analytics')!, props);
+      const name = tagged.getAttribute('data-analytics')!;
+      if (name === 'waitlist_share_click') {
+        const props = shareClickProps(tagged.getAttribute('data-channel'));
+        if (props) posthog.capture(name, props);
+      } else if (name === 'waitlist_view' || name === 'waitlist_confirm_page_view') {
+        posthog.capture(name, {});
+      } else {
+        const props: Record<string, string> = {};
+        const platform = tagged.getAttribute('data-platform');
+        const live = tagged.getAttribute('data-live');
+        if (platform) props.platform = platform;
+        if (live) props.live = live;
+        posthog.capture(name, props);
+      }
     }
 
     // Outbound links (socials, store links once live) by destination domain.
@@ -81,10 +101,54 @@ async function start(): Promise<void> {
     },
     true,
   );
+
+  document.querySelectorAll('[data-analytics-view]').forEach((el) => {
+    const name = el.getAttribute('data-analytics-view');
+    if (name === 'waitlist_view' || name === 'waitlist_confirm_page_view') {
+      posthog.capture(name, {});
+    }
+  });
+
+  const capture = (payload: {
+    name?: string;
+    store_pref?: string;
+    beta_optin?: boolean;
+    has_referrer?: boolean;
+    reason?: string;
+    search?: string;
+  }) => {
+    if (payload.name === 'waitlist_submit') {
+      posthog.capture(
+        'waitlist_submit',
+        buildWaitlistSubmitProps({
+          storePref: payload.store_pref || '',
+          betaOptin: Boolean(payload.beta_optin),
+          hasReferrer: Boolean(payload.has_referrer),
+          search: payload.search || '',
+        }),
+      );
+    } else if (payload.name === 'waitlist_error') {
+      const props = errorProps(payload.reason);
+      if (props) posthog.capture('waitlist_error', props);
+    } else if (payload.name === 'waitlist_view' || payload.name === 'waitlist_confirm_page_view') {
+      posthog.capture(payload.name, {});
+    }
+  };
+
+  const bridge = window as Window & {
+    __hubblyCapture?: typeof capture;
+    __hubblyQueue?: Array<Parameters<typeof capture>[0]>;
+  };
+  bridge.__hubblyCapture = capture;
+  for (const payload of bridge.__hubblyQueue ?? []) capture(payload);
+  bridge.__hubblyQueue = [];
 }
 
 if (key) {
-  if ('requestIdleCallback' in window) {
+  const urgent = document.querySelector('[data-analytics-view], [data-waitlist-form]');
+  if (urgent) {
+    void start();
+  } else if ('requestIdleCallback' in window) {
     requestIdleCallback(() => void start(), { timeout: 3000 });
   } else {
     setTimeout(() => void start(), 1500);

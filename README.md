@@ -88,8 +88,10 @@ in. Two store links remain, both pending the app listings going live:
 - **Pricing** — a **30-day free trial** inside the app. No card is needed to
   start. After that, keeping Hubbly needs a subscription. The price is shown
   in the app before someone chooses, and they are never charged unless they
-  subscribe. No price is published on the site. Joining the waitlist does not
-  reserve a founders' place. See `/founders-terms`.
+  subscribe. No price is published on the site. The public founders line is:
+  "We may offer a lower founders' price when Hubbly launches. If we do, you'll
+  see it on the Google Play page before you subscribe. Joining the waitlist
+  doesn't reserve a place." See `/founders-terms`.
 - **Socials** — `@gethubbly` on Instagram, Facebook and X.
 - **Markets** — UK-based, launching across English-speaking markets. Legal pages
   cover UK GDPR, EU GDPR and CCPA; review local law before entering other
@@ -124,6 +126,19 @@ A workflow at `.github/workflows/deploy.yml` builds and deploys on every push to
    The `public/CNAME` file already tells Pages to serve `gethubbly.app`.
 4. Push to `main` — the Action builds and publishes. Tick *Enforce HTTPS* in
    Pages settings once the certificate is issued.
+
+The build step does not set `HUBBLY_SCAN`. Draft mode ignores `PLAY_URL` and
+`APP_STORE_URL`, so a launch deploy could publish while those tokens are still
+in the emails. Before go-live, the owner adds launch mode to the **Build site**
+step in `.github/workflows/deploy.yml`. This branch does not edit that file.
+
+```yaml
+env:
+  HUBBLY_SCAN: launch
+```
+
+Keep the existing `PUBLIC_POSTHOG_KEY` and `PUBLIC_POSTHOG_HOST` entries in
+that same `env` block.
 
 ### Option B — Vercel (one-click)
 
@@ -265,6 +280,9 @@ scan. It expects the scan to still find `PLAY_URL` and `APP_STORE_URL`.
 the content check. Draft mode (`node scripts/prepublish-check.mjs`) ignores
 `PLAY_URL` and `APP_STORE_URL` and fails on anything else. Launch mode
 (`HUBBLY_SCAN=launch`) fails on every finding, including those two tokens.
+The GitHub Pages deploy job does not set that variable yet. Setting it means
+editing `.github/workflows/deploy.yml`, which this branch leaves alone. That
+edit is an owner action before go-live.
 `npm run lint` runs ESLint. `npm run test:unit` runs the logic tests without a build.
 
 ### Spec section 5.2
@@ -287,7 +305,7 @@ the content check. Draft mode (`node scripts/prepublish-check.mjs`) ignores
 | Legal entity confirmed | Met. `CONTROLLER_STATEMENT` in `src/lib/waitlist/copy.mjs`, used in the footer, privacy page, terms, founders' terms, referral terms and email drafts. |
 | ICO fee and registration number | Met. Registration number ZC144477 is on `/privacy` section 16. |
 | Founders' Option B chosen, and Hubbly confirmed as the subscription app | Copy is Option B, on `/founders-terms` and the pricing section. The owner's confirmation, and Brick/Elon's confirmation that Hubbly is the subscription app, are still open. MailerLite stays on Free, flag at about 200. |
-| Apple promo offer or offer code, and Play multi-phase offer, confirmed buildable | Open. The public line is: "A lower founders' price may be available on launch day, if the store listing includes it." |
+| Apple promo offer or offer code, and Play multi-phase offer, confirmed buildable | Open. The public line is: "We may offer a lower founders' price when Hubbly launches. If we do, you'll see it on the Google Play page before you subscribe. Joining the waitlist doesn't reserve a place." |
 | Automated scan for `{`, `PENDING`, `[TO CONFIRM`, `[HOLD`, `[UNVERIFIED`, `households`, `forever`, and the retired trial line | Met for public pages and email drafts. `scripts/prepublish-check.mjs`, run by `npm test`. |
 | MailerLite DPA, dated PDF, sub-processors, UK transfer cover | Open. Owner step. Not accepted from this repo. |
 | Form wording matches section 3, boxes unticked, dated HTML saved | Met. `src/components/waitlist/WaitlistForm.astro` and `src/content/consent/waitlist-form-2026-10-12.html`. |

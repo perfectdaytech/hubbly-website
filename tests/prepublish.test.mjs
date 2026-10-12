@@ -3,7 +3,7 @@ import { mkdtempSync, readFileSync, readdirSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import path from 'node:path';
 import test from 'node:test';
-import { PRIVACY_WAITLIST, REFERRAL_TERMS, TRIAL_SHORT } from '../src/lib/waitlist/copy.mjs';
+import { FOUNDERS_CAP, PRIVACY_WAITLIST, REFERRAL_TERMS, TRIAL_SHORT } from '../src/lib/waitlist/copy.mjs';
 import {
   blockingIssues,
   findRewardPdfs,
@@ -149,7 +149,8 @@ test('the built waitlist, privacy and referral pages carry the required wording'
   assert.ok(referral.includes('same internet connection'));
   assert.ok(referral.includes('unsubscribes'));
   assert.ok(referral.includes(REFERRAL_TERMS.slice(0, 40)));
-  assert.ok(founders.includes("A lower founders' price may be available on launch day, if the store listing includes it."));
+  assert.ok(founders.includes(FOUNDERS_CAP));
+  assert.equal(founders.includes('may be available on launch day'), false);
   assert.equal(founders.includes('special founders'), false);
   assert.ok(founders.includes("you're never charged unless you subscribe"));
   assert.ok(founders.includes('hello@gethubbly.app'));
@@ -175,7 +176,8 @@ test('the built waitlist, privacy and referral pages carry the required wording'
   assert.equal(home.includes('App Store shortly after'), false);
   assert.ok(home.includes(TRIAL_SHORT));
   assert.equal(home.includes('The full app is free for 30 days in the app'), false);
-  assert.ok(home.includes("A lower founders' price may be available on launch day, if the store listing includes it."));
+  assert.ok(home.includes(FOUNDERS_CAP));
+  assert.equal(home.includes('may be available on launch day'), false);
   assert.ok(privacyHtml.includes('tabindex="0"'));
   assert.ok(privacyHtml.includes('role="region"'));
   assert.ok(privacyHtml.includes('aria-label="Service providers"'));
@@ -187,7 +189,8 @@ test('the built waitlist, privacy and referral pages carry the required wording'
   assert.equal(confirmed.includes('When you confirm your email'), false);
 
   assert.ok(welcome.includes('https://gethubbly.app/waitlist?ref={$fields.ref_code}'));
-  assert.ok(welcome.includes("A lower founders' price may be available on launch day, if the store listing includes it."));
+  assert.ok(welcome.includes(FOUNDERS_CAP));
+  assert.equal(welcome.includes("doesn't reserve a founders' place"), false);
   assert.equal(welcome.includes('special founders'), false);
   assert.ok(welcome.includes('When 3 friends confirm, you get Calm-down cards; at 5, Family adventure bingo.'));
   const summaryAt = welcome.indexOf('When 3 friends confirm');
@@ -198,7 +201,9 @@ test('the built waitlist, privacy and referral pages carry the required wording'
   assert.ok(welcome.includes('privacy@gethubbly.app'));
   assert.ok(welcome.includes('hello@gethubbly.app'));
   assert.equal(launch.includes('goes in this email'), false);
-  assert.ok(launch.includes('PLAY_URL?utm_campaign=founders_launch'));
+  assert.ok(launch.includes('PLAY_URL?utm_campaign=waitlist_launch'));
+  assert.equal(launch.includes('founders_launch'), false);
+  assert.equal(launch.includes("doesn't reserve a founders' place"), false);
   assert.ok(launch.includes("you're among the first to hear"));
   assert.equal(launch.includes('first access'), false);
   assert.equal(launch.includes('may be available on launch day'), false);
@@ -207,8 +212,21 @@ test('the built waitlist, privacy and referral pages carry the required wording'
 
   const rewardThree = readFileSync('src/emails/09-reward-3.html', 'utf8');
   const rewardFive = readFileSync('src/emails/10-reward-5.html', 'utf8');
-  assert.ok(rewardThree.includes('sent by hand from hello@gethubbly.app'));
-  assert.ok(rewardFive.includes('sent by hand from hello@gethubbly.app'));
+  assert.ok(rewardThree.includes('Sent by hand from hello@gethubbly.app'));
+  assert.ok(rewardFive.includes('Sent by hand from hello@gethubbly.app'));
+  assert.ok(
+    rewardThree.includes(
+      'Three friends confirmed through your link, thank you. Your Calm-down cards are attached (calm-down-cards.pdf, a printable A4 PDF).',
+    ),
+  );
+  assert.ok(
+    rewardFive.includes(
+      'Five friends confirmed through your link, thank you. Your Family adventure bingo is attached (family-adventure-bingo.pdf, a printable A4 PDF).',
+    ),
+  );
+  const rewardBody = (html) => html.replace(/<!--[\s\S]*?-->/g, '');
+  assert.equal(rewardBody(rewardThree).includes('sent by hand'), false);
+  assert.equal(rewardBody(rewardFive).includes('sent by hand'), false);
   assert.ok(rewardThree.includes('no public link'));
   assert.ok(rewardFive.includes('no public link'));
   assert.equal(rewardThree.includes('.pdf"'), false);

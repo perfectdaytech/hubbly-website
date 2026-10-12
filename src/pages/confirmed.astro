@@ -3,7 +3,7 @@ import BaseLayout from '@/layouts/BaseLayout.astro';
 import Section from '@/components/ui/Section.astro';
 import TrialNotice from '@/components/waitlist/TrialNotice.astro';
 import WaitlistScript from '@/components/waitlist/WaitlistScript.astro';
-import { FOUNDERS_CAP, GIFT_LINE_CONFIRMED, REFERRAL_SUMMARY, SHARE_TEXT, WAITLIST_NO_PLACE } from '@/data/waitlist';
+import { FOUNDERS_CAP, GIFT_LINE_CONFIRMED, REFERRAL_SUMMARY, SHARE_TEXT } from '@/data/waitlist';
 ---
 <BaseLayout
   title="You're on the Hubbly waitlist"
@@ -65,7 +65,7 @@ import { FOUNDERS_CAP, GIFT_LINE_CONFIRMED, REFERRAL_SUMMARY, SHARE_TEXT, WAITLI
         <TrialNotice />
       </div>
       <p class="mt-4 text-base leading-relaxed text-navy">
-        {FOUNDERS_CAP} {WAITLIST_NO_PLACE}{' '}
+        {FOUNDERS_CAP}{' '}
         <a class="font-semibold text-coral-deep underline" href="/founders-terms">Founders' terms</a>.
       </p>
       <p class="mt-4 text-base leading-relaxed text-navy-soft">

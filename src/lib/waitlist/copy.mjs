@@ -35,7 +35,7 @@ export const TRIAL_LONG =
   TRIAL_AFTER;
 
 export const FOUNDERS_CAP =
-  "A lower founders' price may be available on launch day, if the store listing includes it.";
+  "We may offer a lower founders' price when Hubbly launches. If we do, you'll see it on the Google Play page before you subscribe. Joining the waitlist doesn't reserve a place.";
 
 export const WAITLIST_NO_PLACE = "Joining the waitlist doesn't reserve a founders' place.";
 

@@ -1,8 +1,9 @@
 // ============================================================
 // Pricing - subscription model (switched 2026-06-15). One
 // subscription covers the whole household on every device.
-// Founders' offer is described without a price, and only if the store
-// listing includes it. Optional one-time
+// Founders' offer is described without a price. It may be offered at
+// launch, and the Google Play page is where someone would see it.
+// Optional one-time
 // cosmetic/content packs on top - never required for any feature.
 // Keep in lockstep with the app repo's docs/PRICING.md.
 // ============================================================
@@ -35,7 +36,7 @@ export const PRICING_NOTE =
   'The price is shown in the app before you subscribe. Your app store shows the equivalent in your local currency. Optional extras (looks, quote packs and other one-time packs) are cosmetic treats - every family feature above is included in the subscription.';
 
 export const FOUNDERS_LINE =
-  "A lower founders' price may be available on launch day, if the store listing includes it.";
+  "We may offer a lower founders' price when Hubbly launches. If we do, you'll see it on the Google Play page before you subscribe. Joining the waitlist doesn't reserve a place.";
 
 export const MONTHLY_PLAN: PricingPlan = {
   id: 'monthly',

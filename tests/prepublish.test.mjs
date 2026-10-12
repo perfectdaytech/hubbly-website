@@ -135,7 +135,11 @@ test('the built waitlist, privacy and referral pages carry the required wording'
   assert.equal(privacy.includes('[ICO NUMBER]'), false);
   assert.ok(privacy.includes('We also use the sign-up time and IP address to check referrals for fake or self-referrals'));
   assert.ok(privacy.includes('the first part of the IP address (the network, not your device)'));
-  assert.ok(privacy.includes('We stop using it for referral checks on 31 January 2027'));
+  assert.equal(privacy.split('31 January 2027').length - 1, 1);
+  assert.ok(
+    privacy.includes('We stop using it for this check on 31 January 2027, after referral rewards are settled.'),
+  );
+  assert.equal(privacy.includes('We stop using it for referral checks on 31 January 2027'), false);
   assert.ok(privacy.includes('The full IP address stays in your MailerLite record only as proof of your consent'));
   assert.equal(privacy.includes('IPv4 /24 or IPv6 /64 prefix'), false);
   assert.equal(privacy.includes('duplicates and abuse'), false);

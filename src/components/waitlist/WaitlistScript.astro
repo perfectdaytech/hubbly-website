@@ -2,5 +2,8 @@
 import inlineSource from '@/scripts/waitlist-inline.js?raw';
 
 const safe = inlineSource.replaceAll('</', '<\\/');
+// The tag is split so Vite's dev dependency scan does not extract ${safe}
+// as a script. A literal <script> here is parsed as JavaScript and fails.
+const markup = '<' + 'script>' + safe + '<' + '/script>';
 ---
-<Fragment set:html={`<script>${safe}</script>`} />
+<Fragment set:html={markup} />

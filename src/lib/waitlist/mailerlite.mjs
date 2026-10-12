@@ -1,4 +1,8 @@
 // The only MailerLite write the referral tally is allowed to make.
+// Sign-up addresses are reduced to an IPv4 /24 or IPv6 /64 at read time.
+// The full address is not kept on the subscriber and is not written back.
+
+import { networkKey } from './count.mjs';
 
 /** @param {number} count */
 export function buildReferralCountBody(count) {
@@ -110,15 +114,17 @@ function createLiveClient(apiKey) {
 }
 
 /** @param {Record<string, any>} row */
-function mapSubscriber(row) {
+export function mapSubscriber(row) {
   const status = mapStatus(row.status);
+  const rawIp = row.ip_address ? String(row.ip_address) : '';
   return {
     id: String(row.id),
     email: String(row.email ?? ''),
     status,
     subscribedAt: String(row.subscribed_at ?? row.created_at ?? ''),
     confirmedAt: row.opted_in_at ? String(row.opted_in_at) : undefined,
-    ip: row.ip_address ? String(row.ip_address) : undefined,
+    unsubscribedAt: row.unsubscribed_at ? String(row.unsubscribed_at) : undefined,
+    ip: networkKey(rawIp),
     fields: {
       ref_code: row.fields?.ref_code ? String(row.fields.ref_code) : '',
       referred_by: row.fields?.referred_by ? String(row.fields.referred_by) : '',

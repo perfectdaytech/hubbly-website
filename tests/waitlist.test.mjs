@@ -1,9 +1,15 @@
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import test from 'node:test';
-import { buildWaitlistSubmitProps, errorProps, scrubAnalyticsUrl, shareClickProps } from '../src/lib/waitlist/analytics.mjs';
+import {
+  buildWaitlistSubmitProps,
+  errorProps,
+  scrubAnalyticsEvent,
+  scrubAnalyticsUrl,
+  shareClickProps,
+} from '../src/lib/waitlist/analytics.mjs';
 import { REF_ALPHABET, generateRefCode, isValidRefCode } from '../src/lib/waitlist/codes.mjs';
-import { tally } from '../src/lib/waitlist/count.mjs';
+import { networkKey, tally } from '../src/lib/waitlist/count.mjs';
 import {
   CHECKBOX_AGE,
   CHECKBOX_BETA,
@@ -12,13 +18,16 @@ import {
   CONFIRM_SUBJECT,
   FORM_STATEMENT,
   FORM_VERSION,
+  GIFT_LINE,
   REFERRAL_TERMS,
   SHARE_TEXT,
+  TRIAL_SHORT,
+  WAITLIST_NO_PLACE,
 } from '../src/lib/waitlist/copy.mjs';
-import { normalizeEmail } from '../src/lib/waitlist/email.mjs';
-import { buildReferralCountBody, planReferralCountRequest } from '../src/lib/waitlist/mailerlite.mjs';
+import { isAcceptableEmail, normalizeEmail } from '../src/lib/waitlist/email.mjs';
+import { buildReferralCountBody, mapSubscriber, planReferralCountRequest } from '../src/lib/waitlist/mailerlite.mjs';
 import { selectUnconfirmedForDeletion } from '../src/lib/waitlist/purge.mjs';
-import { findIssues } from '../scripts/prepublish-check.mjs';
+import { findAttributeIssues, findIssues } from '../scripts/prepublish-check.mjs';
 
 function subscriber(overrides = {}) {
   const fields = { ref_code: '', referred_by: '', referral_count: 0, ...(overrides.fields ?? {}) };
@@ -58,6 +67,12 @@ test('the page script uses the same alphabet and does not store anything', () =>
     assert.equal(script.includes(banned), false, banned);
   }
   assert.equal(script.includes('has_referrer'), true);
+  assert.equal(script.includes('toUpperCase()'), true);
+  assert.equal(script.includes('submitting'), true);
+  assert.equal(script.includes('.disabled = true'), true);
+  assert.equal(script.includes('length > 254'), true);
+  assert.equal(script.includes('#waitlist-email'), true);
+  assert.equal(script.includes('input[type="email"]'), false);
   assert.equal(script.includes('referred_by:'), false);
   assert.equal(script.includes("Please choose one option to continue."), true);
   assert.equal(script.includes("Please tick this box to continue."), true);
@@ -78,7 +93,7 @@ test('only a confirmed, non-fraud referral increases the count', () => {
   const good = subscriber({
     id: 'good',
     email: 'friend@example.com',
-    ip: '203.0.113.20',
+    ip: '192.0.2.20',
     fields: { referred_by: 'ABCDEFGH' },
   });
   const unconfirmed = subscriber({
@@ -86,13 +101,13 @@ test('only a confirmed, non-fraud referral increases the count', () => {
     email: 'later@example.com',
     status: 'unconfirmed',
     confirmedAt: undefined,
-    ip: '203.0.113.21',
+    ip: '192.0.2.21',
     fields: { referred_by: 'ABCDEFGH' },
   });
   const self = subscriber({
     id: 'self',
     email: 'janedoe+list@gmail.com',
-    ip: '203.0.113.22',
+    ip: '198.51.100.22',
     fields: { referred_by: 'ABCDEFGH' },
   });
   const duplicateA = subscriber({
@@ -152,17 +167,39 @@ test('a burst from one address is held for a hand check', () => {
   assert.equal(approved.burstHeld.length, 0);
 });
 
-test('an unsubscribed referral stops counting', () => {
+test('only an unsubscribe before the deadline stops a referral counting', () => {
   const referrer = subscriber({ id: 'referrer', email: 'owner@example.com', fields: { ref_code: 'ABCDEFGH' } });
-  const left = subscriber({
-    id: 'left',
-    email: 'left@example.com',
+  const early = subscriber({
+    id: 'early',
+    email: 'early@example.com',
     status: 'unsubscribed',
+    unsubscribedAt: '2026-12-01T12:00:00.000Z',
+    ip: '198.51.100.40',
     fields: { referred_by: 'ABCDEFGH' },
   });
-  const result = tally([referrer, left]);
-  assert.equal(result.counted, 0);
-  assert.ok(result.rejected.some((row) => row.id === 'left'));
+  const unknownTime = subscriber({
+    id: 'unknown-time',
+    email: 'unknown@example.com',
+    status: 'unsubscribed',
+    ip: '198.51.101.40',
+    fields: { referred_by: 'ABCDEFGH' },
+  });
+  const after = subscriber({
+    id: 'after',
+    email: 'after@example.com',
+    status: 'unsubscribed',
+    confirmedAt: '2026-11-01T10:05:00.000Z',
+    unsubscribedAt: '2027-01-05T00:00:00.000Z',
+    ip: '198.51.102.40',
+    fields: { referred_by: 'ABCDEFGH' },
+  });
+  const dropped = tally([referrer, early, unknownTime]);
+  assert.equal(dropped.counted, 0);
+  assert.ok(dropped.rejected.some((row) => row.id === 'early'));
+  assert.ok(dropped.rejected.some((row) => row.id === 'unknown-time'));
+  const kept = tally([referrer, after]);
+  assert.equal(kept.counted, 1);
+  assert.deepEqual(kept.writes, [{ id: 'referrer', referral_count: 1 }]);
 });
 
 test('five referrals stay at 4 until the hand check', () => {
@@ -171,7 +208,7 @@ test('five referrals stay at 4 until the hand check', () => {
     subscriber({
       id: `f${n}`,
       email: `friend${n}@example.com`,
-      ip: `203.0.113.8${n}`,
+      ip: `198.51.${100 + n}.8`,
       fields: { referred_by: 'ABCDEFGH' },
     }),
   );
@@ -181,6 +218,62 @@ test('five referrals stay at 4 until the hand check', () => {
   const approved = tally([referrer, ...friends], { approveRewards: true });
   assert.equal(approved.writes[0].referral_count, 5);
   assert.equal(approved.heldForReview.length, 0);
+});
+
+test('the same network is an IPv4 /24 or an IPv6 /64, and the full address is not kept', () => {
+  const referrer = subscriber({ id: 'referrer', email: 'owner@example.com', ip: '203.0.113.10', fields: { ref_code: 'ABCDEFGH' } });
+  const v4 = [1, 2, 3].map((n) =>
+    subscriber({
+      id: `v4-${n}`,
+      email: `v4${n}@example.com`,
+      subscribedAt: `2026-11-02T10:0${n}:00.000Z`,
+      confirmedAt: `2026-11-02T10:0${n}:00.000Z`,
+      ip: `5.5.5.${n}`,
+      fields: { referred_by: 'ABCDEFGH' },
+    }),
+  );
+  const v6 = ['1a', '2a', '3a'].map((suffix, index) =>
+    subscriber({
+      id: `v6-${suffix}`,
+      email: `v6${suffix}@example.com`,
+      subscribedAt: `2026-11-03T10:0${index + 1}:00.000Z`,
+      confirmedAt: `2026-11-03T10:0${index + 1}:00.000Z`,
+      ip: `2a00:23c4:1:2::${suffix}`,
+      fields: { referred_by: 'ABCDEFGH' },
+    }),
+  );
+  const separate = [1, 2, 3].map((n) =>
+    subscriber({
+      id: `sep-${n}`,
+      email: `sep${n}@example.com`,
+      subscribedAt: `2026-11-04T10:0${n}:00.000Z`,
+      confirmedAt: `2026-11-04T10:0${n}:00.000Z`,
+      ip: `2a00:23c4:${n}:9::1`,
+      fields: { referred_by: 'ABCDEFGH' },
+    }),
+  );
+  assert.equal(tally([referrer, ...v4]).burstHeld.length, 3);
+  assert.equal(tally([referrer, ...v6]).burstHeld.length, 3);
+  assert.equal(tally([referrer, ...separate]).counted, 3);
+  assert.equal(networkKey('5.5.5.1'), 'v4:5.5.5');
+  assert.equal(networkKey('5.5.5.1') === '5.5.5.1', false);
+  assert.equal(networkKey('::ffff:5.5.5.9'), 'v4:5.5.5');
+  assert.equal(networkKey('2a00:23c4:1:2::1a'), networkKey('2a00:23c4:1:2::3a'));
+  const mapped = mapSubscriber({
+    id: '1',
+    email: 'a@example.com',
+    status: 'unsubscribed',
+    subscribed_at: '2026-11-01T10:00:00.000Z',
+    opted_in_at: '2026-11-01T10:05:00.000Z',
+    unsubscribed_at: '2027-01-05T00:00:00.000Z',
+    ip_address: '2a00:23c4:1:2::1a',
+    fields: {},
+  });
+  assert.equal(mapped.ip, 'v6:2a00:23c4:0001:0002');
+  assert.equal(mapped.unsubscribedAt, '2027-01-05T00:00:00.000Z');
+  assert.equal(JSON.stringify(mapped).includes('::1a'), false);
+  const report = JSON.stringify({ writes: [], burstHeld: [{ id: 'v4-1', referrerId: 'referrer' }] });
+  assert.equal(report.includes('5.5.5.1'), false);
 });
 
 test('the free-plan flag counts unconfirmed contacts and does not buy anything', () => {
@@ -245,6 +338,18 @@ test('analytics payloads cannot carry a referral code or an email address', () =
   assert.equal(scrubbed.includes('ref='), false);
   assert.equal(scrubbed.includes('ABCDEFGH'), false);
   assert.equal(scrubbed.includes('utm_source=instagram'), true);
+  const event = {
+    properties: {
+      $current_url: 'https://gethubbly.app/confirmed?code=ABCDEFGH',
+      $el_text: 'Share https://gethubbly.app/waitlist?ref=ABCDEFGH today',
+      $elements: [{ attr__href: 'https://gethubbly.app/waitlist?REF=abcdefgh&utm_source=instagram' }],
+    },
+  };
+  scrubAnalyticsEvent(event);
+  const encoded = JSON.stringify(event);
+  assert.equal(encoded.includes('ABCDEFGH'), false);
+  assert.equal(encoded.includes('abcdefgh'), false);
+  assert.equal(encoded.includes('utm_source=instagram'), true);
 });
 
 test('consent wording is saved with the form version', () => {
@@ -260,6 +365,10 @@ test('consent wording is saved with the form version', () => {
   assert.ok(snapshot.includes(CHECKBOX_AGE));
   assert.ok(snapshot.includes(CHECKBOX_BETA));
   assert.ok(snapshot.includes(CHECKBOX_TIPS));
+  assert.ok(snapshot.includes(GIFT_LINE));
+  assert.ok(snapshot.includes(WAITLIST_NO_PLACE));
+  assert.ok(snapshot.includes(TRIAL_SHORT));
+  assert.ok(snapshot.includes('[REWARD CHOICE] 3 confirmed referrals: Chore Cards.'));
   assert.ok(REFERRAL_TERMS.includes('Chore Cards'));
   assert.ok(REFERRAL_TERMS.includes('[REWARD CHOICE]'));
   assert.ok(REFERRAL_TERMS.includes('same internet connection'));
@@ -281,4 +390,25 @@ test('the pre-publish scanner rejects retired wording', () => {
   assert.ok(findIssues('PLAY_URL', 'sample').some((issue) => issue.includes('PLAY_URL')));
   assert.ok(findIssues('30-day free trial, then £4.99 a month.', 'sample').some((issue) => issue.includes('4.99')));
   assert.equal(findIssues('524.992188', 'sample').length, 0);
+  const encoded = '<a href="mailto:%7BCONTACT.privacy%7D">privacy</a>';
+  assert.ok(findAttributeIssues(encoded, 'privacy/index.html').some((issue) => issue.includes('curly brace')));
+  const literal = '<a href="mailto:privacy@gethubbly.app">privacy</a><a href="https://ico.org.uk/make-a-complaint/">ICO</a>';
+  assert.equal(findAttributeIssues(literal, 'privacy/index.html').length, 0);
+  const confirm = '<a href="{$url}">Confirm your email</a><a href="{$unsubscribe}">Unsubscribe</a>';
+  assert.equal(findAttributeIssues(confirm, 'emails/00-confirm.html').length, 0);
+  assert.equal(findIssues(confirm, 'emails/00-confirm.html').length, 0);
+});
+
+test('waitlist addresses allow accented local parts and stop at 254 characters', () => {
+  assert.equal(isAcceptableEmail('zoë@exämple.com'), true);
+  assert.equal(isAcceptableEmail('friend@example.com'), true);
+  assert.equal(isAcceptableEmail('a@b'), true);
+  for (const bad of ['abc', 'a@', '@b.com', 'a b@c.com', 'x@y..com', `${'a'.repeat(300)}@example.com`]) {
+    assert.equal(isAcceptableEmail(bad), false, bad);
+  }
+  const form = readFileSync(new URL('../src/components/waitlist/WaitlistForm.astro', import.meta.url), 'utf8');
+  assert.equal(form.includes('maxlength="254"'), true);
+  assert.equal(form.includes('outline-none'), false);
+  const confirm = readFileSync(new URL('../src/emails/00-confirm.html', import.meta.url), 'utf8');
+  assert.equal(confirm.includes('href="{$url}"'), true);
 });

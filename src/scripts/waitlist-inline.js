@@ -10,6 +10,28 @@
     return true;
   }
 
+  function acceptableEmail(value) {
+    var email = String(value || '').trim();
+    if (email.normalize) email = email.normalize('NFC');
+    if (!email || email.length > 254) return false;
+    if (/\s/.test(email)) return false;
+    var at = email.indexOf('@');
+    if (at < 1 || at !== email.lastIndexOf('@')) return false;
+    var local = email.slice(0, at);
+    var domain = email.slice(at + 1);
+    if (!local || local.length > 64 || !domain || domain.length > 253) return false;
+    if (local.charAt(0) === '.' || local.charAt(local.length - 1) === '.' || local.indexOf('..') !== -1) return false;
+    if (domain.charAt(0) === '.' || domain.charAt(domain.length - 1) === '.' || domain.indexOf('..') !== -1) return false;
+    if (/[<>()[\]\\,;:"]/.test(email)) return false;
+    var labels = domain.split('.');
+    for (var i = 0; i < labels.length; i++) {
+      var label = labels[i];
+      if (!label || label.length > 63) return false;
+      if (label.charAt(0) === '-' || label.charAt(label.length - 1) === '-') return false;
+    }
+    return true;
+  }
+
   function randomCode() {
     var out = '';
     var limit = ALPHABET.length * Math.floor(256 / ALPHABET.length);
@@ -23,11 +45,30 @@
     return out;
   }
 
+  function queryValue(name) {
+    try {
+      var params = new URLSearchParams(window.location.search);
+      var found = '';
+      params.forEach(function (value, key) {
+        if (!found && key.toLowerCase() === name) found = value;
+      });
+      return found;
+    } catch (e) {
+      return '';
+    }
+  }
+
   function stripParam(name) {
     try {
       var url = new URL(window.location.href);
-      if (!url.searchParams.has(name)) return;
-      url.searchParams.delete(name);
+      var keys = [];
+      url.searchParams.forEach(function (_, key) {
+        if (key.toLowerCase() === name) keys.push(key);
+      });
+      if (!keys.length) return;
+      keys.forEach(function (key) {
+        url.searchParams.delete(key);
+      });
       history.replaceState(null, '', url.pathname + url.search + url.hash);
     } catch (e) {
       /* leave the page usable if the URL cannot be parsed */
@@ -52,7 +93,7 @@
   var referred = document.getElementById('referred_by');
   if (referred) {
     try {
-      var ref = new URLSearchParams(window.location.search).get('ref') || '';
+      var ref = queryValue('ref').toUpperCase();
       if (valid(ref)) referred.value = ref;
     } catch (e) {
       /* ignore a bad query string */
@@ -72,7 +113,7 @@
   var shareOut = document.getElementById('share-url');
   if (shareOut) {
     try {
-      var code = new URLSearchParams(window.location.search).get('code') || '';
+      var code = queryValue('code').toUpperCase();
       if (valid(code)) {
         var link = 'https://gethubbly.app/waitlist?ref=' + code;
         shareOut.textContent = link;
@@ -99,18 +140,14 @@
 
   document.querySelectorAll('form[data-waitlist-form]').forEach(function (form) {
     var age = form.querySelector('input[name="fields[age_18]"]');
-    var email = form.querySelector('input[type="email"]');
+    var email = form.querySelector('#waitlist-email');
     var shown = false;
 
     function applyMessages() {
       var stores = form.querySelectorAll('input[name="fields[store_pref]"]');
       var picked = form.querySelector('input[name="fields[store_pref]"]:checked');
       if (email) {
-        var value = String(email.value || '').trim();
-        email.setCustomValidity('');
-        if (!value || email.validity.typeMismatch || email.validity.valueMissing) {
-          email.setCustomValidity('Enter an email address to continue.');
-        }
+        email.setCustomValidity(acceptableEmail(email.value) ? '' : 'Enter an email address to continue.');
       }
       for (var i = 0; i < stores.length; i++) {
         stores[i].setCustomValidity(!picked && i === 0 ? 'Please choose one option to continue.' : '');
@@ -150,10 +187,18 @@
       true,
     );
 
+    var submitting = false;
     form.addEventListener('submit', function (ev) {
+      if (submitting) {
+        ev.preventDefault();
+        return;
+      }
       var hp = form.querySelector('[data-hp]');
       if (hp && hp.value) {
         ev.preventDefault();
+        submitting = true;
+        var honeyButton = form.querySelector('button[type="submit"]');
+        if (honeyButton) honeyButton.disabled = true;
         emit('waitlist_error', { reason: 'honeypot' });
         window.location.assign('/nearly');
         return;
@@ -161,20 +206,14 @@
       if (hp) hp.removeAttribute('name');
 
       var store = form.querySelector('input[name="fields[store_pref]"]:checked');
-      if (email && !email.value.trim()) {
+      if (email && !acceptableEmail(email.value)) {
         ev.preventDefault();
         email.setCustomValidity('Enter an email address to continue.');
         showError(form, 'Enter an email address to continue.', email);
-        emit('waitlist_error', { reason: 'missing_email' });
+        emit('waitlist_error', { reason: email.value.trim() ? 'invalid_email' : 'missing_email' });
         return;
       }
       if (email) email.setCustomValidity('');
-      if (email && !email.checkValidity()) {
-        ev.preventDefault();
-        showError(form, 'Enter an email address to continue.', email);
-        emit('waitlist_error', { reason: 'invalid_email' });
-        return;
-      }
       if (!store) {
         ev.preventDefault();
         var firstStore = form.querySelector('input[name="fields[store_pref]"]');
@@ -191,6 +230,9 @@
       }
       if (age) age.setCustomValidity('');
       showError(form, '', null);
+      submitting = true;
+      var submitButton = form.querySelector('button[type="submit"]');
+      if (submitButton) submitButton.disabled = true;
 
       var referredField = form.querySelector('#referred_by');
       var beta = form.querySelector('input[name="fields[beta_optin]"]');

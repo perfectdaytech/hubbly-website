@@ -66,7 +66,7 @@ const year = new Date().getFullYear();
                       href={link.href}
                       target={link.external ? '_blank' : undefined}
                       rel={link.external ? 'noopener noreferrer' : undefined}
-                      class="inline-flex items-center gap-1 text-[0.97rem] text-cream/75 transition-colors hover:text-coral"
+                      class="inline-flex items-center gap-1 text-[0.97rem] text-cream transition-colors hover:text-coral"
                     >
                       {link.label}
                       {link.external && <Icon name="arrow-up-right" size={13} class="opacity-60" />}
@@ -81,19 +81,19 @@ const year = new Date().getFullYear();
     </div>
 
     <!-- bottom bar -->
-    <div class="border-t border-white/10 py-7 text-sm text-cream/55">
+    <div class="border-t border-white/10 py-7 text-sm text-cream">
       <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <p>
           &copy; {year} {COMPANY.legalName}. Made with
           <span class="text-coral">{SITE.heart}</span> for busy families.
         </p>
         <div class="flex flex-wrap items-center gap-x-5 gap-y-2">
-          <a href="/privacy" class="transition-colors hover:text-coral">Privacy</a>
-          <a href="/terms" class="transition-colors hover:text-coral">Terms</a>
-          <a href="/cookies" class="transition-colors hover:text-coral">Cookies</a>
+          <a href="/privacy" class="text-cream transition-colors hover:text-coral">Privacy</a>
+          <a href="/terms" class="text-cream transition-colors hover:text-coral">Terms</a>
+          <a href="/cookies" class="text-cream transition-colors hover:text-coral">Cookies</a>
         </div>
       </div>
-      <p class="mt-4 max-w-3xl leading-relaxed text-cream/70">
+      <p class="mt-4 max-w-3xl leading-relaxed text-cream">
         PerfectDay Technologies Ltd, registered in England and Wales, company no. 16952922, 71-75 Shelton Street, Covent Garden, London, WC2H 9JQ, United Kingdom.
       </p>
     </div>

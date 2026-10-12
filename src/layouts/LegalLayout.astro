@@ -17,6 +17,8 @@ interface Frontmatter {
   updated?: string;
   intro?: string;
   eyebrow?: string;
+  /** Mailto shown under the document. Terms uses hello@. */
+  contact?: string;
 }
 interface Props {
   frontmatter: Frontmatter;
@@ -26,6 +28,7 @@ interface Props {
 const { frontmatter, headings } = Astro.props;
 const toc = headings.filter((h) => h.depth === 2);
 const updated = frontmatter.updated ?? COMPANY.legalEffectiveDateLabel;
+const questionsEmail = frontmatter.contact ?? CONTACT.support;
 const pathname = Astro.url.pathname;
 ---
 <BaseLayout
@@ -109,7 +112,7 @@ const pathname = Astro.url.pathname;
         <hr />
         <p class="text-sm text-navy-soft">
           Questions about this document? Email
-          <a href={`mailto:${CONTACT.support}`}>{CONTACT.support}</a>.
+          <a href={`mailto:${questionsEmail}`}>{questionsEmail}</a>.
           This page was last updated on {updated}.
         </p>
       </article>

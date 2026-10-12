@@ -31,9 +31,11 @@ export const COMPANY = {
 } as const;
 
 export const CONTACT = {
-  // Privacy and data-rights mail goes to privacy@. Other routes stay on contact@ until a mailbox split is confirmed.
+  // Privacy and data-rights mail goes to privacy@. The terms page uses hello@.
+  // Other routes stay on contact@ until a mailbox split is confirmed.
   general: 'contact@gethubbly.app',
   privacy: 'privacy@gethubbly.app',
+  hello: 'hello@gethubbly.app',
   support: 'contact@gethubbly.app',
   safety: 'contact@gethubbly.app',
 } as const;

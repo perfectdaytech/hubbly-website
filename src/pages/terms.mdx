@@ -4,6 +4,7 @@ title: Terms of Use
 description: "The terms for using the Hubbly family-organiser app: eligibility, family accounts, the free trial, the household subscription, refunds, acceptable use and your legal rights."
 eyebrow: Legal
 updated: 12 October 2026
+contact: hello@gethubbly.app
 intro: "These terms are the agreement between your family and Hubbly. They are written in plain English so you know where you stand before you start."
 ---
 import Callout from '../components/legal/Callout.astro';
@@ -13,7 +14,7 @@ import { COMPANY, CONTACT, CONTROLLER_STATEMENT, SITE } from '@/data/site';
 
 These Terms of Use ("Terms") are a legal agreement between you and {CONTROLLER_STATEMENT} ("Hubbly", "we", "us" or "our").
 
-They govern your use of the **Hubbly** mobile app and the website at [gethubbly.app]({SITE.url}). By downloading, installing or using Hubbly, you confirm that you have read, understood and agree to these Terms and to our [Privacy Policy](/privacy). If you do not agree, please do not use Hubbly.
+They govern your use of the **Hubbly** mobile app and the website at <a href={SITE.url}>gethubbly.app</a>. By downloading, installing or using Hubbly, you confirm that you have read, understood and agree to these Terms and to our [Privacy Policy](/privacy). If you do not agree, please do not use Hubbly.
 
 ## 2. Eligibility
 
@@ -166,7 +167,7 @@ These Terms, and any dispute or claim arising out of or in connection with them,
 
 ## 17. Dispute resolution
 
-If you have a problem, please **contact us first** at [{CONTACT.support}](mailto:{CONTACT.support}); most issues can be resolved quickly and informally, and we genuinely want to help.
+If you have a problem, please **contact us first** at <a href={`mailto:${CONTACT.hello}`}>{CONTACT.hello}</a>; most issues can be resolved quickly and informally, and we genuinely want to help.
 
 If a dispute cannot be resolved that way, you and we agree to submit to the **courts of England & Wales**. If you are a consumer, you may also be entitled to bring proceedings in the courts of the country where you live, and you keep any mandatory protections available to you under your local law.
 
@@ -185,6 +186,6 @@ Questions about these Terms? Contact us:
 - **Company:** {COMPANY.legalName}
 - **Registered office:** {COMPANY.registeredAddress}
 - **Company number:** {COMPANY.registrationNumber}
-- **Email:** [{CONTACT.support}](mailto:{CONTACT.support})
+- **Email:** <a href={`mailto:${CONTACT.hello}`}>{CONTACT.hello}</a>
 
 These Terms are effective from **5 July 2026**.

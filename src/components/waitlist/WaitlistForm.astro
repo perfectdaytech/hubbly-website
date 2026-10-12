@@ -14,7 +14,7 @@ import {
 } from '@/data/waitlist';
 
 const inputClass =
-  'mt-2 w-full rounded-2xl border border-navy/15 bg-white px-4 py-3 text-base text-navy shadow-soft outline-none';
+  'mt-2 w-full rounded-2xl border border-navy/15 bg-white px-4 py-3 text-base text-navy shadow-soft';
 ---
 <form
   id="waitlist-form"
@@ -45,8 +45,12 @@ const inputClass =
     <input
       id="waitlist-email"
       name="fields[email]"
-      type="email"
+      type="text"
+      inputmode="email"
       autocomplete="email"
+      autocapitalize="none"
+      spellcheck="false"
+      maxlength="254"
       required
       class={inputClass}
       aria-describedby="form-errors"
@@ -124,7 +128,7 @@ const inputClass =
 
   <button
     type="submit"
-    class="mt-6 inline-flex w-full items-center justify-center rounded-full bg-coral-deep px-7 py-3.5 font-display text-base font-semibold text-white shadow-coral"
+    class="mt-6 inline-flex w-full items-center justify-center rounded-full bg-coral-deep px-7 py-3.5 font-display text-base font-semibold text-white shadow-coral disabled:cursor-not-allowed disabled:opacity-60"
   >
     Join the waitlist
   </button>

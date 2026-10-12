@@ -176,13 +176,6 @@
     color: #fff;
   }
 
-  /* Visible, on-brand focus ring for keyboard users. */
-  :focus-visible {
-    outline: 3px solid var(--color-coral);
-    outline-offset: 3px;
-    border-radius: 4px;
-  }
-
   /* Smooth cross-document page transitions — zero JavaScript. */
   @view-transition {
     navigation: auto;
@@ -192,6 +185,20 @@
     max-width: 100%;
     height: auto;
   }
+}
+
+/*
+  WCAG 2.2 focus appearance: at least a 2px perimeter, and 3:1 between
+  the focused and unfocused pixels. Kept outside Tailwind's layers so a
+  utility shadow cannot remove it. Coral on cream is under 3:1, and a
+  navy ring disappears on the navy footer, so the ring is two bands:
+  cream against navy, navy against cream.
+*/
+:focus-visible {
+  outline: 3px solid var(--color-navy);
+  outline-offset: 3px;
+  box-shadow: 0 0 0 3px var(--color-cream);
+  border-radius: 4px;
 }
 
 /* ---- Component / utility helpers ------------------------------------ */

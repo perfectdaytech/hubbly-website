@@ -27,6 +27,13 @@ export const BANNED = [
 /** Tokens that stay in the draft until the owner decides. Any one fails this scan. */
 export const OPEN_PLACEHOLDERS = ['[REWARD CHOICE]'];
 
+/**
+ * Tags the emails actually send.
+ * {$url} is the confirm link in the double opt-in email (MailerLite documents
+ * it as the campaign web version; there is no separate confirmation tag).
+ * {$unsubscribe} is the visible unsubscribe link.
+ * {$fields.ref_code} is the share-link code in the welcome email.
+ */
 export const ALLOWED_MERGE_TAGS = ['{$unsubscribe}', '{$url}', '{$fields.ref_code}'];
 
 export const REWARD_PDFS = ['chore-cards.pdf', 'colour-in-mascot.pdf'];
@@ -59,6 +66,47 @@ export function visibleText(html) {
     .replace(/&#39;|&apos;/g, "'")
     .replace(/&quot;/g, '"')
     .replace(/&[a-z]+;/gi, ' ');
+}
+
+/**
+ * Percent-encoded braces in hrefs and other attributes survive the visible-text
+ * scan, because the tags are stripped before the brace check.
+ * @param {string} raw
+ */
+export function decodeAttribute(raw) {
+  let value = raw;
+  for (let pass = 0; pass < 2; pass++) {
+    try {
+      const next = decodeURIComponent(value);
+      if (next === value) break;
+      value = next;
+    } catch {
+      break;
+    }
+  }
+  return value;
+}
+
+/**
+ * @param {string} html
+ * @param {string} label
+ */
+export function findAttributeIssues(html, label) {
+  /** @type {string[]} */
+  const issues = [];
+  const tags = html.match(/<[^>]+>/g) ?? [];
+  for (const tag of tags) {
+    for (const attr of tag.matchAll(/[\w:-]+\s*=\s*(?:"([^"]*)"|'([^']*)')/g)) {
+      const decoded = decodeAttribute(attr[1] ?? attr[2] ?? '');
+      let stripped = decoded;
+      for (const merge of ALLOWED_MERGE_TAGS) stripped = stripped.split(merge).join('');
+      if (stripped.includes('{') || stripped.includes('}')) {
+        issues.push(`${label}: contains a curly brace in a link`);
+        return issues;
+      }
+    }
+  }
+  return issues;
 }
 
 /**
@@ -151,6 +199,7 @@ export async function scanPublished(distDir, emailDir) {
     const label = path.relative(distDir, file);
     issues.push(...findIssues(visibleText(html), label));
     issues.push(...findHiddenIssues(html, label));
+    issues.push(...findAttributeIssues(html, label));
   }
   const emails = await readdir(emailDir);
   for (const name of emails) {

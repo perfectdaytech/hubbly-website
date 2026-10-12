@@ -23,6 +23,10 @@ test('the draft build is blocked until open placeholders are removed', async () 
     issues.some((issue) => issue.includes('emails/01-welcome.html: contains a curly brace')),
     false,
   );
+  assert.equal(issues.some((issue) => issue.includes('curly brace in a link')), false);
+  const confirm = readFileSync('src/emails/00-confirm.html', 'utf8');
+  assert.equal(confirm.includes('href="{$url}"'), true);
+  assert.equal(issues.some((issue) => issue.includes('emails/00-confirm.html')), false);
   assert.equal(issues.some((issue) => issue.includes('referral reward PDF')), false);
   assert.deepEqual(await findRewardPdfs('dist'), []);
 });
@@ -38,8 +42,11 @@ test('a reward PDF in the build fails the scan', async () => {
 });
 
 test('the built waitlist, privacy and referral pages carry the required wording', () => {
+  const privacyHtml = readFileSync('dist/privacy/index.html', 'utf8');
+  const cookiesHtml = readFileSync('dist/cookies/index.html', 'utf8');
+  const termsHtml = readFileSync('dist/terms/index.html', 'utf8');
   const waitlist = visibleText(readFileSync('dist/waitlist/index.html', 'utf8'));
-  const privacy = visibleText(readFileSync('dist/privacy/index.html', 'utf8'));
+  const privacy = visibleText(privacyHtml);
   const referral = visibleText(readFileSync('dist/referral-terms/index.html', 'utf8'));
   const founders = visibleText(readFileSync('dist/founders-terms/index.html', 'utf8'));
   const freebies = readFileSync('dist/freebies/index.html', 'utf8');
@@ -55,6 +62,15 @@ test('the built waitlist, privacy and referral pages carry the required wording'
   assert.ok(waitlist.includes('[REWARD CHOICE]'));
   assert.ok(privacy.includes('31 July 2027'));
   assert.ok(privacy.includes('within 21 days'));
+  assert.equal(privacyHtml.includes('%7B'), false);
+  assert.equal(cookiesHtml.includes('%7B'), false);
+  assert.equal(termsHtml.includes('%7B'), false);
+  assert.equal(privacyHtml.includes('mailto:privacy@gethubbly.app'), true);
+  assert.equal(privacyHtml.includes('https://ico.org.uk/make-a-complaint/'), true);
+  assert.equal(privacyHtml.includes('https://gethubbly.app'), true);
+  assert.equal(cookiesHtml.includes('mailto:privacy@gethubbly.app'), true);
+  assert.ok((termsHtml.match(/mailto:hello@gethubbly.app/g) || []).length >= 4);
+  assert.equal(termsHtml.includes('mailto:%7BCONTACT.support%7D'), false);
   assert.ok(privacy.includes('ZC144477'));
   assert.equal(privacy.includes('[ICO NUMBER]'), false);
   assert.ok(privacy.includes('legitimate interest in running the referral rewards fairly'));

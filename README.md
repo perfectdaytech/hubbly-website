@@ -226,18 +226,30 @@ start that plan.
    Counts of 5 or more stay at 4 until you pass `--approve-rewards` after a
    hand check. The script never sends email.
 10. **Weekly clean.** `node scripts/purge-unconfirmed.mjs` lists unconfirmed
-   contacts older than 14 days, and any stored IPv4 /24 or IPv6 /64 prefix
-   that the retention schedule says to delete.
-   `node scripts/purge-unconfirmed.mjs --confirm` deletes them. Run it weekly.
-   The prefix is used only for the referral fraud hand check. Unconfirmed
-   prefixes go with that 14-day purge. Every remaining prefix is deleted by
-   31 July 2027, the hard stop in the privacy notice.
+    contacts older than 14 days, and any stored network prefix the schedule
+    says to remove. `node scripts/purge-unconfirmed.mjs --confirm` removes
+    them. Run it weekly. The full IP stays in MailerLite as proof of consent
+    until the waitlist record is deleted. The tally uses only the network
+    prefix, in memory, and does not write it back. Unconfirmed prefixes go
+    with the 14-day purge. The weekly run that falls in the 7 days before
+    31 January 2027 removes every remaining prefix, so none are left after
+    that date. A run after that date removes them too. After 31 January 2027
+    the tally drops the prefix and does not run the same-network check.
+    Delete local MailerLite exports (they contain full IPs) after each tally,
+    and all of them by 31 Jan 2027. Don't store exports in the repo or shared
+    drives.
     A weekly run means an address older than 14 days is gone within 21 days,
     which is the public promise.
 11. **Reward PDFs** are `calm-down-cards.pdf` (3 confirmed referrals) and
-    `family-adventure-bingo.pdf` (5). Ava supplies the final files before
-    go-live. Do not put them in `public/`. They go out only in the reward
-    emails (`src/emails/09-reward-3.html` and `src/emails/10-reward-5.html`).
+    `family-adventure-bingo.pdf` (5). Ava supplies the real files under
+    `rewards/` before go-live. This repo does not generate them. Do not put
+    them in `public/`. MailerLite Free cannot attach a file: its editors add
+    a hosted link instead. Send `src/emails/09-reward-3.html` and
+    `src/emails/10-reward-5.html` by hand from hello@gethubbly.app with the
+    PDF attached. Never use a public or MailerLite-hosted link. The
+    pre-publish scan fails emails 09 and 10 while either file is missing
+    from `rewards/`, or while either file fails the content check (the PDF
+    must contain its title).
     Chore Cards and the colour-in mascot sheets stay in the public library
     (`public/printables/`). The Calmer Mornings Starter is the gift for every
     confirmed sign-up, and it is in the library.
@@ -248,8 +260,12 @@ start that plan.
 
 `npm test` type-checks, builds, and runs the unit tests plus the pre-publish
 scan. It expects the scan to still find `PLAY_URL` and `APP_STORE_URL`.
-`[REWARD CHOICE]` is closed. The scan also fails on a pound sign. `npm run build` fails while those remain, because `postbuild`
-runs the same scan. `npm run test:unit` runs the logic tests without a build.
+`[REWARD CHOICE]` is closed. The scan also fails on a pound sign, and emails
+09 and 10 fail while `rewards/` is missing either reward PDF or a PDF fails
+the content check. Draft mode (`node scripts/prepublish-check.mjs`) ignores
+`PLAY_URL` and `APP_STORE_URL` and fails on anything else. Launch mode
+(`HUBBLY_SCAN=launch`) fails on every finding, including those two tokens.
+`npm run lint` runs ESLint. `npm run test:unit` runs the logic tests without a build.
 
 ### Spec section 5.2
 
@@ -271,7 +287,7 @@ runs the same scan. `npm run test:unit` runs the logic tests without a build.
 | Legal entity confirmed | Met. `CONTROLLER_STATEMENT` in `src/lib/waitlist/copy.mjs`, used in the footer, privacy page, terms, founders' terms, referral terms and email drafts. |
 | ICO fee and registration number | Met. Registration number ZC144477 is on `/privacy` section 16. |
 | Founders' Option B chosen, and Hubbly confirmed as the subscription app | Copy is Option B, on `/founders-terms` and the pricing section. The owner's confirmation, and Brick/Elon's confirmation that Hubbly is the subscription app, are still open. MailerLite stays on Free, flag at about 200. |
-| Apple promo offer or offer code, and Play multi-phase offer, confirmed buildable | Open. The founders' page says the offer is made only if the store listing has it on launch day. |
+| Apple promo offer or offer code, and Play multi-phase offer, confirmed buildable | Open. The public line is: "A lower founders' price may be available on launch day, if the store listing includes it." |
 | Automated scan for `{`, `PENDING`, `[TO CONFIRM`, `[HOLD`, `[UNVERIFIED`, `households`, `forever`, and the retired trial line | Met for public pages and email drafts. `scripts/prepublish-check.mjs`, run by `npm test`. |
 | MailerLite DPA, dated PDF, sub-processors, UK transfer cover | Open. Owner step. Not accepted from this repo. |
 | Form wording matches section 3, boxes unticked, dated HTML saved | Met. `src/components/waitlist/WaitlistForm.astro` and `src/content/consent/waitlist-form-2026-10-12.html`. |

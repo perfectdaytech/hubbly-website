@@ -39,15 +39,37 @@ export function storedNetworkPrefix(subscriber) {
   return String(value);
 }
 
+/** One weekly purge. The last run before the cutoff has to clear every prefix. */
+export const PREFIX_PURGE_WEEK_MS = 7 * 24 * 60 * 60 * 1000;
+
+/**
+ * True after 31 January 2027. The tally must not use the prefix after this.
+ * @param {Date} [now]
+ */
+export function fraudCheckClosed(now = new Date()) {
+  return now.getTime() > Date.parse(NETWORK_PREFIX_PURGE_AT);
+}
+
+/**
+ * True when this weekly run is the last one that can still finish by the
+ * cutoff, or the cutoff has already passed. Stored prefixes go on that run.
+ * @param {Date} [now]
+ */
+export function weeklyPrefixPurgeDue(now = new Date()) {
+  const cutoff = Date.parse(NETWORK_PREFIX_PURGE_AT);
+  return now.getTime() >= cutoff || now.getTime() + PREFIX_PURGE_WEEK_MS >= cutoff;
+}
+
 /**
  * Prefixes kept only for the referral fraud check.
- * Unconfirmed ones go with the 14-day purge. Every other stored prefix
- * goes at the privacy notice hard stop, 31 July 2027.
+ * Unconfirmed ones go with the 14-day purge. Every remaining prefix goes on
+ * the weekly run that falls inside the week before 31 January 2027, so none
+ * are left after that date.
  * @param {Array<Record<string, any>>} subscribers
  * @param {Date} [now]
  */
 export function selectStoredPrefixesForDeletion(subscribers, now = new Date()) {
-  const scheduleEnded = now.getTime() > Date.parse(NETWORK_PREFIX_PURGE_AT);
+  const scheduleEnded = weeklyPrefixPurgeDue(now);
   const unconfirmedIds = new Set(selectUnconfirmedForDeletion(subscribers, now).map((row) => row.id));
   return subscribers.filter((subscriber) => {
     if (!storedNetworkPrefix(subscriber)) return false;

@@ -3,8 +3,14 @@ import { mkdtempSync, readFileSync, readdirSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import path from 'node:path';
 import test from 'node:test';
-import { PRIVACY_WAITLIST, REFERRAL_TERMS } from '../src/lib/waitlist/copy.mjs';
-import { findRewardPdfs, scanPublished, visibleText } from '../scripts/prepublish-check.mjs';
+import { PRIVACY_WAITLIST, REFERRAL_TERMS, TRIAL_SHORT } from '../src/lib/waitlist/copy.mjs';
+import {
+  blockingIssues,
+  findRewardPdfs,
+  rewardSourceIssues,
+  scanPublished,
+  visibleText,
+} from '../scripts/prepublish-check.mjs';
 
 test('the draft build is blocked until open placeholders are removed', async () => {
   const issues = await scanPublished('dist', 'src/emails');
@@ -29,7 +35,13 @@ test('the draft build is blocked until open placeholders are removed', async () 
   const confirm = readFileSync('src/emails/00-confirm.html', 'utf8');
   assert.equal(confirm.includes('href="{$url}"'), true);
   assert.equal(issues.some((issue) => issue.includes('emails/00-confirm.html')), false);
-  assert.equal(issues.some((issue) => issue.includes('referral reward PDF')), false);
+  assert.equal(issues.some((issue) => issue.includes('referral reward PDF is public')), false);
+  assert.ok(issues.some((issue) => issue.includes('emails/09-reward-3.html') && issue.includes('missing')));
+  assert.ok(issues.some((issue) => issue.includes('emails/10-reward-5.html') && issue.includes('missing')));
+  const draftBlocking = blockingIssues(issues, 'draft');
+  assert.equal(draftBlocking.some((issue) => issue.includes('PLAY_URL')), false);
+  assert.ok(draftBlocking.some((issue) => issue.includes('emails/09-reward-3.html')));
+  assert.ok(blockingIssues(issues, 'launch').some((issue) => issue.includes('PLAY_URL')));
   assert.deepEqual(await findRewardPdfs('dist'), []);
 });
 
@@ -40,6 +52,33 @@ test('encoded braces in an email attribute fail the scan', async () => {
   writeFileSync(path.join(emails, '00.html'), '<a href=mailto:%zz%25257Bname%257D>x</a>');
   const issues = await scanPublished(dist, emails);
   assert.ok(issues.some((issue) => issue.includes('curly brace')));
+});
+
+test('reward emails fail while Ava\'s PDFs are missing or fail the content check', async () => {
+  const empty = mkdtempSync(path.join(tmpdir(), 'hubbly-rewards-'));
+  const missing = await rewardSourceIssues(empty);
+  assert.ok(missing.some((issue) => issue.includes('emails/09-reward-3.html') && issue.includes('calm-down-cards.pdf is missing')));
+  assert.ok(missing.some((issue) => issue.includes('emails/10-reward-5.html') && issue.includes('family-adventure-bingo.pdf is missing')));
+
+  const ready = mkdtempSync(path.join(tmpdir(), 'hubbly-rewards-'));
+  writeFileSync(path.join(ready, 'calm-down-cards.pdf'), '%PDF-1.4\n(Calm-down cards) Tj\n');
+  writeFileSync(path.join(ready, 'family-adventure-bingo.pdf'), '%PDF-1.4\nHello\n');
+  const wrong = await rewardSourceIssues(ready);
+  assert.equal(wrong.some((issue) => issue.includes('calm-down-cards.pdf is missing')), false);
+  assert.ok(wrong.some((issue) => issue.includes('family-adventure-bingo.pdf fails the content check')));
+  writeFileSync(path.join(ready, 'family-adventure-bingo.pdf'), '%PDF-1.4\n(Family adventure bingo) Tj\n');
+  assert.deepEqual(await rewardSourceIssues(ready), []);
+});
+
+test('a renamed reward PDF fails the content check and an HTML mention does not', async () => {
+  const dist = mkdtempSync(path.join(tmpdir(), 'hubbly-dist-'));
+  const emails = mkdtempSync(path.join(tmpdir(), 'hubbly-mail-'));
+  writeFileSync(path.join(dist, 'index.html'), '<p>Calm-down cards and Family adventure bingo</p>');
+  writeFileSync(path.join(dist, 'notes.pdf'), '%PDF-1.4\nCalm-down cards\n');
+  writeFileSync(path.join(emails, '00.html'), '<p><a href="{$unsubscribe}">Unsubscribe</a></p>');
+  const issues = await scanPublished(dist, emails);
+  assert.ok(issues.some((issue) => issue.includes('notes.pdf') && issue.includes('fails the content check')));
+  assert.equal(issues.some((issue) => issue.includes('index.html') && issue.includes('content check')), false);
 });
 
 test('a reward PDF in the build fails the scan', async () => {
@@ -69,6 +108,7 @@ test('the built waitlist, privacy and referral pages carry the required wording'
   assert.ok(waitlist.includes('no card needed to start'));
   assert.ok(waitlist.includes("you're never charged unless you subscribe"));
   assert.equal(waitlist.includes('may be available on launch day'), false);
+  assert.equal(waitlist.includes('When you confirmed your email'), false);
   assert.equal(waitlist.includes('payment method needed'), false);
   assert.equal(waitlist.includes('[REWARD CHOICE]'), false);
   assert.ok(home.includes('30-day free trial in the app, no card needed to start'));
@@ -93,8 +133,11 @@ test('the built waitlist, privacy and referral pages carry the required wording'
   assert.equal(termsHtml.includes('mailto:%7BCONTACT.support%7D'), false);
   assert.ok(privacy.includes('ZC144477'));
   assert.equal(privacy.includes('[ICO NUMBER]'), false);
-  assert.ok(privacy.includes('only to check referrals for fake or self-referrals'));
-  assert.ok(privacy.includes('IPv4 /24 or IPv6 /64 prefix'));
+  assert.ok(privacy.includes('We also use the sign-up time and IP address to check referrals for fake or self-referrals'));
+  assert.ok(privacy.includes('the first part of the IP address (the network, not your device)'));
+  assert.ok(privacy.includes('We stop using it for referral checks on 31 January 2027'));
+  assert.ok(privacy.includes('The full IP address stays in your MailerLite record only as proof of your consent'));
+  assert.equal(privacy.includes('IPv4 /24 or IPv6 /64 prefix'), false);
   assert.equal(privacy.includes('duplicates and abuse'), false);
   assert.ok(privacy.includes("The only analytics is PostHog, which runs in memory without cookies."));
   assert.equal(privacy.includes('any other third-party script'), false);
@@ -106,7 +149,8 @@ test('the built waitlist, privacy and referral pages carry the required wording'
   assert.ok(referral.includes('same internet connection'));
   assert.ok(referral.includes('unsubscribes'));
   assert.ok(referral.includes(REFERRAL_TERMS.slice(0, 40)));
-  assert.equal(founders.includes('may be available on launch day'), false);
+  assert.ok(founders.includes("A lower founders' price may be available on launch day, if the store listing includes it."));
+  assert.equal(founders.includes('special founders'), false);
   assert.ok(founders.includes("you're never charged unless you subscribe"));
   assert.ok(founders.includes('hello@gethubbly.app'));
   assert.ok(founders.includes('no card needed to start'));
@@ -126,7 +170,25 @@ test('the built waitlist, privacy and referral pages carry the required wording'
   assert.ok(ageTag);
   assert.equal(ageTag[0].includes(' checked'), false);
 
+  assert.ok(home.includes('Join to hear first on launch day'));
+  assert.equal(home.includes('first access'), false);
+  assert.equal(home.includes('App Store shortly after'), false);
+  assert.ok(home.includes(TRIAL_SHORT));
+  assert.equal(home.includes('The full app is free for 30 days in the app'), false);
+  assert.ok(home.includes("A lower founders' price may be available on launch day, if the store listing includes it."));
+  assert.ok(privacyHtml.includes('tabindex="0"'));
+  assert.ok(privacyHtml.includes('role="region"'));
+  assert.ok(privacyHtml.includes('aria-label="Service providers"'));
+  assert.ok(cookiesHtml.includes('tabindex="0"'));
+  assert.ok(cookiesHtml.includes('role="region"'));
+  assert.ok(cookiesHtml.includes('aria-label="Cookie table"'));
+  const confirmed = visibleText(readFileSync('dist/confirmed/index.html', 'utf8'));
+  assert.ok(confirmed.includes('When you confirmed your email, we sent you the Calmer Mornings Starter'));
+  assert.equal(confirmed.includes('When you confirm your email'), false);
+
   assert.ok(welcome.includes('https://gethubbly.app/waitlist?ref={$fields.ref_code}'));
+  assert.ok(welcome.includes("A lower founders' price may be available on launch day, if the store listing includes it."));
+  assert.equal(welcome.includes('special founders'), false);
   assert.ok(welcome.includes('When 3 friends confirm, you get Calm-down cards; at 5, Family adventure bingo.'));
   const summaryAt = welcome.indexOf('When 3 friends confirm');
   const termsAt = welcome.indexOf('calm-down-cards.pdf');
@@ -142,6 +204,18 @@ test('the built waitlist, privacy and referral pages carry the required wording'
   assert.equal(launch.includes('may be available on launch day'), false);
   assert.ok(launch.includes("you're never charged unless you subscribe"));
   assert.ok(launch.includes('href="{$unsubscribe}"'));
+
+  const rewardThree = readFileSync('src/emails/09-reward-3.html', 'utf8');
+  const rewardFive = readFileSync('src/emails/10-reward-5.html', 'utf8');
+  assert.ok(rewardThree.includes('sent by hand from hello@gethubbly.app'));
+  assert.ok(rewardFive.includes('sent by hand from hello@gethubbly.app'));
+  assert.ok(rewardThree.includes('no public link'));
+  assert.ok(rewardFive.includes('no public link'));
+  assert.equal(rewardThree.includes('.pdf"'), false);
+  assert.equal(rewardFive.includes('.pdf"'), false);
+  const generator = readFileSync('scripts/generate-printables.mjs', 'utf8');
+  assert.match(generator, /must not be generated/);
+  assert.equal(generator.includes('rewards/printables'), false);
 
   const library = readdirSync('public/printables');
   assert.equal(library.includes('chore-cards.pdf'), true);

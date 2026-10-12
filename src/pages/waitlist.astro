@@ -15,18 +15,18 @@ import { webPageSchema } from '@/lib/schema';
     path: '/waitlist',
   })}
 >
-  <header class="relative overflow-hidden bg-gradient-to-b from-paper to-cream pt-[calc(var(--nav-h)+3rem)] pb-8">
+  <header class="relative overflow-hidden bg-gradient-to-b from-paper to-cream pt-[calc(var(--nav-h)+0.5rem)] pb-2 sm:pt-[calc(var(--nav-h)+3rem)] sm:pb-8">
     <div class="mx-auto w-full max-w-[1200px] px-5 sm:px-7 lg:px-8">
       <Eyebrow>{LAUNCH_LINE}</Eyebrow>
-      <h1 class="mt-4 max-w-3xl font-display text-4xl font-semibold tracking-tight text-navy sm:text-5xl">
+      <h1 class="mt-2 max-w-3xl font-display text-[1.75rem] font-semibold leading-tight tracking-tight text-navy sm:mt-4 sm:text-5xl">
         Less nagging. More stars.
       </h1>
-      <p class="mt-4 max-w-2xl text-lg leading-relaxed text-navy-soft">
+      <p class="mt-2 max-w-2xl text-base leading-snug text-navy-soft sm:mt-4 sm:text-lg sm:leading-relaxed">
         Join the Hubbly waitlist and you'll hear first on launch day.
       </p>
     </div>
   </header>
-  <Section pad="md">
+  <Section pad="none" innerClass="pt-1 pb-16 sm:pt-6">
     <div data-analytics-view="waitlist_view">
       <WaitlistForm />
     </div>

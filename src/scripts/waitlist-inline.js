@@ -159,7 +159,11 @@
       box.textContent = message;
       box.hidden = false;
     }
-    if (field && message) field.focus();
+    var target = field;
+    if (field && field.name === 'fields[store_pref]') {
+      target = form.querySelector('input[name="fields[store_pref]"]') || field;
+    }
+    if (target && message) target.focus();
   }
 
   document.querySelectorAll('form[data-waitlist-form]').forEach(function (form) {
@@ -200,9 +204,14 @@
       function (ev) {
         if (shown || !ev.target) return;
         var message = ev.target.validationMessage;
-        if (!message || message === 'Please select one of these options.') return;
+        if (!message) return;
+        var field = ev.target;
+        if (field.name === 'fields[store_pref]' || message === 'Please select one of these options.') {
+          message = 'Please choose one option to continue.';
+          field = form.querySelector('input[name="fields[store_pref]"]') || field;
+        }
         shown = true;
-        showError(form, message, ev.target);
+        showError(form, message, field);
         var reason = 'missing_email';
         if (message.indexOf('choose') !== -1) reason = 'missing_store';
         else if (message.indexOf('tick') !== -1) reason = 'missing_age';

@@ -5,8 +5,7 @@ import { mkdir, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 
 const LIBRARY_OUT = 'public/printables';
-const REWARD_OUT = 'rewards/printables';
-const REWARD_NAMES = new Set([]);
+const SUPPLIED_BY_AVA = ['calm-down-cards.pdf', 'family-adventure-bingo.pdf'];
 
 /** @param {string} text */
 function esc(text) {
@@ -322,10 +321,14 @@ const docs = {
   },
 };
 
-await mkdir(LIBRARY_OUT, { recursive: true });
-await mkdir(REWARD_OUT, { recursive: true });
-for (const [name, doc] of Object.entries(docs)) {
-  const dir = REWARD_NAMES.has(name) ? REWARD_OUT : LIBRARY_OUT;
-  await writeFile(path.join(dir, name), render(doc));
+for (const name of SUPPLIED_BY_AVA) {
+  if (Object.hasOwn(docs, name)) {
+    throw new Error(`${name} is supplied by Ava and must not be generated.`);
+  }
 }
-console.log(`Wrote library printables to ${LIBRARY_OUT} and reward printables to ${REWARD_OUT}`);
+
+await mkdir(LIBRARY_OUT, { recursive: true });
+for (const [name, doc] of Object.entries(docs)) {
+  await writeFile(path.join(LIBRARY_OUT, name), render(doc));
+}
+console.log(`Wrote library printables to ${LIBRARY_OUT}`);

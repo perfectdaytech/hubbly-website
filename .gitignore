@@ -19,10 +19,9 @@ pnpm-debug.log*
 .env.production
 .env.local
 
-# local waitlist exports and tally reports (may contain email addresses)
-data/mock-subscribers.json
-data/referral-report.json
-data/purge-log.json
+# local MailerLite exports contain full IP addresses. Delete after each tally.
+data/
+exports/
 
 # macOS / Windows / editors
 .DS_Store

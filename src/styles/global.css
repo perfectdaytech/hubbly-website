@@ -201,6 +201,11 @@
   border-radius: 4px;
 }
 
+/* Keep a focused waitlist field, and its error, clear of the sticky nav. */
+#waitlist-form :is(input, fieldset, [role='alert']) {
+  scroll-margin-top: calc(var(--nav-h) + 1rem);
+}
+
 /* ---- Component / utility helpers ------------------------------------ */
 
 /* Scroll-reveal: elements tagged [data-reveal] fade + rise into view.

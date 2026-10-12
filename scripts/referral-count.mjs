@@ -5,6 +5,7 @@
 import { mkdir, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import { tally } from '../src/lib/waitlist/count.mjs';
+import { removeLocalExports } from '../src/lib/waitlist/exports.mjs';
 import { createMailerLiteClient } from '../src/lib/waitlist/mailerlite.mjs';
 
 const commit = process.argv.includes('--commit');
@@ -38,6 +39,10 @@ const report = {
 
 await mkdir('data', { recursive: true });
 await writeFile(path.join('data', 'referral-report.json'), `${JSON.stringify(report, null, 2)}\n`);
+
+const exportPath = client.filePath || process.env.WAITLIST_EXPORT_PATH;
+const removed = await removeLocalExports({ exportPath });
+if (removed.length) console.log(`Removed ${removed.length} local export file(s).`);
 
 console.log(
   `${commit ? 'Updated' : 'Dry run,'} ${result.writes.length} referral_count value(s). ` +

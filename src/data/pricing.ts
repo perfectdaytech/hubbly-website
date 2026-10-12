@@ -35,7 +35,7 @@ export const PRICING_NOTE =
   'The price is shown in the app before you subscribe. Your app store shows the equivalent in your local currency. Optional extras (looks, quote packs and other one-time packs) are cosmetic treats - every family feature above is included in the subscription.';
 
 export const FOUNDERS_LINE =
-  "The first 100 subscriptions get a special founders' price for the first year when you subscribe, then the standard price. Google Play first, from launch day.";
+  "A lower founders' price may be available on launch day, if the store listing includes it.";
 
 export const MONTHLY_PLAN: PricingPlan = {
   id: 'monthly',

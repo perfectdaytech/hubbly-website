@@ -7,6 +7,7 @@ import { isValidRefCode } from './codes.mjs';
 import { REFERRAL_DEADLINE_ISO, REWARD_REVIEW_AT, SUBSCRIBER_FLAG_AT } from './copy.mjs';
 import { isDisposableEmail } from './disposable.mjs';
 import { normalizeEmail } from './email.mjs';
+import { fraudCheckClosed } from './purge.mjs';
 
 export const BURST_WINDOW_MS = 60 * 60 * 1000;
 export const BURST_COUNT = 3;
@@ -127,6 +128,7 @@ export function burstFlaggedIds(subscribers) {
 }
 
 /**
+ * Works on copies. The caller's rows are not changed.
  * @param {Array<{
  *   id: string,
  *   email: string,
@@ -136,19 +138,28 @@ export function burstFlaggedIds(subscribers) {
  *   unsubscribedAt?: string,
  *   ip?: string,
  *   fields?: { ref_code?: string, referred_by?: string, referral_count?: number|string }
- * }>} subscribers
+ * }>} input
  * @param {{
  *   approveRewards?: boolean,
  *   approveBurst?: boolean,
  *   deadline?: string,
  *   flagAt?: number,
+ *   now?: string | Date,
  * }} [options]
  */
-export function tally(subscribers, options = {}) {
+export function tally(input, options = {}) {
   const deadline = Date.parse(options.deadline ?? REFERRAL_DEADLINE_ISO);
   const flagAt = options.flagAt ?? SUBSCRIBER_FLAG_AT;
   const approveRewards = Boolean(options.approveRewards);
   const approveBurst = Boolean(options.approveBurst);
+  const now = options.now ? new Date(options.now) : new Date();
+  const subscribers = input.map((subscriber) => ({
+    ...subscriber,
+    fields: subscriber.fields ? { ...subscriber.fields } : subscriber.fields,
+  }));
+  if (fraudCheckClosed(now)) {
+    for (const subscriber of subscribers) delete subscriber.ip;
+  }
 
   /** @type {Map<string, typeof subscribers>} */
   const byEmail = new Map();

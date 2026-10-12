@@ -1,5 +1,7 @@
 import assert from 'node:assert/strict';
-import { readFileSync } from 'node:fs';
+import { existsSync, mkdtempSync, readFileSync, writeFileSync } from 'node:fs';
+import { tmpdir } from 'node:os';
+import path from 'node:path';
 import test from 'node:test';
 import {
   buildWaitlistSubmitProps,
@@ -25,6 +27,7 @@ import {
   WAITLIST_NO_PLACE,
 } from '../src/lib/waitlist/copy.mjs';
 import { isAcceptableEmail, normalizeEmail } from '../src/lib/waitlist/email.mjs';
+import { removeLocalExports } from '../src/lib/waitlist/exports.mjs';
 import { buildReferralCountBody, mapSubscriber, planReferralCountRequest } from '../src/lib/waitlist/mailerlite.mjs';
 import {
   omitNetworkPrefix,
@@ -309,12 +312,17 @@ test('three mapped sign-ups from one IP are flagged and held', () => {
   const flagged = burstFlaggedIds(friends);
   assert.equal(flagged.size, 3);
   for (const friend of friends) assert.equal(flagged.has(friend.id), true);
-  const result = tally([referrer, ...friends]);
+  const people = [referrer, ...friends];
+  const before = JSON.stringify(people);
+  const result = tally(people);
+  assert.equal(JSON.stringify(people), before);
   assert.equal(result.burstHeld.length, 3);
   assert.equal(result.counted, 0);
-  assert.equal(referrer.ip, undefined);
-  assert.equal(friends.every((friend) => friend.ip === undefined), true);
   assert.equal(JSON.stringify(result).includes('v4:'), false);
+  const later = tally(JSON.parse(before), { now: '2027-02-01T00:00:00.000Z' });
+  assert.equal(later.burstHeld.length, 0);
+  assert.equal(later.counted, 3);
+  assert.equal(JSON.stringify(later).includes('v4:'), false);
 });
 
 test('the free-plan flag counts unconfirmed contacts and does not buy anything', () => {
@@ -365,6 +373,14 @@ test('unconfirmed contacts older than 14 days are the purge set', () => {
     ['old'],
   );
   assert.deepEqual(
+    selectStoredPrefixesForDeletion(withPrefix, new Date('2027-01-20T00:00:00.000Z')).map((row) => row.id),
+    ['old', 'fresh'],
+  );
+  assert.deepEqual(
+    selectStoredPrefixesForDeletion(withPrefix, new Date('2027-01-25T00:00:00.000Z')).map((row) => row.id),
+    ['old', 'fresh', 'kept'],
+  );
+  assert.deepEqual(
     selectStoredPrefixesForDeletion(withPrefix, new Date('2027-08-01T00:00:00.000Z')).map((row) => row.id),
     ['old', 'fresh', 'kept'],
   );
@@ -378,6 +394,34 @@ test('unconfirmed contacts older than 14 days are the purge set', () => {
   assert.equal(cleared.ip_address, undefined);
   assert.equal(cleared.fields.network_prefix, undefined);
   assert.equal(cleared.fields.referral_count, 1);
+});
+
+test('each tally removes the export it read, and the last week removes every export', async () => {
+  const dir = mkdtempSync(path.join(tmpdir(), 'hubbly-exports-'));
+  const exportPath = path.join(dir, 'mock-subscribers.json');
+  writeFileSync(exportPath, '[{"ip_address":"1.2.3.4"}]\n');
+  writeFileSync(path.join(dir, 'referral-report.json'), '{}\n');
+  writeFileSync(path.join(dir, 'notes.txt'), 'keep\n');
+  const once = await removeLocalExports({
+    exportPath,
+    now: new Date('2026-11-01T00:00:00.000Z'),
+    dirs: [dir],
+  });
+  assert.equal(existsSync(exportPath), false);
+  assert.equal(once.length, 1);
+  assert.equal(existsSync(path.join(dir, 'referral-report.json')), true);
+  assert.equal(existsSync(path.join(dir, 'notes.txt')), true);
+
+  writeFileSync(path.join(dir, 'subscribers.csv'), 'ip\n');
+  writeFileSync(path.join(dir, 'other-export.json'), '{}\n');
+  await removeLocalExports({
+    now: new Date('2027-01-25T00:00:00.000Z'),
+    dirs: [dir],
+  });
+  assert.equal(existsSync(path.join(dir, 'subscribers.csv')), false);
+  assert.equal(existsSync(path.join(dir, 'other-export.json')), false);
+  assert.equal(existsSync(path.join(dir, 'referral-report.json')), true);
+  assert.equal(existsSync(path.join(dir, 'notes.txt')), true);
 });
 
 test('analytics payloads cannot carry a referral code or an email address', () => {

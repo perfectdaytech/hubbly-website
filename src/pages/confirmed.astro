@@ -3,7 +3,7 @@ import BaseLayout from '@/layouts/BaseLayout.astro';
 import Section from '@/components/ui/Section.astro';
 import TrialNotice from '@/components/waitlist/TrialNotice.astro';
 import WaitlistScript from '@/components/waitlist/WaitlistScript.astro';
-import { FOUNDERS_CAP, GIFT_LINE, REFERRAL_SUMMARY, SHARE_TEXT, WAITLIST_NO_PLACE } from '@/data/waitlist';
+import { FOUNDERS_CAP, GIFT_LINE_CONFIRMED, REFERRAL_SUMMARY, SHARE_TEXT, WAITLIST_NO_PLACE } from '@/data/waitlist';
 ---
 <BaseLayout
   title="You're on the Hubbly waitlist"
@@ -13,10 +13,10 @@ import { FOUNDERS_CAP, GIFT_LINE, REFERRAL_SUMMARY, SHARE_TEXT, WAITLIST_NO_PLAC
   <Section pad="lg" innerClass="pt-[calc(var(--nav-h)+3rem)] max-w-2xl">
     <div data-analytics-view="waitlist_confirm_page_view">
       <h1 class="font-display text-4xl font-semibold tracking-tight text-navy sm:text-5xl">You're on the list</h1>
-      <p class="mt-5 text-lg leading-relaxed text-navy">{GIFT_LINE}</p>
+      <p class="mt-5 text-lg leading-relaxed text-navy">{GIFT_LINE_CONFIRMED}</p>
       <p class="mt-3">
         <a
-          class="inline-flex rounded-full bg-coral-deep px-6 py-3 font-display font-semibold text-white"
+          class="inline-flex min-h-12 items-center justify-center rounded-full bg-white px-6 font-display font-semibold text-navy ring-1 ring-navy/15"
           href="/printables/calmer-mornings-starter.pdf"
         >
           Download the Calmer Mornings Starter

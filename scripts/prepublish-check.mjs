@@ -39,6 +39,22 @@ export const ALLOWED_MERGE_TAGS = ['{$unsubscribe}', '{$url}', '{$fields.ref_cod
 
 export const REWARD_PDFS = ['calm-down-cards.pdf', 'family-adventure-bingo.pdf'];
 
+export const REWARD_SOURCES = [
+  {
+    file: 'calm-down-cards.pdf',
+    marker: 'Calm-down cards',
+    email: 'emails/09-reward-3.html',
+  },
+  {
+    file: 'family-adventure-bingo.pdf',
+    marker: 'Family adventure bingo',
+    email: 'emails/10-reward-5.html',
+  },
+];
+
+/** Ava's files live here. The site does not generate them. */
+export const REWARD_DIR = 'rewards';
+
 const ALLOWED_BRACKET = '[your name]';
 
 /**
@@ -200,7 +216,7 @@ async function htmlFiles(dir) {
 }
 
 /** @param {string} dir */
-export async function findRewardPdfs(dir) {
+async function collectFiles(dir) {
   /** @type {string[]} */
   const found = [];
   let entries;
@@ -211,10 +227,89 @@ export async function findRewardPdfs(dir) {
   }
   for (const entry of entries) {
     const full = path.join(dir, entry.name);
-    if (entry.isDirectory()) found.push(...(await findRewardPdfs(full)));
-    else if (REWARD_PDFS.includes(entry.name)) found.push(full);
+    if (entry.isDirectory()) found.push(...(await collectFiles(full)));
+    else found.push(full);
   }
   return found;
+}
+
+/** @param {string} dir */
+export async function findRewardPdfs(dir) {
+  /** @type {string[]} */
+  const found = [];
+  for (const full of await collectFiles(dir)) {
+    if (REWARD_PDFS.includes(path.basename(full))) found.push(full);
+  }
+  return found;
+}
+
+/**
+ * A public PDF fails if it is a reward file by name, or if its bytes contain
+ * a reward title. HTML that merely names the reward does not.
+ * @param {string} dir
+ */
+export async function findPublicRewardIssues(dir) {
+  /** @type {string[]} */
+  const issues = [];
+  for (const file of await collectFiles(dir)) {
+    const name = path.basename(file);
+    let bytes;
+    try {
+      bytes = await readFile(file);
+    } catch {
+      continue;
+    }
+    const named = REWARD_PDFS.includes(name);
+    const pdf = named || name.toLowerCase().endsWith('.pdf') || bytes.subarray(0, 5).toString() === '%PDF-';
+    if (!pdf) continue;
+    const relative = path.relative(dir, file);
+    if (named) issues.push(`${relative}: referral reward PDF is public`);
+    const text = bytes.toString('latin1');
+    for (const reward of REWARD_SOURCES) {
+      if (text.includes(reward.marker)) {
+        issues.push(`${relative}: referral reward PDF fails the content check`);
+        break;
+      }
+    }
+  }
+  return issues;
+}
+
+/**
+ * Emails 09 and 10 cannot go out until Ava's PDFs are in rewards/ and the
+ * title is in the file. A missing file or a failed content check blocks both.
+ * @param {string} [root]
+ */
+export async function rewardSourceIssues(root = REWARD_DIR) {
+  /** @type {string[]} */
+  const issues = [];
+  const files = await collectFiles(root);
+  for (const reward of REWARD_SOURCES) {
+    const matches = files.filter((file) => path.basename(file) === reward.file);
+    if (matches.length === 0) {
+      issues.push(`${reward.email}: reward PDF ${reward.file} is missing`);
+      continue;
+    }
+    for (const match of matches) {
+      const bytes = await readFile(match);
+      const text = bytes.toString('latin1');
+      if (!text.startsWith('%PDF-') || !text.includes(reward.marker)) {
+        issues.push(`${reward.email}: ${reward.file} fails the content check`);
+      }
+    }
+  }
+  return issues;
+}
+
+/**
+ * Draft mode still expects PLAY_URL and APP_STORE_URL. Anything else blocks.
+ * Launch mode blocks on every finding, including those two tokens.
+ * @param {string[]} issues
+ * @param {'draft' | 'launch'} [mode]
+ */
+export function blockingIssues(issues, mode = 'draft') {
+  if (mode === 'launch') return [...issues];
+  return issues.filter((issue) => !issue.includes('PLAY_URL') && !issue.includes('APP_STORE_URL'));
 }
 
 /** @param {string} distDir @param {string} emailDir */
@@ -238,18 +333,22 @@ export async function scanPublished(distDir, emailDir) {
     issues.push(...findHiddenIssues(raw, `emails/${name}`));
     issues.push(...findAttributeIssues(raw, `emails/${name}`));
   }
-  for (const file of await findRewardPdfs(distDir)) {
-    issues.push(`${path.relative(distDir, file)}: referral reward PDF is public`);
+  issues.push(...(await findPublicRewardIssues(distDir)));
+  const emailNames = await readdir(emailDir).catch(() => []);
+  if (emailNames.includes('09-reward-3.html') || emailNames.includes('10-reward-5.html')) {
+    issues.push(...(await rewardSourceIssues()));
   }
   return issues;
 }
 
 const isDirect = process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href;
 if (isDirect) {
+  const mode = process.env.HUBBLY_SCAN === 'launch' ? 'launch' : 'draft';
   const issues = await scanPublished('dist', 'src/emails');
-  if (issues.length) {
-    console.error(issues.join('\n'));
+  const blocking = blockingIssues(issues, mode);
+  if (blocking.length) {
+    console.error(blocking.join('\n'));
     process.exit(1);
   }
-  console.log('Pre-publish scan passed.');
+  console.log(`Pre-publish ${mode} scan passed.`);
 }

@@ -279,5 +279,6 @@ test('the pre-publish scanner rejects retired wording', () => {
   assert.ok(findIssues('free, forever', 'sample').some((issue) => issue.includes('forever')));
   assert.ok(findIssues('The store link goes in this email on launch day.', 'sample').some((issue) => issue.includes('goes in this email')));
   assert.ok(findIssues('PLAY_URL', 'sample').some((issue) => issue.includes('PLAY_URL')));
-  assert.equal(findIssues('30-day free trial, then £4.99 a month.', 'sample').length, 0);
+  assert.ok(findIssues('30-day free trial, then £4.99 a month.', 'sample').some((issue) => issue.includes('4.99')));
+  assert.equal(findIssues('524.992188', 'sample').length, 0);
 });

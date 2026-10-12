@@ -86,11 +86,10 @@ in. Two store links remain, both pending the app listings going live:
   Garden, London WC2H 9JQ. Wired into `src/data/site.ts`; flows into the footer
   and legal pages.
 - **Pricing** — a **30-day free trial** inside the app. No card is needed to
-  start, and you are not charged when the trial ends unless you choose to
-  subscribe. The monthly price on the site is **£4.99**. The annual price is
-  not published. A founders' offer may be available on launch day, if the store
-  listing includes it, and is described without a price. Joining the waitlist
-  does not reserve a founders' place. See `/founders-terms`.
+  start. After that, keeping Hubbly needs a subscription. The price is shown
+  in the app before someone chooses, and they are never charged unless they
+  subscribe. No price is published on the site. Joining the waitlist does not
+  reserve a founders' place. See `/founders-terms`.
 - **Socials** — `@gethubbly` on Instagram, Facebook and X.
 - **Markets** — UK-based, launching across English-speaking markets. Legal pages
   cover UK GDPR, EU GDPR and CCPA; review local law before entering other
@@ -269,7 +268,7 @@ runs the same scan. `npm run test:unit` runs the logic tests without a build.
 | Trial lines use Sentinel's wording, price and renewal as prominent as "free" | The no-card 30-day in-app trial is on `/terms` section 5, the home page, the waitlist, the founders' terms, the FAQs and emails 1, 2, 6, 7 and 8. No copy says a card is required to start, or that the trial charges automatically. The annual price and the founders' prices are not published. |
 | Sender mailbox, postal address in the footer, DNS authentication | Postal address is in the footer and in every email draft. The mailbox and the DNS changes are open. This branch does not change DNS. |
 | Emails 1 and 6 reviewed by Sentinel before sending | Open. Drafts are `src/emails/01-welcome.html` and `src/emails/06-launch.html`. They have not been sent. |
-| Standard price confirmed, so a decision on "(instead of £4.99)" | The comparison is omitted. The monthly £4.99 stays on the pricing card. The annual price is not published, and the scan fails if `44.99` appears. A missing price does not fail the scan. |
+| Standard price confirmed, so a decision on "(instead of £4.99)" | No price is published. The scan fails if `4.99` or `44.99` appears. A missing price does not fail the scan. |
 | Cooling-off wording, and a Play manual-refund route | Wording is on `/terms`, `/founders-terms` and the refunds FAQ. The Play Console refund route is an owner step. |
 | Sentinel sign-off on v3, Lauren approves the copy | The spec records Sentinel's sign-off with conditions. Lauren's approval of the pages and emails is still open. |
 | December DMCC re-check booked for Tue 1 Dec 2026 | Open. Calendar item for Sentinel, with Ava tracking. Not booked from this repo. |

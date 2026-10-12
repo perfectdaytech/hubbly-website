@@ -31,10 +31,14 @@ const Heading = headingLevel;
       <p class="mt-6 text-sm font-bold uppercase tracking-wide text-white">{plan.trialLabel}</p>
     )
   }
-  <div class={`flex flex-wrap items-end gap-x-2.5 gap-y-1 ${plan.trialLabel ? 'mt-1' : 'mt-6'}`}>
-    <span class="font-display text-[3.4rem] font-bold leading-none">{plan.price}</span>
-    <span class="pb-1.5 text-sm font-semibold text-white">{plan.period}</span>
-  </div>
+  {
+    plan.price && (
+      <div class={`flex flex-wrap items-end gap-x-2.5 gap-y-1 ${plan.trialLabel ? 'mt-1' : 'mt-6'}`}>
+        <span class="font-display text-[3.4rem] font-bold leading-none">{plan.price}</span>
+        {plan.period && <span class="pb-1.5 text-sm font-semibold text-white">{plan.period}</span>}
+      </div>
+    )
+  }
 
   {
     plan.priceNote && (

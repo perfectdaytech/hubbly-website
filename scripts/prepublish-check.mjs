@@ -21,6 +21,7 @@ export const BANNED = [
   'PLAY_URL',
   'APP_STORE_URL',
   '44.99',
+  '4.99',
 ];
 
 /** Tokens that stay in the draft until the owner decides. Any one fails this scan. */
@@ -31,6 +32,20 @@ export const ALLOWED_MERGE_TAGS = ['{$unsubscribe}', '{$url}', '{$fields.ref_cod
 export const REWARD_PDFS = ['chore-cards.pdf', 'colour-in-mascot.pdf'];
 
 const ALLOWED_BRACKET = '[your name]';
+
+/**
+ * Price figures must not match a longer decimal, such as the logo path
+ * coordinate 524.992188.
+ * @param {string} text
+ * @param {string} term
+ */
+export function containsTerm(text, term) {
+  if (term === '4.99' || term === '44.99') {
+    const escaped = term.replace('.', '\\.');
+    return new RegExp(`(?<![\\d.])${escaped}(?!\\d)`).test(text);
+  }
+  return text.toLowerCase().includes(term.toLowerCase());
+}
 
 /** @param {string} html */
 export function visibleText(html) {
@@ -54,8 +69,8 @@ export function visibleText(html) {
 export function findHiddenIssues(text, label) {
   /** @type {string[]} */
   const issues = [];
-  for (const token of ['PLAY_URL', 'APP_STORE_URL', '44.99', ...OPEN_PLACEHOLDERS]) {
-    if (text.includes(token)) issues.push(`${label}: open placeholder ${token}`);
+  for (const token of ['PLAY_URL', 'APP_STORE_URL', '44.99', '4.99', ...OPEN_PLACEHOLDERS]) {
+    if (containsTerm(text, token)) issues.push(`${label}: open placeholder ${token}`);
   }
   return issues;
 }
@@ -80,9 +95,8 @@ export function findIssues(text, label, options = {}) {
   if (withoutName.includes('[')) {
     issues.push(`${label}: contains a square bracket`);
   }
-  const lower = text.toLowerCase();
   for (const term of BANNED) {
-    if (lower.includes(term.toLowerCase())) issues.push(`${label}: contains "${term}"`);
+    if (containsTerm(text, term)) issues.push(`${label}: contains "${term}"`);
   }
   for (const token of OPEN_PLACEHOLDERS) {
     if (text.includes(token)) issues.push(`${label}: open placeholder ${token}`);

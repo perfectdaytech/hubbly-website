@@ -3,7 +3,7 @@ import BaseLayout from '@/layouts/BaseLayout.astro';
 import Section from '@/components/ui/Section.astro';
 import TrialNotice from '@/components/waitlist/TrialNotice.astro';
 import WaitlistScript from '@/components/waitlist/WaitlistScript.astro';
-import { FOUNDERS_OFFER, GIFT_LINE, SHARE_TEXT, WAITLIST_NO_PLACE } from '@/data/waitlist';
+import { GIFT_LINE, SHARE_TEXT, WAITLIST_NO_PLACE } from '@/data/waitlist';
 ---
 <BaseLayout
   title="You're on the Hubbly waitlist"
@@ -65,10 +65,9 @@ import { FOUNDERS_OFFER, GIFT_LINE, SHARE_TEXT, WAITLIST_NO_PLACE } from '@/data
         <TrialNotice />
       </div>
       <p class="mt-4 text-base leading-relaxed text-navy">
-        {FOUNDERS_OFFER}
+        {WAITLIST_NO_PLACE}{' '}
         <a class="font-semibold text-coral-deep underline" href="/founders-terms">Founders' terms</a>.
       </p>
-      <p class="mt-2 text-base text-navy">{WAITLIST_NO_PLACE}</p>
       <p class="mt-4 text-base leading-relaxed text-navy-soft">
         To leave the early-tester list, reply to any Hubbly email or write to
         <a class="font-semibold text-coral-deep underline" href="mailto:privacy@gethubbly.app">privacy@gethubbly.app</a>.

@@ -12,7 +12,7 @@ test('the draft build is blocked until open placeholders are removed', async () 
   for (const token of ['[REWARD CHOICE]', 'PLAY_URL', 'APP_STORE_URL']) {
     assert.ok(issues.some((issue) => issue.includes(token)), token);
   }
-  for (const gone of ['[TRIAL MODEL]', '[FOUNDERS OFFER]', '[ANNUAL PRICE]', '[ICO NUMBER]', '44.99']) {
+  for (const gone of ['[TRIAL MODEL]', '[FOUNDERS OFFER]', '[ANNUAL PRICE]', '[ICO NUMBER]', '44.99', '4.99']) {
     assert.equal(
       issues.some((issue) => issue.includes(gone)),
       false,
@@ -49,6 +49,8 @@ test('the built waitlist, privacy and referral pages carry the required wording'
 
   assert.ok(waitlist.includes('no card is needed to start'));
   assert.ok(waitlist.includes('you will not be charged'));
+  assert.ok(waitlist.includes("you're never charged unless you subscribe"));
+  assert.equal(waitlist.includes('may be available on launch day'), false);
   assert.equal(waitlist.includes('payment method needed'), false);
   assert.ok(waitlist.includes('[REWARD CHOICE]'));
   assert.ok(privacy.includes('31 July 2027'));
@@ -63,11 +65,14 @@ test('the built waitlist, privacy and referral pages carry the required wording'
   assert.ok(referral.includes('same internet connection'));
   assert.ok(referral.includes('unsubscribes'));
   assert.ok(referral.includes(REFERRAL_TERMS.slice(0, 40)));
-  assert.ok(founders.includes("A founders' offer may be available on launch day"));
+  assert.equal(founders.includes('may be available on launch day'), false);
+  assert.ok(founders.includes("you're never charged unless you subscribe"));
+  assert.ok(founders.includes('hello@gethubbly.app'));
   assert.ok(founders.includes('no payment details are required'));
   assert.equal(founders.includes('[FOUNDERS OFFER]'), false);
   assert.equal(founders.includes('[TRIAL MODEL]'), false);
   assert.equal(founders.includes('44.99'), false);
+  assert.equal(founders.includes('4.99'), false);
   assert.equal(founders.includes('is planned in the app'), false);
   assert.equal(freebies.includes('chore-cards.pdf'), false);
   assert.equal(freebies.includes('colour-in-mascot.pdf'), false);
@@ -83,6 +88,10 @@ test('the built waitlist, privacy and referral pages carry the required wording'
   assert.ok(welcome.includes('hello@gethubbly.app'));
   assert.equal(launch.includes('goes in this email'), false);
   assert.ok(launch.includes('PLAY_URL?utm_campaign=founders_launch'));
+  assert.ok(launch.includes("you're among the first to hear"));
+  assert.equal(launch.includes('first access'), false);
+  assert.equal(launch.includes('may be available on launch day'), false);
+  assert.ok(launch.includes("you're never charged unless you subscribe"));
   assert.ok(launch.includes('href="{$unsubscribe}"'));
 
   const library = readdirSync('public/printables');

@@ -12,10 +12,10 @@ export interface PricingPlan {
   name: string;
   /** Small line above the price, e.g. "Free for 30 days, then". */
   trialLabel?: string;
-  /** Big price string. */
-  price: string;
+  /** Big price string. Omitted while prices stay off the site. */
+  price?: string;
   /** Period suffix next to the price. */
-  period: string;
+  period?: string;
   /** Founders-rate line shown just under the price. */
   priceNote?: string;
   /** One-line positioning. */
@@ -32,17 +32,14 @@ export interface PricingPlan {
 }
 
 export const PRICING_NOTE =
-  'Prices in GBP; your app store shows the equivalent in your local currency. Optional extras (looks, quote packs and other one-time packs from £0.99, or the £6.99 everything bundle) are cosmetic treats - every family feature above is included in the subscription.';
+  'The price is shown in the app before you subscribe. Your app store shows the equivalent in your local currency. Optional extras (looks, quote packs and other one-time packs) are cosmetic treats - every family feature above is included in the subscription.';
 
-export const FOUNDERS_LINE =
-  "A founders' offer may be available on launch day, if the store listing includes it. Joining the waitlist does not reserve a place.";
+export const FOUNDERS_LINE = "Joining the waitlist does not reserve a place.";
 
 export const MONTHLY_PLAN: PricingPlan = {
   id: 'monthly',
   name: 'Monthly',
   trialLabel: '30 days free in the app',
-  price: '£4.99',
-  period: '/month',
   tagline: 'Every feature, on the kitchen tablet and every family phone.',
   features: [
     'Every family feature, no paywalls inside',

@@ -2,7 +2,7 @@
 import Section from '@/components/ui/Section.astro';
 import Eyebrow from '@/components/ui/Eyebrow.astro';
 import TrialNotice from '@/components/waitlist/TrialNotice.astro';
-import { GIFT_LINE, LAUNCH_LINE, WAITLIST_NO_PLACE } from '@/data/waitlist';
+import { GIFT_LINE, LAUNCH_LINE } from '@/data/waitlist';
 ---
 <Section id="waitlist" pad="lg" class="bg-paper/60">
   <div class="mx-auto max-w-3xl text-center">
@@ -14,7 +14,6 @@ import { GIFT_LINE, LAUNCH_LINE, WAITLIST_NO_PLACE } from '@/data/waitlist';
     <div class="mt-5 text-left sm:text-center">
       <TrialNotice class="sm:mx-auto sm:max-w-xl" />
     </div>
-    <p class="mt-4 text-base font-semibold text-navy">{WAITLIST_NO_PLACE}</p>
     <p class="mt-6">
       <a
         href="/waitlist"

@@ -181,6 +181,8 @@ test('the built waitlist, privacy and referral pages carry the required wording'
   assert.ok(home.includes(TRIAL_SHORT));
   assert.equal(home.includes('The full app is free for 30 days in the app'), false);
   assert.ok(home.includes(FOUNDERS_CAP));
+  assert.equal(home.split("Joining the waitlist doesn't reserve a place.").length - 1, 1);
+  assert.equal(home.includes("doesn't reserve a founders' place"), false);
   assert.equal(home.includes('may be available on launch day'), false);
   assert.ok(privacyHtml.includes('tabindex="0"'));
   assert.ok(privacyHtml.includes('role="region"'));

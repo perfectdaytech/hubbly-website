@@ -273,7 +273,8 @@ test('the pre-publish scanner rejects retired wording', () => {
   assert.ok(findIssues('hello {name}', 'sample').length > 0);
   assert.equal(findIssues('ref={$fields.ref_code} <a href="{$unsubscribe}">Unsubscribe</a>', 'sample').length, 0);
   assert.equal(findIssues('iPhone Settings › [your name] › Subscriptions', 'sample').length, 0);
-  assert.ok(findIssues('[TRIAL MODEL]', 'sample').some((issue) => issue.includes('[TRIAL MODEL]')));
+  assert.ok(findIssues('[TRIAL MODEL]', 'sample').some((issue) => issue.includes('square bracket')));
+  assert.ok(findIssues('[REWARD CHOICE]', 'sample').some((issue) => issue.includes('[REWARD CHOICE]')));
   assert.ok(findIssues('first 100 households', 'sample').some((issue) => issue.includes('households')));
   assert.ok(findIssues('free, forever', 'sample').some((issue) => issue.includes('forever')));
   assert.ok(findIssues('The store link goes in this email on launch day.', 'sample').some((issue) => issue.includes('goes in this email')));

@@ -115,7 +115,10 @@ export function decodeAttribute(raw) {
 export function findAttributeIssues(html, label) {
   /** @type {string[]} */
   const issues = [];
-  const tags = html.match(/<[^>]+>/g) ?? [];
+  const markup = html
+    .replace(/<script\b[\s\S]*?<\/script>/gi, ' ')
+    .replace(/<style\b[\s\S]*?<\/style>/gi, ' ');
+  const tags = markup.match(/<\/?[a-z][\w:-]*\b[^>]*>/gi) ?? [];
   for (const tag of tags) {
     for (const attr of tag.matchAll(/[\w:-]+\s*=\s*(?:"([^"]*)"|'([^']*)'|([^\s"'=<>`]+))/g)) {
       const decoded = decodeAttribute(attr[1] ?? attr[2] ?? attr[3] ?? '');

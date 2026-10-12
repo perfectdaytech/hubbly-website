@@ -100,20 +100,52 @@
   document.querySelectorAll('form[data-waitlist-form]').forEach(function (form) {
     var age = form.querySelector('input[name="fields[age_18]"]');
     var email = form.querySelector('input[type="email"]');
-    if (age) {
-      age.addEventListener('change', function () {
-        age.setCustomValidity(age.checked ? '' : 'Please tick this box to continue.');
-      });
+    var shown = false;
+
+    function applyMessages() {
+      var stores = form.querySelectorAll('input[name="fields[store_pref]"]');
+      var picked = form.querySelector('input[name="fields[store_pref]"]:checked');
+      if (email) {
+        var value = String(email.value || '').trim();
+        email.setCustomValidity('');
+        if (!value || email.validity.typeMismatch || email.validity.valueMissing) {
+          email.setCustomValidity('Enter an email address to continue.');
+        }
+      }
+      for (var i = 0; i < stores.length; i++) {
+        stores[i].setCustomValidity(!picked && i === 0 ? 'Please choose one option to continue.' : '');
+      }
+      if (age) age.setCustomValidity(age.checked ? '' : 'Please tick this box to continue.');
     }
+
+    if (age) age.addEventListener('change', applyMessages);
+    form.addEventListener('change', function (ev) {
+      if (ev.target && ev.target.name === 'fields[store_pref]') applyMessages();
+    });
 
     form.addEventListener(
       'click',
       function (ev) {
         var target = ev.target;
         if (!target || target.type !== 'submit') return;
-        if (age) age.setCustomValidity(age.checked ? '' : 'Please tick this box to continue.');
-        if (email && !String(email.value || '').trim()) email.setCustomValidity('Enter an email address to continue.');
-        else if (email) email.setCustomValidity('');
+        shown = false;
+        applyMessages();
+      },
+      true,
+    );
+
+    form.addEventListener(
+      'invalid',
+      function (ev) {
+        if (shown || !ev.target) return;
+        var message = ev.target.validationMessage;
+        if (!message || message === 'Please select one of these options.') return;
+        shown = true;
+        showError(form, message, ev.target);
+        var reason = 'missing_email';
+        if (message.indexOf('choose') !== -1) reason = 'missing_store';
+        else if (message.indexOf('tick') !== -1) reason = 'missing_age';
+        emit('waitlist_error', { reason: reason });
       },
       true,
     );

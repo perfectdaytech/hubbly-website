@@ -59,6 +59,8 @@ test('the page script uses the same alphabet and does not store anything', () =>
   }
   assert.equal(script.includes('has_referrer'), true);
   assert.equal(script.includes('referred_by:'), false);
+  assert.equal(script.includes("Please choose one option to continue."), true);
+  assert.equal(script.includes("Please tick this box to continue."), true);
 });
 
 test('email aliases collapse for self-referral checks', () => {

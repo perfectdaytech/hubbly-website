@@ -26,7 +26,11 @@ import {
 } from '../src/lib/waitlist/copy.mjs';
 import { isAcceptableEmail, normalizeEmail } from '../src/lib/waitlist/email.mjs';
 import { buildReferralCountBody, mapSubscriber, planReferralCountRequest } from '../src/lib/waitlist/mailerlite.mjs';
-import { selectUnconfirmedForDeletion } from '../src/lib/waitlist/purge.mjs';
+import {
+  omitNetworkPrefix,
+  selectStoredPrefixesForDeletion,
+  selectUnconfirmedForDeletion,
+} from '../src/lib/waitlist/purge.mjs';
 import { findAttributeIssues, findIssues } from '../scripts/prepublish-check.mjs';
 
 function subscriber(overrides = {}) {
@@ -308,6 +312,9 @@ test('three mapped sign-ups from one IP are flagged and held', () => {
   const result = tally([referrer, ...friends]);
   assert.equal(result.burstHeld.length, 3);
   assert.equal(result.counted, 0);
+  assert.equal(referrer.ip, undefined);
+  assert.equal(friends.every((friend) => friend.ip === undefined), true);
+  assert.equal(JSON.stringify(result).includes('v4:'), false);
 });
 
 test('the free-plan flag counts unconfirmed contacts and does not buy anything', () => {
@@ -348,6 +355,29 @@ test('unconfirmed contacts older than 14 days are the purge set', () => {
     now,
   );
   assert.deepEqual(selected.map((row) => row.id), ['old']);
+  const withPrefix = [
+    subscriber({ id: 'old', status: 'unconfirmed', subscribedAt: '2026-11-01T00:00:00.000Z', ip: 'v4:5.5.5' }),
+    subscriber({ id: 'fresh', status: 'unconfirmed', subscribedAt: '2026-11-10T00:00:00.000Z', ip: 'v4:5.5.5' }),
+    subscriber({ id: 'kept', status: 'confirmed', subscribedAt: '2026-10-01T00:00:00.000Z', ip: 'v6:2a00:23c4:0001:0002' }),
+  ];
+  assert.deepEqual(
+    selectStoredPrefixesForDeletion(withPrefix, now).map((row) => row.id),
+    ['old'],
+  );
+  assert.deepEqual(
+    selectStoredPrefixesForDeletion(withPrefix, new Date('2027-08-01T00:00:00.000Z')).map((row) => row.id),
+    ['old', 'fresh', 'kept'],
+  );
+  const cleared = omitNetworkPrefix({
+    id: 'kept',
+    ip: 'v4:5.5.5',
+    ip_address: '5.5.5.9',
+    fields: { network_prefix: 'v4:5.5.5', referral_count: 1 },
+  });
+  assert.equal(cleared.ip, undefined);
+  assert.equal(cleared.ip_address, undefined);
+  assert.equal(cleared.fields.network_prefix, undefined);
+  assert.equal(cleared.fields.referral_count, 1);
 });
 
 test('analytics payloads cannot carry a referral code or an email address', () => {
@@ -416,6 +446,10 @@ test('consent wording is saved with the form version', () => {
   assert.ok(REFERRAL_TERMS.includes('31 Dec 2026'));
   assert.ok(REFERRAL_TERMS.includes('15 Jan 2027'));
   assert.ok(CONFIRM_BODY.includes('within 21 days'));
+  assert.equal(
+    TRIAL_SHORT,
+    "30-day free trial in the app, no card needed to start. After that, keeping Hubbly needs a subscription. You'll see the price in the app before you choose, and you're never charged unless you subscribe.",
+  );
 });
 
 test('the pre-publish scanner rejects retired wording', () => {

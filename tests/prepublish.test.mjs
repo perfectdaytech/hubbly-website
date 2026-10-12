@@ -93,7 +93,9 @@ test('the built waitlist, privacy and referral pages carry the required wording'
   assert.equal(termsHtml.includes('mailto:%7BCONTACT.support%7D'), false);
   assert.ok(privacy.includes('ZC144477'));
   assert.equal(privacy.includes('[ICO NUMBER]'), false);
-  assert.ok(privacy.includes('legitimate interest in running the referral rewards fairly'));
+  assert.ok(privacy.includes('only to check referrals for fake or self-referrals'));
+  assert.ok(privacy.includes('IPv4 /24 or IPv6 /64 prefix'));
+  assert.equal(privacy.includes('duplicates and abuse'), false);
   assert.ok(privacy.includes("The only analytics is PostHog, which runs in memory without cookies."));
   assert.equal(privacy.includes('any other third-party script'), false);
   assert.ok(privacy.includes(PRIVACY_WAITLIST.slice(0, 40)));

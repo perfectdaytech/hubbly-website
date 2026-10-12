@@ -12,7 +12,8 @@ export const BURST_WINDOW_MS = 60 * 60 * 1000;
 export const BURST_COUNT = 3;
 
 /**
- * Network prefix the referral check may keep: IPv4 /24 or IPv6 /64.
+ * Network prefix for the referral fraud check only: IPv4 /24 or IPv6 /64.
+ * Not used for profiling, marketing, or an automatic rejection.
  * The full address is not returned. Callers drop the raw value after this.
  * @param {string | undefined | null} ip
  * @returns {string | undefined}
@@ -182,6 +183,8 @@ export function tally(subscribers, options = {}) {
   }
 
   const burst = burstFlaggedIds(subscribers);
+  // The prefix is for this hand check only. Drop it before any other step.
+  for (const subscriber of subscribers) delete subscriber.ip;
   /** @type {Array<{ id: string, reasons: string[] }>} */
   const rejected = [];
   /** @type {Array<{ id: string, referrerId: string | null }>} */

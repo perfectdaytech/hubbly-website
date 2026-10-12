@@ -226,8 +226,12 @@ start that plan.
    Counts of 5 or more stay at 4 until you pass `--approve-rewards` after a
    hand check. The script never sends email.
 10. **Weekly clean.** `node scripts/purge-unconfirmed.mjs` lists unconfirmed
-    contacts older than 14 days.
-    `node scripts/purge-unconfirmed.mjs --confirm` deletes them. Run it weekly.
+   contacts older than 14 days, and any stored IPv4 /24 or IPv6 /64 prefix
+   that the retention schedule says to delete.
+   `node scripts/purge-unconfirmed.mjs --confirm` deletes them. Run it weekly.
+   The prefix is used only for the referral fraud hand check. Unconfirmed
+   prefixes go with that 14-day purge. Every remaining prefix is deleted by
+   31 July 2027, the hard stop in the privacy notice.
     A weekly run means an address older than 14 days is gone within 21 days,
     which is the public promise.
 11. **Reward PDFs** are `calm-down-cards.pdf` (3 confirmed referrals) and

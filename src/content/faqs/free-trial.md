@@ -3,8 +3,10 @@ question: How does the free trial work?
 order: 1
 ---
 
-**30-day free trial, then £4.99 a month.** A payment method is needed. The
-subscription **renews automatically** unless you cancel at least 24 hours
-before the trial ends. You will not be charged during the trial. Cancel in
-Google Play, under Payments and subscriptions, or in iPhone Settings, under
-your name, then Subscriptions. Cancelling stops the next renewal.
+When you download Hubbly, the full app is free to use for 30 days, with every
+feature unlocked. The trial is managed by the app rather than by your app
+store, and no payment details are required to begin it. Certain in-app
+activities (for example connecting a calendar) can extend the trial by a
+number of days; the current offers and amounts are shown in the app and may
+change over time. If you reach the end of the trial and decide not to
+subscribe, you will not be charged.

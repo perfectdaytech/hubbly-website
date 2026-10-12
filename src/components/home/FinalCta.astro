@@ -1,6 +1,7 @@
 ---
 import Section from '@/components/ui/Section.astro';
 import Icon from '@/components/ui/Icon.astro';
+import { TRIAL_SHORT } from '@/data/waitlist';
 ---
 <Section id="get" pad="lg">
   <div
@@ -36,9 +37,7 @@ import Icon from '@/components/ui/Icon.astro';
         Hubbly is on its way
       </h2>
       <p class="mx-auto mt-5 max-w-xl rounded-3xl bg-cream px-5 py-4 text-base font-semibold leading-relaxed text-navy sm:text-lg">
-        <span class="font-bold">30-day free trial</span>, then <span class="font-bold">£4.99 a month</span>.
-        Payment method needed. <span class="font-bold">Renews automatically</span> unless you cancel at least
-        24 hours before the trial ends.
+        {TRIAL_SHORT}
       </p>
       <p class="mt-6">
         <a

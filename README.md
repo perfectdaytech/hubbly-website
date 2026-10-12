@@ -85,12 +85,12 @@ in. Two store links remain, both pending the app listings going live:
   company no. **16952922**, registered office 71–75 Shelton Street, Covent
   Garden, London WC2H 9JQ. Wired into `src/data/site.ts`; flows into the footer
   and legal pages.
-- **Pricing** — a **30-day free trial**, then **£4.99 a month** (or £44.99 a year).
-  A payment method is needed. It renews automatically unless you cancel at
-  least 24 hours before the trial ends. Founders' offer: the first 100
-  subscriptions get their first year at £2.99 a month, then £4.99 a month.
-  Joining the waitlist does not reserve a founders' place. See
-  `/founders-terms`.
+- **Pricing** — a **30-day free trial** inside the app. No card is needed to
+  start, and you are not charged when the trial ends unless you choose to
+  subscribe. The monthly price on the site is **£4.99**. The annual price is
+  not published. A founders' offer may be available on launch day, if the store
+  listing includes it, and is described without a price. Joining the waitlist
+  does not reserve a founders' place. See `/founders-terms`.
 - **Socials** — `@gethubbly` on Instagram, Facebook and X.
 - **Markets** — UK-based, launching across English-speaking markets. Legal pages
   cover UK GDPR, EU GDPR and CCPA; review local law before entering other
@@ -181,7 +181,7 @@ start that plan.
    the UK Addendum.
 2. **Double opt-in on.** Confirmation email subject: "Please confirm you want
    Hubbly emails". Body: "Tap to confirm. If you didn't sign up, ignore this
-   and we'll delete your address within 14 days." Drafts for every email are
+   and we'll delete your address within 21 days." Drafts for every email are
    in `src/emails/`. Emails 1 and 6 need Sentinel's review before they are sent.
    Nothing in this repo sends mail.
 3. **Custom fields**, created in the MailerLite UI (the tally script will not
@@ -196,10 +196,11 @@ start that plan.
    confirmed page tells people their link is in the welcome email. Turn
    reCAPTCHA and MailerLite's anti-bot JavaScript **off**. The form has a
    honeypot instead.
-5. **Sender mailbox.** Not chosen yet. The proposal is a monitored Google
-   Group at hello@gethubbly.app, replies to the same address. Until a Workspace
-   admin confirms it, the pages use contact@gethubbly.app, which is already on
-   the site. Do not verify a sender in MailerLite before that mailbox exists.
+5. **Sender mailbox.** Drafts send from Hubbly at hello@gethubbly.app, with
+   replies to the same address. Privacy and beta requests use
+   privacy@gethubbly.app. A monitored mailbox still has to exist before
+   MailerLite verifies the sender. Do not verify a sender before that mailbox
+   exists.
 6. **DNS.** Do not change GoDaddy records from this branch. When you are ready:
    add MailerLite's DKIM on its own selector, merge MailerLite into the
    existing SPF record (never a second SPF record), leave `google._domainkey`,
@@ -211,24 +212,31 @@ start that plan.
      and writes `referral_count` only.
    - `PUBLIC_POSTHOG_KEY` / `PUBLIC_POSTHOG_HOST` — already used for cookieless
      EU analytics. Memory persistence, Do Not Track on, no session recording.
-8. **ICO registration number.** Not on the site yet. Add it to the privacy
-   page before the waitlist is advertised. Do not publish a placeholder token.
+8. **ICO registration number.** ZC144477, on `/privacy` section 16, from
+   `REGULATOR.registrationNumber` in `src/data/site.ts`.
 9. **Weekly tally.** Export, or point `MAILERLITE_MODE=live` at the API, then:
    `node scripts/referral-count.mjs` (dry run) and
    `node scripts/referral-count.mjs --commit` to write counts.
    Counts of 5 or more stay at 4 until you pass `--approve-rewards` after a
    hand check. The script never sends email.
-10. **Monthly clean, on the 1st.** `node scripts/purge-unconfirmed.mjs` lists
-    unconfirmed contacts older than 14 days.
-    `node scripts/purge-unconfirmed.mjs --confirm` deletes them.
-11. **Reward PDFs** are in `public/printables/`. They are plain text printables
-    so the terms have real files behind them. A designer can replace the files
-    without changing the links. Referral rewards are Chore Cards (3) and the
-    colour-in mascot sheets (5). The Calmer Mornings Starter is the gift for
-    every confirmed sign-up.
+10. **Weekly clean.** `node scripts/purge-unconfirmed.mjs` lists unconfirmed
+    contacts older than 14 days.
+    `node scripts/purge-unconfirmed.mjs --confirm` deletes them. Run it weekly.
+    A weekly run means an address older than 14 days is gone within 21 days,
+    which is the public promise.
+11. **Reward PDFs** live in `rewards/printables/` and are not served by the
+    site. Library printables stay in `public/printables/`. Referral rewards are
+    Chore Cards (3) and the colour-in mascot sheets (5). The Calmer Mornings
+    Starter is the gift for every confirmed sign-up, and it is in the library.
+12. **Before go-live.** Turn double opt-in on. In a clean browser, confirm
+    `/waitlist`, `/nearly` and `/confirmed` set no cookies and no local
+    storage. On a live test sign-up, confirm `ref_code`, `referred_by` and
+    `form_version` arrive in MailerLite.
 
 `npm test` type-checks, builds, and runs the unit tests plus the pre-publish
-scan. `npm run test:unit` runs the logic tests without a build.
+scan. It expects the scan to still find `[REWARD CHOICE]`, `PLAY_URL` and
+`APP_STORE_URL`. `npm run build` fails while those remain, because `postbuild`
+runs the same scan. `npm run test:unit` runs the logic tests without a build.
 
 ### Spec section 5.2
 
@@ -236,8 +244,8 @@ scan. `npm run test:unit` runs the logic tests without a build.
 |---|---|
 | 1. No cookies or local storage for referrals. `?ref=` only fills the hidden field. | `src/scripts/waitlist-inline.js` reads `ref`, writes the hidden field, then removes it from the address bar. It does not touch cookies or local storage. PostHog stays on memory persistence in `src/scripts/analytics.ts`, and `scrubAnalyticsUrl` strips `ref` and `code` from event URLs. |
 | 2. Random 8-character codes from `crypto.getRandomValues`, no look-alikes, never an id or an email. | `src/lib/waitlist/codes.mjs`, called from the inline script for each page view. |
-| 3. Self-referrals, duplicates and disposable addresses do not count. | `src/lib/waitlist/count.mjs` plus `email.mjs` and `disposable.mjs`. Plus-tags and Gmail dots are treated as the same address. Bursts from one IP are held out. |
-| 4. Only double opt-in confirmed referrals count. Unconfirmed sign-ups are deleted after 14 days. | The tally ignores every status except `confirmed`, and ignores confirmations after 23:59 UK time on 31 Dec 2026. `scripts/purge-unconfirmed.mjs` is the 14-day clean. It is a different script from the tally. |
+| 3. Self-referrals, duplicates and disposable addresses do not count. | `src/lib/waitlist/count.mjs` plus `email.mjs` and `disposable.mjs`. Plus-tags and Gmail dots are treated as the same address. Three or more sign-ups from one IP in an hour are held for a hand check (`burstHeld`) and count only with `--approve-burst`. A later unsubscribe drops that referral on the next tally, because only `confirmed` status counts. |
+| 4. Only double opt-in confirmed referrals count. Unconfirmed sign-ups are deleted after 14 days. | The tally ignores every status except `confirmed`, and ignores confirmations after 23:59 UK time on 31 Dec 2026. `scripts/purge-unconfirmed.mjs` deletes unconfirmed records older than 14 days. Run it weekly. The public promise is deletion within 21 days. It is a different script from the tally. |
 | 5. The tally is read-only apart from `referral_count`. | `buildReferralCountBody` in `src/lib/waitlist/mailerlite.mjs`. The live client PUT sends that body only. The tally never creates subscribers, groups or other fields, and never sends email. |
 | 6. `waitlist_share_click` sends `{channel}` only. | `shareClickProps` allows `copy` or `share` and nothing else. Submit events allow store choice, the beta yes/no, a referrer yes/no, and utm tags. No email, name or code. |
 | 7. Draft branch, reviewed before merge. | This work is on a draft branch and a draft pull request. It does not target `main` and does not change the deploy workflow. |
@@ -248,20 +256,20 @@ scan. `npm run test:unit` runs the logic tests without a build.
 | Checklist item | Status on this branch |
 |---|---|
 | Legal entity confirmed | Met. `CONTROLLER_STATEMENT` in `src/lib/waitlist/copy.mjs`, used in the footer, privacy page, terms, founders' terms, referral terms and email drafts. |
-| ICO fee and registration number | Open. The privacy page says the number will be added before the waitlist is advertised. No placeholder token is published. |
+| ICO fee and registration number | Met. Registration number ZC144477 is on `/privacy` section 16. |
 | Founders' Option B chosen, and Hubbly confirmed as the subscription app | Copy is Option B, on `/founders-terms` and the pricing section. The owner's confirmation, and Brick/Elon's confirmation that Hubbly is the subscription app, are still open. MailerLite stays on Free, flag at about 200. |
 | Apple promo offer or offer code, and Play multi-phase offer, confirmed buildable | Open. The founders' page says the offer is made only if the store listing has it on launch day. |
 | Automated scan for `{`, `PENDING`, `[TO CONFIRM`, `[HOLD`, `[UNVERIFIED`, `households`, `forever`, and the retired trial line | Met for public pages and email drafts. `scripts/prepublish-check.mjs`, run by `npm test`. |
 | MailerLite DPA, dated PDF, sub-processors, UK transfer cover | Open. Owner step. Not accepted from this repo. |
 | Form wording matches section 3, boxes unticked, dated HTML saved | Met. `src/components/waitlist/WaitlistForm.astro` and `src/content/consent/waitlist-form-2026-10-12.html`. |
 | Clean-browser cookie test, reCAPTCHA off, our own redirect pages | reCAPTCHA is not loaded. Redirect targets are `/nearly` and `/confirmed`. The clean-browser test still has to be run by a person before go-live. |
-| Privacy paragraph and the real retention rule | Met. Section 18 of `/privacy`: delete 6 months after the Google Play launch, and by 31 July 2027, with the post-launch exception and the 14-day rule. |
-| Referral terms, rewards, dates, promoter, both PDFs, no "small extras" | Met. `/referral-terms`. PDFs: `public/printables/chore-cards.pdf` and `public/printables/colour-in-mascot.pdf`. |
+| Privacy paragraph and the real retention rule | Met. Section 18 of `/privacy`: delete 6 months after the Google Play launch, and by 31 July 2027, with the post-launch exception. Unconfirmed sign-ups are deleted within 21 days. |
+| Referral terms, rewards, dates, promoter, both PDFs, no "small extras" | Met. `/referral-terms`. Reward PDFs are `rewards/printables/chore-cards.pdf` and `rewards/printables/colour-in-mascot.pdf`. They are not in the public library. |
 | Section 5.2 conditions checked on the draft branch | Met in code and tests. A human review of this pull request is the remaining check. |
-| Trial lines use Sentinel's wording, price and renewal as prominent as "free" | Met on the waitlist, home page, pricing cards, founders' terms and the email drafts. |
+| Trial lines use Sentinel's wording, price and renewal as prominent as "free" | The no-card 30-day in-app trial is on `/terms` section 5, the home page, the waitlist, the founders' terms, the FAQs and emails 1, 2, 6, 7 and 8. No copy says a card is required to start, or that the trial charges automatically. The annual price and the founders' prices are not published. |
 | Sender mailbox, postal address in the footer, DNS authentication | Postal address is in the footer and in every email draft. The mailbox and the DNS changes are open. This branch does not change DNS. |
 | Emails 1 and 6 reviewed by Sentinel before sending | Open. Drafts are `src/emails/01-welcome.html` and `src/emails/06-launch.html`. They have not been sent. |
-| Standard price confirmed, so a decision on "(instead of £4.99)" | Open. That comparison is not used. |
+| Standard price confirmed, so a decision on "(instead of £4.99)" | The comparison is omitted. The monthly £4.99 stays on the pricing card. The annual price is not published, and the scan fails if `44.99` appears. A missing price does not fail the scan. |
 | Cooling-off wording, and a Play manual-refund route | Wording is on `/terms`, `/founders-terms` and the refunds FAQ. The Play Console refund route is an owner step. |
 | Sentinel sign-off on v3, Lauren approves the copy | The spec records Sentinel's sign-off with conditions. Lauren's approval of the pages and emails is still open. |
 | December DMCC re-check booked for Tue 1 Dec 2026 | Open. Calendar item for Sentinel, with Ava tracking. Not booked from this repo. |

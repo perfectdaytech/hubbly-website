@@ -131,7 +131,7 @@ test('only a confirmed, non-fraud referral increases the count', () => {
   assert.ok(reasons['pending-consent'].includes('unconfirmed'));
 });
 
-test('a burst from one address is not counted', () => {
+test('a burst from one address is held for a hand check', () => {
   const referrer = subscriber({ id: 'referrer', email: 'owner@example.com', fields: { ref_code: 'ABCDEFGH' } });
   const burst = [1, 2, 3].map((n) =>
     subscriber({
@@ -143,9 +143,26 @@ test('a burst from one address is not counted', () => {
       fields: { referred_by: 'ABCDEFGH' },
     }),
   );
-  const result = tally([referrer, ...burst]);
+  const held = tally([referrer, ...burst]);
+  assert.equal(held.counted, 0);
+  assert.equal(held.rejected.length, 0);
+  assert.equal(held.burstHeld.length, 3);
+  const approved = tally([referrer, ...burst], { approveBurst: true });
+  assert.equal(approved.counted, 3);
+  assert.equal(approved.burstHeld.length, 0);
+});
+
+test('an unsubscribed referral stops counting', () => {
+  const referrer = subscriber({ id: 'referrer', email: 'owner@example.com', fields: { ref_code: 'ABCDEFGH' } });
+  const left = subscriber({
+    id: 'left',
+    email: 'left@example.com',
+    status: 'unsubscribed',
+    fields: { referred_by: 'ABCDEFGH' },
+  });
+  const result = tally([referrer, left]);
   assert.equal(result.counted, 0);
-  assert.ok(result.rejected.every((row) => row.reasons.includes('burst')));
+  assert.ok(result.rejected.some((row) => row.id === 'left'));
 });
 
 test('five referrals stay at 4 until the hand check', () => {
@@ -244,13 +261,22 @@ test('consent wording is saved with the form version', () => {
   assert.ok(snapshot.includes(CHECKBOX_BETA));
   assert.ok(snapshot.includes(CHECKBOX_TIPS));
   assert.ok(REFERRAL_TERMS.includes('Chore Cards'));
+  assert.ok(REFERRAL_TERMS.includes('[REWARD CHOICE]'));
+  assert.ok(REFERRAL_TERMS.includes('same internet connection'));
+  assert.ok(REFERRAL_TERMS.includes('unsubscribes'));
   assert.ok(REFERRAL_TERMS.includes('31 Dec 2026'));
   assert.ok(REFERRAL_TERMS.includes('15 Jan 2027'));
+  assert.ok(CONFIRM_BODY.includes('within 21 days'));
 });
 
 test('the pre-publish scanner rejects retired wording', () => {
   assert.ok(findIssues('hello {name}', 'sample').length > 0);
+  assert.equal(findIssues('ref={$fields.ref_code} <a href="{$unsubscribe}">Unsubscribe</a>', 'sample').length, 0);
+  assert.equal(findIssues('iPhone Settings › [your name] › Subscriptions', 'sample').length, 0);
+  assert.ok(findIssues('[TRIAL MODEL]', 'sample').some((issue) => issue.includes('[TRIAL MODEL]')));
   assert.ok(findIssues('first 100 households', 'sample').some((issue) => issue.includes('households')));
   assert.ok(findIssues('free, forever', 'sample').some((issue) => issue.includes('forever')));
+  assert.ok(findIssues('The store link goes in this email on launch day.', 'sample').some((issue) => issue.includes('goes in this email')));
+  assert.ok(findIssues('PLAY_URL', 'sample').some((issue) => issue.includes('PLAY_URL')));
   assert.equal(findIssues('30-day free trial, then £4.99 a month.', 'sample').length, 0);
 });

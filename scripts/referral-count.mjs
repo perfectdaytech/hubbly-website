@@ -9,9 +9,10 @@ import { createMailerLiteClient } from '../src/lib/waitlist/mailerlite.mjs';
 
 const commit = process.argv.includes('--commit');
 const approveRewards = process.argv.includes('--approve-rewards');
+const approveBurst = process.argv.includes('--approve-burst');
 const client = createMailerLiteClient();
 const subscribers = await client.listSubscribers();
-const result = tally(subscribers, { approveRewards });
+const result = tally(subscribers, { approveRewards, approveBurst });
 
 if (commit) {
   for (const write of result.writes) {
@@ -24,11 +25,13 @@ const report = {
   mode: client.mode,
   committed: commit,
   approveRewards,
+  approveBurst,
   total: result.total,
   counted: result.counted,
   warning: result.warning,
   writes: result.writes,
   heldForReview: result.heldForReview,
+  burstHeld: result.burstHeld,
   collisions: result.collisions,
   rejected: result.rejected,
 };
@@ -39,7 +42,8 @@ await writeFile(path.join('data', 'referral-report.json'), `${JSON.stringify(rep
 console.log(
   `${commit ? 'Updated' : 'Dry run,'} ${result.writes.length} referral_count value(s). ` +
     `${result.counted} confirmed referral(s) qualified. ` +
-    `${result.heldForReview.length} referrer(s) held below 5 until --approve-rewards.`,
+    `${result.heldForReview.length} referrer(s) held below 5 until --approve-rewards. ` +
+    `${result.burstHeld.length} same-network sign-up(s) held until --approve-burst.`,
 );
 if (result.warning) {
   console.log(result.warning);

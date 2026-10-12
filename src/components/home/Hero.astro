@@ -4,6 +4,7 @@ import Eyebrow from '@/components/ui/Eyebrow.astro';
 import Icon from '@/components/ui/Icon.astro';
 import StoreButtons from '@/components/ui/StoreButtons.astro';
 import TabletMockup from './TabletMockup.astro';
+import { TRIAL_SHORT } from '@/data/waitlist';
 
 const avatars = ['👩', '👨', '🦄', '🦖'];
 ---
@@ -63,11 +64,7 @@ const avatars = ['👩', '👨', '🦄', '🦖'];
 
         <div data-reveal style="--reveal-delay:240ms" class="mt-8">
           <StoreButtons />
-          <p class="mt-4 text-base font-semibold leading-relaxed text-navy">
-            <span class="font-bold">30-day free trial</span>, then <span class="font-bold">£4.99 a month</span>.
-            Payment method needed. <span class="font-bold">Renews automatically</span> unless you cancel at least
-            24 hours before the trial ends.
-          </p>
+          <p class="mt-4 text-base font-semibold leading-relaxed text-navy">{TRIAL_SHORT}</p>
           <p class="mt-4">
             <a
               href="/waitlist"

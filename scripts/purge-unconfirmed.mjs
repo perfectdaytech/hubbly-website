@@ -1,4 +1,5 @@
-// Monthly clean: delete unconfirmed contacts older than 14 days.
+// Weekly clean: delete unconfirmed contacts older than 14 days.
+// Run every week. An address is then gone within 21 days of sign-up.
 // Does nothing unless --confirm is passed. Never used by the referral tally.
 
 import { mkdir, writeFile } from 'node:fs/promises';

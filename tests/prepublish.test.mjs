@@ -1,12 +1,40 @@
 import assert from 'node:assert/strict';
-import { readFileSync, readdirSync } from 'node:fs';
+import { mkdtempSync, readFileSync, readdirSync, writeFileSync } from 'node:fs';
+import { tmpdir } from 'node:os';
+import path from 'node:path';
 import test from 'node:test';
-import { PRIVACY_WAITLIST, REFERRAL_TERMS, TRIAL_SHORT } from '../src/lib/waitlist/copy.mjs';
-import { scanPublished, visibleText } from '../scripts/prepublish-check.mjs';
+import { PRIVACY_WAITLIST, REFERRAL_TERMS } from '../src/lib/waitlist/copy.mjs';
+import { findRewardPdfs, scanPublished, visibleText } from '../scripts/prepublish-check.mjs';
 
-test('built pages and email drafts pass the pre-publish scan', async () => {
+test('the draft build is blocked until open placeholders are removed', async () => {
   const issues = await scanPublished('dist', 'src/emails');
-  assert.deepEqual(issues, []);
+  assert.ok(issues.length > 0);
+  for (const token of ['[REWARD CHOICE]', 'PLAY_URL', 'APP_STORE_URL']) {
+    assert.ok(issues.some((issue) => issue.includes(token)), token);
+  }
+  for (const gone of ['[TRIAL MODEL]', '[FOUNDERS OFFER]', '[ANNUAL PRICE]', '[ICO NUMBER]', '44.99']) {
+    assert.equal(
+      issues.some((issue) => issue.includes(gone)),
+      false,
+      gone,
+    );
+  }
+  assert.equal(
+    issues.some((issue) => issue.includes('emails/01-welcome.html: contains a curly brace')),
+    false,
+  );
+  assert.equal(issues.some((issue) => issue.includes('referral reward PDF')), false);
+  assert.deepEqual(await findRewardPdfs('dist'), []);
+});
+
+test('a reward PDF in the build fails the scan', async () => {
+  const dist = mkdtempSync(path.join(tmpdir(), 'hubbly-dist-'));
+  const emails = mkdtempSync(path.join(tmpdir(), 'hubbly-mail-'));
+  writeFileSync(path.join(dist, 'index.html'), '<p>Hello</p>');
+  writeFileSync(path.join(dist, 'chore-cards.pdf'), '%PDF-');
+  writeFileSync(path.join(emails, '00.html'), '<p><a href="{$unsubscribe}">Unsubscribe</a></p>');
+  const issues = await scanPublished(dist, emails);
+  assert.ok(issues.some((issue) => issue.includes('chore-cards.pdf')));
 });
 
 test('the built waitlist, privacy and referral pages carry the required wording', () => {
@@ -14,25 +42,58 @@ test('the built waitlist, privacy and referral pages carry the required wording'
   const privacy = visibleText(readFileSync('dist/privacy/index.html', 'utf8'));
   const referral = visibleText(readFileSync('dist/referral-terms/index.html', 'utf8'));
   const founders = visibleText(readFileSync('dist/founders-terms/index.html', 'utf8'));
+  const freebies = readFileSync('dist/freebies/index.html', 'utf8');
   const form = readFileSync('dist/waitlist/index.html', 'utf8');
+  const welcome = readFileSync('src/emails/01-welcome.html', 'utf8');
+  const launch = readFileSync('src/emails/06-launch.html', 'utf8');
 
-  assert.ok(waitlist.includes(TRIAL_SHORT.replaceAll(' ', ' ').slice(0, 24)) || waitlist.includes('30-day free trial'));
-  assert.ok(waitlist.includes('£4.99 a month'));
-  assert.ok(waitlist.includes('Renews automatically'));
+  assert.ok(waitlist.includes('no card is needed to start'));
+  assert.ok(waitlist.includes('you will not be charged'));
+  assert.equal(waitlist.includes('payment method needed'), false);
+  assert.ok(waitlist.includes('[REWARD CHOICE]'));
   assert.ok(privacy.includes('31 July 2027'));
-  assert.ok(privacy.includes('14 days'));
+  assert.ok(privacy.includes('within 21 days'));
+  assert.ok(privacy.includes('ZC144477'));
+  assert.equal(privacy.includes('[ICO NUMBER]'), false);
+  assert.ok(privacy.includes('legitimate interest in running the referral rewards fairly'));
+  assert.ok(privacy.includes("The only analytics is PostHog, which runs in memory without cookies."));
+  assert.equal(privacy.includes('any other third-party script'), false);
   assert.ok(privacy.includes(PRIVACY_WAITLIST.slice(0, 40)));
   assert.ok(referral.includes('Chore Cards'));
+  assert.ok(referral.includes('same internet connection'));
+  assert.ok(referral.includes('unsubscribes'));
   assert.ok(referral.includes(REFERRAL_TERMS.slice(0, 40)));
-  assert.ok(founders.includes('first 100 subscriptions'));
+  assert.ok(founders.includes("A founders' offer may be available on launch day"));
+  assert.ok(founders.includes('no payment details are required'));
+  assert.equal(founders.includes('[FOUNDERS OFFER]'), false);
+  assert.equal(founders.includes('[TRIAL MODEL]'), false);
+  assert.equal(founders.includes('44.99'), false);
+  assert.equal(founders.includes('is planned in the app'), false);
+  assert.equal(freebies.includes('chore-cards.pdf'), false);
+  assert.equal(freebies.includes('colour-in-mascot.pdf'), false);
+  assert.ok(freebies.includes("aren't in this library"));
   assert.equal(form.includes('ph-no-capture'), true);
   const ageTag = form.match(/<input[^>]*name="fields\[age_18\]"[^>]*>/);
   assert.ok(ageTag);
   assert.equal(ageTag[0].includes(' checked'), false);
-  assert.equal(form.includes('type="checkbox"'), true);
 
-  for (const file of readdirSync('public/printables')) {
+  assert.ok(welcome.includes('https://gethubbly.app/waitlist?ref={$fields.ref_code}'));
+  assert.ok(welcome.includes('href="{$unsubscribe}"'));
+  assert.ok(welcome.includes('privacy@gethubbly.app'));
+  assert.ok(welcome.includes('hello@gethubbly.app'));
+  assert.equal(launch.includes('goes in this email'), false);
+  assert.ok(launch.includes('PLAY_URL?utm_campaign=founders_launch'));
+  assert.ok(launch.includes('href="{$unsubscribe}"'));
+
+  const library = readdirSync('public/printables');
+  assert.equal(library.includes('chore-cards.pdf'), false);
+  assert.equal(library.includes('colour-in-mascot.pdf'), false);
+  for (const file of library) {
     const bytes = readFileSync(`public/printables/${file}`);
+    assert.equal(bytes.subarray(0, 5).toString(), '%PDF-');
+  }
+  for (const file of ['chore-cards.pdf', 'colour-in-mascot.pdf']) {
+    const bytes = readFileSync(`rewards/printables/${file}`);
     assert.equal(bytes.subarray(0, 5).toString(), '%PDF-');
   }
 });

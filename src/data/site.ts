@@ -31,9 +31,9 @@ export const COMPANY = {
 } as const;
 
 export const CONTACT = {
-  // TODO(founder): split into support@/privacy@ if you want dedicated routes.
+  // Privacy and data-rights mail goes to privacy@. Other routes stay on contact@ until a mailbox split is confirmed.
   general: 'contact@gethubbly.app',
-  privacy: 'contact@gethubbly.app',
+  privacy: 'privacy@gethubbly.app',
   support: 'contact@gethubbly.app',
   safety: 'contact@gethubbly.app',
 } as const;
@@ -55,4 +55,5 @@ export const REGULATOR = {
   name: "Information Commissioner's Office (ICO)",
   url: 'https://ico.org.uk/make-a-complaint/',
   helpline: '0303 123 1113',
+  registrationNumber: 'ZC144477',
 } as const;

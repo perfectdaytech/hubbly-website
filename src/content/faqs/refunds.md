@@ -12,6 +12,4 @@ can cancel within 14 days of the first payment and ask for a refund (less
 anything you've used) through Google Play or the App Store. If the store
 does not make a refund the law requires, email us and we will look at it.
 
-**30-day free trial, then £4.99 a month.** A payment method is needed. It
-**renews automatically** unless you cancel at least 24 hours before the
-trial ends.
+The full app is free for 30 days. The trial runs inside Hubbly, and no card is needed to start. If the trial ends and you do not subscribe, you will not be charged.

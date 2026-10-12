@@ -22,19 +22,19 @@ export const EMAIL_ERROR = 'Enter an email address to continue.';
 
 export const CONFIRM_SUBJECT = 'Please confirm you want Hubbly emails';
 export const CONFIRM_BODY =
-  "Tap to confirm. If you didn't sign up, ignore this and we'll delete your address within 14 days.";
+  "Tap to confirm. If you didn't sign up, ignore this and we'll delete your address within 21 days.";
 
 export const TRIAL_SHORT =
-  '30-day free trial, then £4.99 a month. Payment method needed. Renews automatically unless you cancel at least 24 hours before the trial ends.';
+  'The full app is free for 30 days. The trial runs inside Hubbly, and no card is needed to start. If the trial ends and you do not subscribe, you will not be charged.';
 
 export const TRIAL_LONG =
-  "Start with a 30-day free trial. You'll need to add a payment method with Google Play or the App Store, but you won't be charged during the trial. Unless you cancel at least 24 hours before it ends, your subscription starts and renews automatically at £4.99 a month (or £44.99 a year) until you cancel. Cancel any time in Google Play › Payments & subscriptions, or iPhone Settings › [your name] › Subscriptions. Cancelling stops the next renewal.";
+  'When you download Hubbly, the full app is free to use for 30 days, with every feature unlocked. The trial is managed by the app rather than by your app store, and no payment details are required to begin it. Certain in-app activities (for example connecting a calendar) can extend the trial by a number of days; the current offers and amounts are shown in the app and may change over time. If you reach the end of the trial and decide not to subscribe, you will not be charged.';
 
 export const FOUNDERS_OFFER =
-  "Founders' offer: the first 100 subscriptions get their first year at £2.99 a month, after your 30-day free trial, then £4.99 a month. After that year it renews at £4.99 a month unless you cancel. Google Play first, from launch day.";
+  "A founders' offer may be available on launch day, if the store listing includes it.";
 
 export const FOUNDERS_CAP =
-  'Limited to the first 100 subscriptions, from launch day. After that, standard pricing.';
+  "If a founders' offer is available, it is limited. After it ends, the price shown in the store applies.";
 
 export const WAITLIST_NO_PLACE = "Joining the waitlist doesn't reserve a founders' place.";
 
@@ -42,10 +42,10 @@ export const COOLING_OFF =
   'If your subscription starts after a free trial and you change your mind, you can cancel within 14 days of the first payment and ask for a refund (less anything you\'ve used) through Google Play or the App Store.';
 
 export const REFERRAL_TERMS =
-  'Share your own link. When someone joins through it and confirms their email, that counts as one referral. 3 referrals: Chore Cards (a printable set). 5 referrals: colour-in mascot sheets (printable). Referrals count until 23:59 UK time on Thu 31 Dec 2026. Your own sign-ups, duplicate or fake addresses don\'t count. Referrals never give a founders\' place or a discount on Hubbly\'s price. Rewards are sent by email by Fri 15 Jan 2027. Promoter: PerfectDay Technologies Ltd, registered in England and Wales, company no. 16952922, 71-75 Shelton Street, Covent Garden, London, WC2H 9JQ, United Kingdom.';
+  "Share your own link. When someone joins through it and confirms their email, that counts as one referral. [REWARD CHOICE] 3 referrals: Chore Cards (a printable set). 5 referrals: colour-in mascot sheets (printable). Referrals count until 23:59 UK time on Thu 31 Dec 2026. Your own sign-ups, duplicate or fake addresses don't count. If several sign-ups come from the same internet connection within an hour, we check them by hand before they count. A referral stops counting if that person unsubscribes before 23:59 UK time on 31 Dec 2026. Referrals never give a founders' place or a discount on Hubbly's price. Rewards are sent by email by Fri 15 Jan 2027. Promoter: PerfectDay Technologies Ltd, registered in England and Wales, company no. 16952922, 71-75 Shelton Street, Covent Garden, London, WC2H 9JQ, United Kingdom.";
 
 export const PRIVACY_WAITLIST =
-  "Hubbly waitlist. If you join our waitlist we collect your email address, first name (optional), which store you'll use, whether you'd like to test early, your confirmation that you're 18 or over, a referral code (and, if you joined through someone's link, that link's code), and the time and IP address of your sign-up and confirmation (as a record of your consent). We use this only to email you about Hubbly until launch and, if you ticked the box, after launch. Our lawful basis is your consent, which you can withdraw at any time using the unsubscribe link. MailerLite (UAB MailerLite, Lithuania) sends our emails as our processor and stores the data in the EU. If you ask to test early, we give your email address to Google or Apple to add you as a tester. We delete waitlist data 6 months after Hubbly launches on Google Play, and in any case by 31 July 2027. If you asked for emails after launch, we keep your email address, first name and consent record until you unsubscribe. We delete unconfirmed sign-ups after 14 days. You can complain to the ICO (ico.org.uk).";
+  "Hubbly waitlist. If you join our waitlist we collect your email address, first name (optional), which store you'll use, whether you'd like to test early, your confirmation that you're 18 or over, a referral code (and, if you joined through someone's link, that link's code), and the time and IP address of your sign-up and confirmation (as a record of your consent). We also use the sign-up time and IP address to check referrals for duplicates and abuse, under our legitimate interest in running the referral rewards fairly. We use this only to email you about Hubbly until launch and, if you ticked the box, after launch. Our lawful basis is your consent, which you can withdraw at any time using the unsubscribe link. MailerLite (UAB MailerLite, Lithuania) sends our emails as our processor and stores the data in the EU. If you ask to test early, we give your email address to Google or Apple to add you as a tester. We delete waitlist data 6 months after Hubbly launches on Google Play, and in any case by 31 July 2027. If you asked for emails after launch, we keep your email address, first name and consent record until you unsubscribe. We delete unconfirmed sign-ups within 21 days. You can complain to the ICO (ico.org.uk).";
 
 export const PRIVACY_REFERRAL_COUNT =
   'We also store how many confirmed people joined through your link, so we can send a referral reward if one is due.';

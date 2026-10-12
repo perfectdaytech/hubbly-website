@@ -57,6 +57,7 @@ export function burstFlaggedIds(subscribers) {
  * }>} subscribers
  * @param {{
  *   approveRewards?: boolean,
+ *   approveBurst?: boolean,
  *   deadline?: string,
  *   flagAt?: number,
  * }} [options]
@@ -65,6 +66,7 @@ export function tally(subscribers, options = {}) {
   const deadline = Date.parse(options.deadline ?? REFERRAL_DEADLINE_ISO);
   const flagAt = options.flagAt ?? SUBSCRIBER_FLAG_AT;
   const approveRewards = Boolean(options.approveRewards);
+  const approveBurst = Boolean(options.approveBurst);
 
   /** @type {Map<string, typeof subscribers>} */
   const byEmail = new Map();
@@ -101,6 +103,8 @@ export function tally(subscribers, options = {}) {
   const burst = burstFlaggedIds(subscribers);
   /** @type {Array<{ id: string, reasons: string[] }>} */
   const rejected = [];
+  /** @type {Array<{ id: string, referrerId: string | null }>} */
+  const burstHeld = [];
   /** @type {Map<string, number>} */
   const counts = new Map();
 
@@ -114,7 +118,6 @@ export function tally(subscribers, options = {}) {
     else if (!referrer) reasons.push(collisions.includes(referredBy) ? 'code_collision' : 'unknown_referrer');
     if (duplicateEmails.has(normalizeEmail(subscriber.email))) reasons.push('duplicate');
     if (isDisposableEmail(subscriber.email)) reasons.push('disposable');
-    if (burst.has(subscriber.id)) reasons.push('burst');
     if (subscriber.status === 'confirmed') {
       const confirmedAt = Date.parse(subscriber.confirmedAt ?? '');
       if (Number.isNaN(confirmedAt)) reasons.push('missing_confirmation_time');
@@ -126,6 +129,11 @@ export function tally(subscribers, options = {}) {
 
     if (reasons.length > 0) {
       if (referredBy) rejected.push({ id: subscriber.id, reasons });
+      continue;
+    }
+
+    if (burst.has(subscriber.id) && !approveBurst) {
+      burstHeld.push({ id: subscriber.id, referrerId: referrer ? referrer.id : null });
       continue;
     }
 
@@ -161,6 +169,7 @@ export function tally(subscribers, options = {}) {
     writes,
     rejected,
     heldForReview,
+    burstHeld,
     collisions,
     warning,
     total,

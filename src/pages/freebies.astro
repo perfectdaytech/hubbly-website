@@ -6,7 +6,6 @@ import { FREEBIES } from '@/data/freebies';
 import { webPageSchema } from '@/lib/schema';
 
 const library = FREEBIES.filter((item) => item.kind === 'library');
-const rewards = FREEBIES.filter((item) => item.kind === 'referral');
 ---
 <BaseLayout
   title="Free printables"
@@ -53,23 +52,10 @@ const rewards = FREEBIES.filter((item) => item.kind === 'referral');
     <div class="mt-12 max-w-3xl">
       <h2 class="font-display text-3xl font-semibold text-navy">Referral rewards</h2>
       <p class="mt-3 text-base leading-relaxed text-navy">
-        3 confirmed referrals: Chore Cards. 5 confirmed referrals: colour-in mascot sheets.
+        Referral rewards: [REWARD CHOICE] 3 confirmed referrals get Chore Cards; 5 get colour-in mascot sheets.
+        They're sent by email by Fri 15 Jan 2027 and aren't in this library.
         <a class="font-semibold text-coral-deep underline" href="/referral-terms">Referral terms</a>.
-        These are sent by email by Fri 15 Jan 2027. They are not part of the comment-a-keyword series.
       </p>
-      <ul class="mt-6 grid gap-5">
-        {
-          rewards.map((item) => (
-            <li class="rounded-[1.5rem] bg-paper p-6 ring-1 ring-navy/[0.06]">
-              <h3 class="font-display text-2xl font-semibold text-navy">{item.title}</h3>
-              <p class="mt-2 text-base leading-relaxed text-navy-soft">{item.summary}</p>
-              <a class="mt-3 inline-flex font-semibold text-coral-deep underline" href={item.href}>
-                Open {item.title}
-              </a>
-            </li>
-          ))
-        }
-      </ul>
     </div>
   </Section>
 </BaseLayout>

@@ -5,7 +5,7 @@ import { CONFIRM_BODY, CONFIRM_SUBJECT, WAITLIST_MOCK } from '@/data/waitlist';
 ---
 <BaseLayout
   title="You're nearly on the list"
-  description="Check your email and confirm you want Hubbly emails. If you didn't sign up, we'll delete your address within 14 days."
+  description="Check your email and confirm you want Hubbly emails. If you didn't sign up, we'll delete your address within 21 days."
   noindex={true}
 >
   <Section pad="lg" innerClass="pt-[calc(var(--nav-h)+3rem)] max-w-2xl">
@@ -15,7 +15,7 @@ import { CONFIRM_BODY, CONFIRM_SUBJECT, WAITLIST_MOCK } from '@/data/waitlist';
     </p>
     <p class="mt-4 text-lg font-semibold leading-relaxed text-navy">{CONFIRM_BODY}</p>
     <p class="mt-4 text-base leading-relaxed text-navy-soft">
-      Unconfirmed sign-ups are deleted after 14 days. You aren't on the list, and a referral doesn't count, until you confirm.
+      Unconfirmed sign-ups are deleted within 21 days. You aren't on the list, and a referral doesn't count, until you confirm.
     </p>
     {
       WAITLIST_MOCK && (

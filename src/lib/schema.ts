@@ -49,12 +49,6 @@ export function softwareApplicationSchema() {
         price: '4.99',
         priceCurrency: 'GBP',
       },
-      {
-        '@type': 'Offer',
-        name: 'Annual subscription',
-        price: '44.99',
-        priceCurrency: 'GBP',
-      },
     ],
     publisher: { '@id': ORG_ID },
   };

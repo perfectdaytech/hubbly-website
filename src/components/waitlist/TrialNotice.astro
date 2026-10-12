@@ -1,4 +1,6 @@
 ---
+import { TRIAL_SHORT } from '@/data/waitlist';
+
 interface Props {
   tone?: 'navy' | 'white';
   class?: string;
@@ -7,7 +9,5 @@ const { tone = 'navy', class: cls = '' } = Astro.props;
 const color = tone === 'white' ? 'text-white' : 'text-navy';
 ---
 <p class:list={['text-base font-semibold leading-relaxed', color, cls]}>
-  <span class="font-bold">30-day free trial</span>, then <span class="font-bold">£4.99 a month</span>.
-  Payment method needed. <span class="font-bold">Renews automatically</span> unless you cancel at least
-  24 hours before the trial ends.
+  {TRIAL_SHORT}
 </p>

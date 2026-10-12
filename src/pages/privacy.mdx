@@ -195,7 +195,7 @@ We keep personal data only for as long as we need it.
 - **On uninstall**: removing the app deletes the Hubbly data stored locally on that device. Your other devices and the synced copy are separate; delete the family to remove the synced copy.
 - **Backups**: synced data may persist briefly in routine system backups before being overwritten or expiring in the ordinary course.
 - **Diagnostics and analytics**: crash data (Sentry) and usage data (PostHog) are kept only as long as needed to investigate issues and understand trends, after which they are deleted or aggregated, in line with each provider's standard retention windows.
-- **Hubbly waitlist**: we delete waitlist data 6 months after Hubbly launches on Google Play, and in any case by 31 July 2027. If you asked for emails after launch, we keep your email address, first name and consent record until you unsubscribe. We delete unconfirmed sign-ups after 14 days.
+- **Hubbly waitlist**: we delete waitlist data 6 months after Hubbly launches on Google Play, and in any case by 31 July 2027. If you asked for emails after launch, we keep your email address, first name and consent record until you unsubscribe. We delete unconfirmed sign-ups within 21 days.
 
 <Callout type="plain">
 Your information sticks around only while you are using Hubbly. Delete your family or uninstall the app and the relevant data goes too. Diagnostics are kept briefly and then cleared.
@@ -243,7 +243,7 @@ We may ask you for information to **verify your identity**, so that we do not di
 
 ## 12. Cookies & website analytics
 
-The **Hubbly website** at [gethubbly.app]({SITE.url}) sets **no cookies** and stores **nothing on your device**: no analytics cookies, no advertising pixels, no local storage. The waitlist form does not use reCAPTCHA or any other third-party script. Because nothing is stored on your device, there is no cookie consent banner; there is nothing to consent to.
+The **Hubbly website** at [gethubbly.app]({SITE.url}) sets **no cookies** and stores **nothing on your device**: no analytics cookies, no advertising pixels, no local storage. The waitlist form is plain HTML. It doesn't load MailerLite's script, reCAPTCHA or any advertising or tracking code. The only analytics is PostHog, which runs in memory without cookies. Because nothing is stored on your device, there is no cookie consent banner; there is nothing to consent to.
 
 To understand how the website is doing, we collect **anonymous, cookieless usage statistics** using **PostHog**, hosted in the **EU**. For each visit this records: the pages viewed, anonymous clicks and taps, how far down a page you scrolled, the site or link you arrived from (including campaign tags), your browser and device type, and a country-level location. Waitlist events record only a store choice, whether the early-tester box was ticked, whether a referral link was present (yes or no), and campaign tags. They do not include your email address, your name, or any referral code. It works like this:
 
@@ -290,7 +290,7 @@ If you have questions about this policy or about how Hubbly handles your data, c
 - **Registered office:** {COMPANY.registeredAddress}
 - **Company number:** {COMPANY.registrationNumber}
 - **Email:** [{CONTACT.privacy}](mailto:{CONTACT.privacy})
-- **ICO registration number:** we will publish it on this page before the waitlist is advertised.
+- **ICO registration number:** {REGULATOR.registrationNumber}
 
 We have **not appointed a statutory Data Protection Officer**, as our processing does not meet the threshold that legally requires one. The contact above handles all privacy questions and data rights requests.
 

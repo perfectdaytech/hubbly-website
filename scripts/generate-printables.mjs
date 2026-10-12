@@ -4,7 +4,9 @@
 import { mkdir, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 
-const OUT = 'public/printables';
+const LIBRARY_OUT = 'public/printables';
+const REWARD_OUT = 'rewards/printables';
+const REWARD_NAMES = new Set(['chore-cards.pdf', 'colour-in-mascot.pdf']);
 
 /** @param {string} text */
 function esc(text) {
@@ -320,8 +322,10 @@ const docs = {
   },
 };
 
-await mkdir(OUT, { recursive: true });
+await mkdir(LIBRARY_OUT, { recursive: true });
+await mkdir(REWARD_OUT, { recursive: true });
 for (const [name, doc] of Object.entries(docs)) {
-  await writeFile(path.join(OUT, name), render(doc));
+  const dir = REWARD_NAMES.has(name) ? REWARD_OUT : LIBRARY_OUT;
+  await writeFile(path.join(dir, name), render(doc));
 }
-console.log(`Wrote ${Object.keys(docs).length} printables to ${OUT}`);
+console.log(`Wrote library printables to ${LIBRARY_OUT} and reward printables to ${REWARD_OUT}`);

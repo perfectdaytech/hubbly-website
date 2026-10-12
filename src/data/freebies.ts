@@ -4,8 +4,7 @@ export interface Freebie {
   keyword: string | null;
   summary: string;
   href: string;
-  kind: 'library' | 'referral';
-  referrals?: 3 | 5;
+  kind: 'library';
   safety?: string;
 }
 
@@ -83,23 +82,5 @@ export const FREEBIES: Freebie[] = [
     summary: 'A five-day grid and rainy-day ideas.',
     href: '/printables/half-term-planner.pdf',
     kind: 'library',
-  },
-  {
-    slug: 'chore-cards',
-    title: 'Chore Cards',
-    keyword: null,
-    summary: 'Twelve cut-out job cards, plus a blank. The reward for 3 confirmed referrals.',
-    href: '/printables/chore-cards.pdf',
-    kind: 'referral',
-    referrals: 3,
-  },
-  {
-    slug: 'colour-in-mascot',
-    title: 'Colour-in mascot sheets',
-    keyword: null,
-    summary: 'Three pages of Hubbly to colour. The mascot does not speak. The reward for 5 confirmed referrals.',
-    href: '/printables/colour-in-mascot.pdf',
-    kind: 'referral',
-    referrals: 5,
   },
 ];

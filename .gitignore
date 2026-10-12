@@ -19,6 +19,11 @@ pnpm-debug.log*
 .env.production
 .env.local
 
+# local waitlist exports and tally reports (may contain email addresses)
+data/mock-subscribers.json
+data/referral-report.json
+data/purge-log.json
+
 # macOS / Windows / editors
 .DS_Store
 Thumbs.db

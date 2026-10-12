@@ -48,6 +48,8 @@ export const STORES = {
   iosLive: false,
 } as const;
 
+export { CONTROLLER_STATEMENT } from '../lib/waitlist/copy.mjs';
+
 /** UK regulator details, used in the privacy policy. */
 export const REGULATOR = {
   name: "Information Commissioner's Office (ICO)",

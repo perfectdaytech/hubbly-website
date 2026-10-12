@@ -3,7 +3,7 @@ layout: ../layouts/LegalLayout.astro
 title: Cookie Policy
 description: "How cookies work on the Hubbly website. The short version: gethubbly.app sets no cookies at all, and visit statistics are anonymous and cookieless."
 eyebrow: Legal
-updated: 12 June 2026
+updated: 12 October 2026
 intro: "This is a short, honest page. The Hubbly website sets no cookies, stores nothing on your device, and counts visits anonymously."
 ---
 import Callout from '../components/legal/Callout.astro';
@@ -33,7 +33,8 @@ A **cookie** is a small text file that a website can store on your device when y
 The Hubbly marketing website is a simple, static informational site. We have deliberately built it to be **privacy-friendly**:
 
 - it sets **no cookies at all**, essential or otherwise, and stores nothing in your browser's local storage;
-- it uses **anonymous, cookieless visit statistics** (PostHog, EU-hosted) to count pages viewed, clicks, scroll depth and where visitors came from. This runs in memory only, identifies nobody, builds no profile, and discards IP addresses; it honours your browser's "Do Not Track" signal;
+- the waitlist form is plain HTML. It does not load MailerLite's script, reCAPTCHA, or any other third-party script on the page;
+- it uses **anonymous, cookieless visit statistics** (PostHog, EU-hosted) to count pages viewed, clicks, scroll depth and where visitors came from. This runs in memory only, identifies nobody, builds no profile, and discards IP addresses; it honours your browser's "Do Not Track" signal. Waitlist events do not include an email address, a name or a referral code;
 - there are **no advertising pixels and no behavioural tracking**: we do not follow you around the web; and
 - there is **no cookie consent banner**, because nothing is stored on your device, so there is nothing to consent to.
 

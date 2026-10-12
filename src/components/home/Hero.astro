@@ -35,7 +35,7 @@ const avatars = ['👩', '👨', '🦄', '🦖'];
         <div data-reveal>
           <Eyebrow>
             <Icon name="sparkles" size={13} slot="icon" />
-            Founders rate · £2.99/month for the first 100 households
+            Coming to Google Play in January
           </Eyebrow>
         </div>
 
@@ -63,9 +63,18 @@ const avatars = ['👩', '👨', '🦄', '🦖'];
 
         <div data-reveal style="--reveal-delay:240ms" class="mt-8">
           <StoreButtons />
-          <p class="mt-3 flex items-center gap-1.5 text-sm font-semibold text-navy-soft">
-            <Icon name="check-circle" size={15} class="text-mint" />
-            Free for 30 days, then one small subscription for the whole household.
+          <p class="mt-4 text-base font-semibold leading-relaxed text-navy">
+            <span class="font-bold">30-day free trial</span>, then <span class="font-bold">£4.99 a month</span>.
+            Payment method needed. <span class="font-bold">Renews automatically</span> unless you cancel at least
+            24 hours before the trial ends.
+          </p>
+          <p class="mt-4">
+            <a
+              href="/waitlist"
+              class="inline-flex rounded-full bg-coral-deep px-7 py-3.5 font-display text-base font-semibold text-white shadow-coral"
+            >
+              Join the waitlist
+            </a>
           </p>
         </div>
 

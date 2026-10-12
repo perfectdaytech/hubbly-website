@@ -4,6 +4,7 @@ import SectionHeading from '@/components/ui/SectionHeading.astro';
 import Icon from '@/components/ui/Icon.astro';
 import PricingCard from './PricingCard.astro';
 import { MONTHLY_PLAN, ANNUAL_PLAN, FOUNDERS_LINE, PRICING_NOTE } from '@/data/pricing';
+import { WAITLIST_NO_PLACE } from '@/data/waitlist';
 
 interface Props {
   /** Hide the section heading when the page already has its own. */
@@ -17,8 +18,8 @@ const { withHeading = true } = Astro.props;
       <SectionHeading eyebrow="Simple, honest pricing">
         Free to try. <span class="text-gradient">Fair to keep.</span>
         <Fragment slot="lead">
-          Free for 30 days, no card. If Hubbly earns its place at your table,
-          it's one small subscription for the whole household.
+          30-day free trial, then £4.99 a month. A payment method is needed, and the
+          subscription renews automatically unless you cancel at least 24 hours before the trial ends.
         </Fragment>
       </SectionHeading>
     )
@@ -40,7 +41,10 @@ const { withHeading = true } = Astro.props;
     data-reveal
   >
     <Icon name="star" size={17} class="mt-0.5 shrink-0 text-coral-deep" />
-    <span>{FOUNDERS_LINE}</span>
+    <span>
+      {FOUNDERS_LINE}{' '}
+      <a class="underline" href="/founders-terms">Founders' terms</a>. {WAITLIST_NO_PLACE}
+    </span>
   </p>
 
   <p class="mx-auto mt-6 max-w-2xl text-center text-[0.82rem] leading-relaxed text-navy-soft">

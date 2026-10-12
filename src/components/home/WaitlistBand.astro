@@ -1,0 +1,32 @@
+---
+import Section from '@/components/ui/Section.astro';
+import Eyebrow from '@/components/ui/Eyebrow.astro';
+import TrialNotice from '@/components/waitlist/TrialNotice.astro';
+import { GIFT_LINE, LAUNCH_LINE, WAITLIST_NO_PLACE } from '@/data/waitlist';
+---
+<Section id="waitlist" pad="lg" class="bg-paper/60">
+  <div class="mx-auto max-w-3xl text-center">
+    <Eyebrow>{LAUNCH_LINE}</Eyebrow>
+    <h2 class="mt-4 font-display text-4xl font-semibold tracking-tight text-navy sm:text-5xl">
+      Join the waitlist
+    </h2>
+    <p class="mt-4 text-lg leading-relaxed text-navy-soft">{GIFT_LINE}</p>
+    <div class="mt-5 text-left sm:text-center">
+      <TrialNotice class="sm:mx-auto sm:max-w-xl" />
+    </div>
+    <p class="mt-4 text-base font-semibold text-navy">{WAITLIST_NO_PLACE}</p>
+    <p class="mt-6">
+      <a
+        href="/waitlist"
+        class="inline-flex rounded-full bg-coral-deep px-7 py-3.5 font-display text-base font-semibold text-white shadow-coral"
+      >
+        Join the waitlist
+      </a>
+    </p>
+    <p class="mt-4 text-sm text-navy-soft">
+      <a class="font-semibold text-coral-deep underline" href="/freebies">Browse the free printables</a>
+      ·
+      <a class="font-semibold text-coral-deep underline" href="/referral-terms">Referral terms</a>
+    </p>
+  </div>
+</Section>

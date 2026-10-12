@@ -3,9 +3,13 @@ question: How much does Hubbly cost?
 order: 2
 ---
 
-Hubbly is **free for 30 days**, no card needed. After that it's **£4.99 a
-month or £44.99 a year** (about 25% less), and one subscription covers your
-whole household on every phone and tablet. The **first 100 households** get
-our founders rate of **£2.99 a month or £29.99 a year**, and they keep that
-lower price for as long as they stay subscribed. Your app store shows the
-equivalent in your local currency before you confirm anything.
+**30-day free trial, then £4.99 a month** (or £44.99 a year). A payment
+method is needed. The subscription **renews automatically** unless you
+cancel at least 24 hours before the trial ends. One subscription covers
+the family on every phone and tablet.
+
+**Founders' offer:** the first 100 subscriptions get their first year at
+£2.99 a month, after the 30-day free trial, then £4.99 a month. After that
+year it renews at £4.99 a month unless you cancel. Google Play first, from
+launch day. Joining the waitlist doesn't reserve a founders' place.
+See the [founders' terms](/founders-terms).

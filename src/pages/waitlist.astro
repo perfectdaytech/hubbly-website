@@ -1,0 +1,35 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import Section from '@/components/ui/Section.astro';
+import Eyebrow from '@/components/ui/Eyebrow.astro';
+import WaitlistForm from '@/components/waitlist/WaitlistForm.astro';
+import { LAUNCH_LINE } from '@/data/waitlist';
+import { webPageSchema } from '@/lib/schema';
+---
+<BaseLayout
+  title="Join the waitlist"
+  description="Join the Hubbly waitlist for launch news, the Android beta if you want it, and a free Calmer Mornings Starter printable when you confirm."
+  jsonLd={webPageSchema({
+    name: 'Join the Hubbly waitlist',
+    description: 'Early access, launch-day news, and a free printable when you confirm.',
+    path: '/waitlist',
+  })}
+>
+  <header class="relative overflow-hidden bg-gradient-to-b from-paper to-cream pt-[calc(var(--nav-h)+3rem)] pb-8">
+    <div class="mx-auto w-full max-w-[1200px] px-5 sm:px-7 lg:px-8">
+      <Eyebrow>{LAUNCH_LINE}</Eyebrow>
+      <h1 class="mt-4 max-w-3xl font-display text-4xl font-semibold tracking-tight text-navy sm:text-5xl">
+        Join the Hubbly waitlist
+      </h1>
+      <p class="mt-4 max-w-2xl text-lg leading-relaxed text-navy-soft">
+        A happy little home for your family's day. Confirm your email and we'll send the Calmer Mornings Starter.
+        <a class="font-semibold text-coral-deep underline" href="/freebies">See the free printables</a>.
+      </p>
+    </div>
+  </header>
+  <Section pad="md">
+    <div data-analytics-view="waitlist_view">
+      <WaitlistForm />
+    </div>
+  </Section>
+</BaseLayout>

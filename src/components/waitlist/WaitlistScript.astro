@@ -1,0 +1,6 @@
+---
+import inlineSource from '@/scripts/waitlist-inline.js?raw';
+
+const safe = inlineSource.replaceAll('</', '<\\/');
+---
+<Fragment set:html={`<script>${safe}</script>`} />

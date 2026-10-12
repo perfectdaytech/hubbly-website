@@ -1,0 +1,80 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import Section from '@/components/ui/Section.astro';
+import TrialNotice from '@/components/waitlist/TrialNotice.astro';
+import WaitlistScript from '@/components/waitlist/WaitlistScript.astro';
+import { FOUNDERS_OFFER, GIFT_LINE, SHARE_TEXT, WAITLIST_NO_PLACE } from '@/data/waitlist';
+---
+<BaseLayout
+  title="You're on the Hubbly waitlist"
+  description="You're confirmed. Here is your Calmer Mornings Starter and your own share link."
+  noindex={true}
+>
+  <Section pad="lg" innerClass="pt-[calc(var(--nav-h)+3rem)] max-w-2xl">
+    <div data-analytics-view="waitlist_confirm_page_view">
+      <h1 class="font-display text-4xl font-semibold tracking-tight text-navy sm:text-5xl">You're on the list</h1>
+      <p class="mt-5 text-lg leading-relaxed text-navy">{GIFT_LINE}</p>
+      <p class="mt-3">
+        <a
+          class="inline-flex rounded-full bg-coral-deep px-6 py-3 font-display font-semibold text-white"
+          href="/printables/calmer-mornings-starter.pdf"
+        >
+          Download the Calmer Mornings Starter
+        </a>
+      </p>
+      <p class="mt-3 text-base text-navy-soft">
+        More printables are on the <a class="font-semibold text-coral-deep underline" href="/freebies">freebie library</a>.
+      </p>
+
+      <div id="share-box" hidden class="mt-8 rounded-[1.5rem] bg-white p-6 shadow-card ring-1 ring-navy/[0.06]">
+        <h2 class="font-display text-2xl font-semibold text-navy">Your link</h2>
+        <p class="mt-2 text-base leading-relaxed text-navy">{SHARE_TEXT}</p>
+        <a id="share-url" class="mt-3 block break-all font-semibold text-coral-deep underline" href="/waitlist"></a>
+        <div class="mt-4 flex flex-wrap gap-3">
+          <button
+            type="button"
+            data-share
+            data-channel="copy"
+            data-analytics="waitlist_share_click"
+            class="rounded-full bg-navy px-5 py-2.5 font-semibold text-cream"
+          >
+            Copy link
+          </button>
+          <button
+            type="button"
+            data-share
+            data-channel="share"
+            data-analytics="waitlist_share_click"
+            class="rounded-full bg-white px-5 py-2.5 font-semibold text-navy ring-1 ring-navy/15"
+          >
+            Share
+          </button>
+        </div>
+        <p id="share-status" role="status" class="mt-3 text-sm font-semibold text-navy"></p>
+        <p class="mt-4 text-base leading-relaxed text-navy">
+          3 confirmed referrals: Chore Cards. 5 confirmed referrals: colour-in mascot sheets.
+          <a class="font-semibold text-coral-deep underline" href="/referral-terms">Referral terms</a>.
+        </p>
+      </div>
+
+      <p id="share-missing" class="mt-8 text-base leading-relaxed text-navy">
+        Your personal link is in your welcome email. Sharing is by that link only. We never email your friends.
+      </p>
+
+      <div class="mt-8">
+        <TrialNotice />
+      </div>
+      <p class="mt-4 text-base leading-relaxed text-navy">
+        {FOUNDERS_OFFER}
+        <a class="font-semibold text-coral-deep underline" href="/founders-terms">Founders' terms</a>.
+      </p>
+      <p class="mt-2 text-base text-navy">{WAITLIST_NO_PLACE}</p>
+      <p class="mt-4 text-base leading-relaxed text-navy-soft">
+        To leave the early-tester list, reply to any Hubbly email or write to
+        <a class="font-semibold text-coral-deep underline" href="mailto:contact@gethubbly.app">contact@gethubbly.app</a>.
+        You can unsubscribe from any email.
+      </p>
+    </div>
+  </Section>
+  <WaitlistScript />
+</BaseLayout>

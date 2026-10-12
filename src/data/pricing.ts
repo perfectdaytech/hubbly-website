@@ -34,12 +34,12 @@ export interface PricingPlan {
 export const PRICING_NOTE =
   'The price is shown in the app before you subscribe. Your app store shows the equivalent in your local currency. Optional extras (looks, quote packs and other one-time packs) are cosmetic treats - every family feature above is included in the subscription.';
 
-export const FOUNDERS_LINE = "Joining the waitlist does not reserve a place.";
+export const FOUNDERS_LINE =
+  "The first 100 subscriptions get a special founders' price for the first year when you subscribe, then the standard price. Google Play first, from launch day.";
 
 export const MONTHLY_PLAN: PricingPlan = {
   id: 'monthly',
   name: 'Monthly',
-  trialLabel: '30 days free in the app',
   tagline: 'Every feature, on the kitchen tablet and every family phone.',
   features: [
     'Every family feature, no paywalls inside',
@@ -48,5 +48,4 @@ export const MONTHLY_PLAN: PricingPlan = {
     'Cancel anytime - your data stays safe for 30 days',
   ],
   cta: 'Join the waitlist',
-  note: 'No card to start. You are not charged when the trial ends unless you choose to subscribe.',
 };

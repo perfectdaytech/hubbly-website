@@ -13,6 +13,9 @@ const STRIP_PARAMS = ['ref', 'code', 'referred_by', 'email', 'name'];
 const URL_IN_TEXT = /https?:\/\/[^\s"'<>]+/gi;
 
 export function scrubAnalyticsUrl(raw, origin = 'https://gethubbly.app') {
+  if (typeof raw !== 'string' || raw === '$direct') return raw;
+  const absolute = /^[a-z][a-z0-9+.-]*:/i.test(raw);
+  if (!absolute && !raw.startsWith('/')) return raw;
   try {
     const url = new URL(raw, origin);
     const strip = new Set(STRIP_PARAMS);

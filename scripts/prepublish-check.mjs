@@ -22,21 +22,22 @@ export const BANNED = [
   'APP_STORE_URL',
   '44.99',
   '4.99',
+  '£',
 ];
 
 /** Tokens that stay in the draft until the owner decides. Any one fails this scan. */
-export const OPEN_PLACEHOLDERS = ['[REWARD CHOICE]'];
+export const OPEN_PLACEHOLDERS = [];
 
 /**
  * Tags the emails actually send.
- * {$url} is the confirm link in the double opt-in email (MailerLite documents
- * it as the campaign web version; there is no separate confirmation tag).
+ * {$url} is MailerLite's campaign web-version link. No confirm-link merge tag
+ * is published, so the confirmation draft keeps this tag until a live test.
  * {$unsubscribe} is the visible unsubscribe link.
  * {$fields.ref_code} is the share-link code in the welcome email.
  */
 export const ALLOWED_MERGE_TAGS = ['{$unsubscribe}', '{$url}', '{$fields.ref_code}'];
 
-export const REWARD_PDFS = ['chore-cards.pdf', 'colour-in-mascot.pdf'];
+export const REWARD_PDFS = ['calm-down-cards.pdf', 'family-adventure-bingo.pdf'];
 
 const ALLOWED_BRACKET = '[your name]';
 
@@ -69,20 +70,40 @@ export function visibleText(html) {
 }
 
 /**
- * Percent-encoded braces in hrefs and other attributes survive the visible-text
- * scan, because the tags are stripped before the brace check.
- * @param {string} raw
+ * Percent-encoded and entity-encoded braces survive a visible-text scan,
+ * because the tags are stripped before the brace check.
+ * @param {string} value
  */
-export function decodeAttribute(raw) {
-  let value = raw;
-  for (let pass = 0; pass < 2; pass++) {
+function decodeHtmlEntities(value) {
+  return value.replace(/&#(x[0-9a-f]+|\d+);?/gi, (match, body) => {
+    const hex = body[0] === 'x' || body[0] === 'X';
+    const code = hex ? Number.parseInt(body.slice(1), 16) : Number.parseInt(body, 10);
+    if (!Number.isFinite(code) || code < 0 || code > 0x10ffff) return match;
+    return String.fromCodePoint(code);
+  });
+}
+
+/**
+ * Decode one valid %XX at a time. A broken % does not stop a later %7B.
+ * @param {string} value
+ */
+function decodePercents(value) {
+  return value.replace(/%[0-9a-f]{2}|%/gi, (token) => {
+    if (token.length !== 3) return token;
     try {
-      const next = decodeURIComponent(value);
-      if (next === value) break;
-      value = next;
+      return decodeURIComponent(token);
     } catch {
-      break;
+      return token;
     }
+  });
+}
+
+export function decodeAttribute(raw) {
+  let value = String(raw);
+  for (let pass = 0; pass < 4; pass++) {
+    const next = decodePercents(decodeHtmlEntities(value));
+    if (next === value) break;
+    value = next;
   }
   return value;
 }
@@ -96,8 +117,8 @@ export function findAttributeIssues(html, label) {
   const issues = [];
   const tags = html.match(/<[^>]+>/g) ?? [];
   for (const tag of tags) {
-    for (const attr of tag.matchAll(/[\w:-]+\s*=\s*(?:"([^"]*)"|'([^']*)')/g)) {
-      const decoded = decodeAttribute(attr[1] ?? attr[2] ?? '');
+    for (const attr of tag.matchAll(/[\w:-]+\s*=\s*(?:"([^"]*)"|'([^']*)'|([^\s"'=<>`]+))/g)) {
+      const decoded = decodeAttribute(attr[1] ?? attr[2] ?? attr[3] ?? '');
       let stripped = decoded;
       for (const merge of ALLOWED_MERGE_TAGS) stripped = stripped.split(merge).join('');
       if (stripped.includes('{') || stripped.includes('}')) {
@@ -130,24 +151,29 @@ export function findHiddenIssues(text, label) {
  */
 export function findIssues(text, label, options = {}) {
   const braces = options.braces !== false;
+  const decoded = decodeAttribute(text);
   /** @type {string[]} */
   const issues = [];
   if (braces) {
-    let stripped = text;
+    let stripped = decoded;
     for (const tag of ALLOWED_MERGE_TAGS) stripped = stripped.split(tag).join('');
     if (stripped.includes('{') || stripped.includes('}')) {
       issues.push(`${label}: contains a curly brace`);
     }
   }
-  const withoutName = text.split(ALLOWED_BRACKET).join('');
+  const withoutName = decoded
+    .split(ALLOWED_BRACKET)
+    .join('')
+    .replaceAll('<!--[if mso]>', '')
+    .replaceAll('<![endif]-->');
   if (withoutName.includes('[')) {
     issues.push(`${label}: contains a square bracket`);
   }
   for (const term of BANNED) {
-    if (containsTerm(text, term)) issues.push(`${label}: contains "${term}"`);
+    if (containsTerm(decoded, term)) issues.push(`${label}: contains "${term}"`);
   }
   for (const token of OPEN_PLACEHOLDERS) {
-    if (text.includes(token)) issues.push(`${label}: open placeholder ${token}`);
+    if (decoded.includes(token)) issues.push(`${label}: open placeholder ${token}`);
   }
   return issues;
 }
@@ -206,6 +232,8 @@ export async function scanPublished(distDir, emailDir) {
     if (!name.endsWith('.html')) continue;
     const raw = await readFile(path.join(emailDir, name), 'utf8');
     issues.push(...findIssues(raw, `emails/${name}`));
+    issues.push(...findHiddenIssues(raw, `emails/${name}`));
+    issues.push(...findAttributeIssues(raw, `emails/${name}`));
   }
   for (const file of await findRewardPdfs(distDir)) {
     issues.push(`${path.relative(distDir, file)}: referral reward PDF is public`);

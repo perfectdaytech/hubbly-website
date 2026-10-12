@@ -20,6 +20,8 @@ export const BURST_COUNT = 3;
 export function networkKey(ip) {
   if (!ip) return undefined;
   let raw = String(ip).trim().toLowerCase();
+  // mapSubscriber already stores this prefix. A second pass must keep it.
+  if (raw.startsWith('v4:') || raw.startsWith('v6:')) return raw;
   const zone = raw.indexOf('%');
   if (zone !== -1) raw = raw.slice(0, zone);
   const dotted = raw.match(/^::ffff:(\d{1,3}(?:\.\d{1,3}){3})$/);

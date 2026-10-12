@@ -76,6 +76,22 @@ export const FREEBIES: Freebie[] = [
       'Follow the dose on the packet, or your pharmacist or GP. Call 111 if you are worried.',
   },
   {
+    slug: 'chore-cards',
+    title: 'Chore Cards',
+    keyword: 'CHORES',
+    summary: 'Cut-out job cards, plus a blank card for a job that is yours.',
+    href: '/printables/chore-cards.pdf',
+    kind: 'library',
+  },
+  {
+    slug: 'colour-in-mascot',
+    title: 'Colour-in mascot sheets',
+    keyword: 'COLOUR',
+    summary: 'The mascot only, with no speech bubbles.',
+    href: '/printables/colour-in-mascot.pdf',
+    kind: 'library',
+  },
+  {
     slug: 'half-term-planner',
     title: 'Half-term planner',
     keyword: 'HALFTERM',

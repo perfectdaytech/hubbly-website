@@ -129,11 +129,35 @@
     stripParam('code');
   }
 
+  var EMAIL_EMPTY = 'Enter an email address to continue.';
+  var EMAIL_INVALID = 'Check your email address, it looks incomplete.';
+
+  function emailMessage(value) {
+    var text = String(value || '').trim();
+    if (!text) return EMAIL_EMPTY;
+    if (!acceptableEmail(text)) return EMAIL_INVALID;
+    return '';
+  }
+
+  function errorKey(field) {
+    if (!field) return '';
+    if (field.id === 'waitlist-email') return 'email';
+    if (field.name === 'fields[store_pref]') return 'store';
+    if (field.name === 'fields[age_18]') return 'age';
+    return '';
+  }
+
   function showError(form, message, field) {
-    var box = form.querySelector('[data-error]');
-    if (box) {
+    var boxes = form.querySelectorAll('[data-error-for]');
+    for (var i = 0; i < boxes.length; i++) {
+      boxes[i].textContent = '';
+      boxes[i].hidden = true;
+    }
+    var key = errorKey(field);
+    var box = key ? form.querySelector('[data-error-for="' + key + '"]') : null;
+    if (box && message) {
       box.textContent = message;
-      box.hidden = !message;
+      box.hidden = false;
     }
     if (field && message) field.focus();
   }
@@ -147,7 +171,7 @@
       var stores = form.querySelectorAll('input[name="fields[store_pref]"]');
       var picked = form.querySelector('input[name="fields[store_pref]"]:checked');
       if (email) {
-        email.setCustomValidity(acceptableEmail(email.value) ? '' : 'Enter an email address to continue.');
+        email.setCustomValidity(emailMessage(email.value));
       }
       for (var i = 0; i < stores.length; i++) {
         stores[i].setCustomValidity(!picked && i === 0 ? 'Please choose one option to continue.' : '');
@@ -182,6 +206,7 @@
         var reason = 'missing_email';
         if (message.indexOf('choose') !== -1) reason = 'missing_store';
         else if (message.indexOf('tick') !== -1) reason = 'missing_age';
+        else if (message.indexOf('incomplete') !== -1) reason = 'invalid_email';
         emit('waitlist_error', { reason: reason });
       },
       true,
@@ -208,8 +233,9 @@
       var store = form.querySelector('input[name="fields[store_pref]"]:checked');
       if (email && !acceptableEmail(email.value)) {
         ev.preventDefault();
-        email.setCustomValidity('Enter an email address to continue.');
-        showError(form, 'Enter an email address to continue.', email);
+        var emailText = emailMessage(email.value);
+        email.setCustomValidity(emailText);
+        showError(form, emailText, email);
         emit('waitlist_error', { reason: email.value.trim() ? 'invalid_email' : 'missing_email' });
         return;
       }

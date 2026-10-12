@@ -19,6 +19,7 @@ export const CHECKBOX_TIPS = 'After launch, send me Hubbly tips and printables t
 export const AGE_ERROR = 'Please tick this box to continue.';
 export const STORE_ERROR = 'Please choose one option to continue.';
 export const EMAIL_ERROR = 'Enter an email address to continue.';
+export const EMAIL_INVALID = 'Check your email address, it looks incomplete.';
 
 export const CONFIRM_SUBJECT = 'Please confirm you want Hubbly emails';
 export const CONFIRM_BODY =
@@ -27,24 +28,25 @@ export const CONFIRM_BODY =
 export const TRIAL_AFTER =
   "After that, keeping Hubbly needs a subscription. You'll see the price in the app before you choose, and you're never charged unless you subscribe.";
 
-export const TRIAL_SHORT =
-  'The full app is free for 30 days. The trial runs inside Hubbly, and no card is needed to start. If the trial ends and you do not subscribe, you will not be charged. ' +
-  TRIAL_AFTER;
+export const TRIAL_SHORT = '30-day free trial in the app, no card needed to start. ' + TRIAL_AFTER;
 
 export const TRIAL_LONG =
   'When you download Hubbly, the full app is free to use for 30 days, with every feature unlocked. The trial is managed by the app rather than by your app store, and no payment details are required to begin it. Certain in-app activities (for example connecting a calendar) can extend the trial by a number of days; the current offers and amounts are shown in the app and may change over time. If you reach the end of the trial and decide not to subscribe, you will not be charged. ' +
   TRIAL_AFTER;
 
 export const FOUNDERS_CAP =
-  "If a founders' offer is available, it is limited. After it ends, the price shown in the store applies.";
+  "The first 100 subscriptions get a special founders' price for the first year when you subscribe, then the standard price. Google Play first, from launch day.";
 
 export const WAITLIST_NO_PLACE = "Joining the waitlist doesn't reserve a founders' place.";
 
 export const COOLING_OFF =
   "If you subscribe and change your mind, you can cancel within 14 days of your first payment and ask for a refund (less anything you've used) through Google Play or the App Store.";
 
+export const REFERRAL_SUMMARY =
+  'Share your link. When 3 friends confirm, you get Calm-down cards; at 5, Family adventure bingo.';
+
 export const REFERRAL_TERMS =
-  "Share your own link. When someone joins through it and confirms their email, that counts as one referral. [REWARD CHOICE] 3 referrals: Chore Cards (a printable set). 5 referrals: colour-in mascot sheets (printable). Referrals count until 23:59 UK time on Thu 31 Dec 2026. Your own sign-ups, duplicate or fake addresses don't count. If several sign-ups come from the same internet connection within an hour, we check them by hand before they count. A referral stops counting if that person unsubscribes before 23:59 UK time on 31 Dec 2026. Referrals never give a founders' place or a discount on Hubbly's price. Rewards are sent by email by Fri 15 Jan 2027. Promoter: PerfectDay Technologies Ltd, registered in England and Wales, company no. 16952922, 71-75 Shelton Street, Covent Garden, London, WC2H 9JQ, United Kingdom.";
+  "Share your own link. When someone joins through it and confirms their email, that counts as one referral. 3 referrals: Calm-down cards (printable A4 PDF, calm-down-cards.pdf). 5 referrals: Family adventure bingo (printable A4 PDF, family-adventure-bingo.pdf). Both are referral-only and are sent only in the reward emails. Referrals count until 23:59 UK time on Thu 31 Dec 2026. Your own sign-ups, duplicate or fake addresses don't count. If several sign-ups come from the same internet connection within an hour, we check them by hand before they count. A referral stops counting if that person unsubscribes before 23:59 UK time on 31 Dec 2026. Referrals never give a founders' place or a discount on Hubbly's price. Rewards are sent by email by Fri 15 Jan 2027. Promoter: PerfectDay Technologies Ltd, registered in England and Wales, company no. 16952922, 71-75 Shelton Street, Covent Garden, London, WC2H 9JQ, United Kingdom.";
 
 export const PRIVACY_WAITLIST =
   "Hubbly waitlist. If you join our waitlist we collect your email address, first name (optional), which store you'll use, whether you'd like to test early, your confirmation that you're 18 or over, a referral code (and, if you joined through someone's link, that link's code), and the time and IP address of your sign-up and confirmation (as a record of your consent). We also use the sign-up time and IP address to check referrals for duplicates and abuse, under our legitimate interest in running the referral rewards fairly. We use this only to email you about Hubbly until launch and, if you ticked the box, after launch. Our lawful basis is your consent, which you can withdraw at any time using the unsubscribe link. MailerLite (UAB MailerLite, Lithuania) sends our emails as our processor and stores the data in the EU. If you ask to test early, we give your email address to Google or Apple to add you as a tester. We delete waitlist data 6 months after Hubbly launches on Google Play, and in any case by 31 July 2027. If you asked for emails after launch, we keep your email address, first name and consent record until you unsubscribe. We delete unconfirmed sign-ups within 21 days. You can complain to the ICO (ico.org.uk).";
@@ -61,7 +63,7 @@ export const SHARE_TEXT =
 export const LAUNCH_LINE = 'Coming to Google Play in January, App Store soon after.';
 
 export const GIFT_LINE =
-  'Everyone who confirms gets the Calmer Mornings Starter printable. It is not tied to referrals.';
+  "When you confirm your email, we'll send you the Calmer Mornings Starter, a free printable with morning and bedtime routine charts and a star chart. It is not tied to referrals.";
 
 export const SUBSCRIBER_FLAG_AT = 200;
 

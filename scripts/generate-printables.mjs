@@ -6,7 +6,7 @@ import path from 'node:path';
 
 const LIBRARY_OUT = 'public/printables';
 const REWARD_OUT = 'rewards/printables';
-const REWARD_NAMES = new Set(['chore-cards.pdf', 'colour-in-mascot.pdf']);
+const REWARD_NAMES = new Set([]);
 
 /** @param {string} text */
 function esc(text) {

@@ -4,7 +4,7 @@ import SectionHeading from '@/components/ui/SectionHeading.astro';
 import Icon from '@/components/ui/Icon.astro';
 import PricingCard from './PricingCard.astro';
 import { MONTHLY_PLAN, FOUNDERS_LINE, PRICING_NOTE } from '@/data/pricing';
-import { TRIAL_SHORT } from '@/data/waitlist';
+import { TRIAL_SHORT, WAITLIST_NO_PLACE } from '@/data/waitlist';
 
 interface Props {
   /** Hide the section heading when the page already has its own. */
@@ -32,7 +32,7 @@ const { withHeading = true } = Astro.props;
   >
     <Icon name="star" size={17} class="mt-0.5 shrink-0 text-coral-deep" />
     <span>
-      {FOUNDERS_LINE}{' '}
+      {FOUNDERS_LINE} {WAITLIST_NO_PLACE}{' '}
       <a class="underline" href="/founders-terms">Founders' terms</a>.
     </span>
   </p>

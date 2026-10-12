@@ -3,7 +3,7 @@ import BaseLayout from '@/layouts/BaseLayout.astro';
 import Section from '@/components/ui/Section.astro';
 import TrialNotice from '@/components/waitlist/TrialNotice.astro';
 import WaitlistScript from '@/components/waitlist/WaitlistScript.astro';
-import { GIFT_LINE, SHARE_TEXT, WAITLIST_NO_PLACE } from '@/data/waitlist';
+import { FOUNDERS_CAP, GIFT_LINE, REFERRAL_SUMMARY, SHARE_TEXT, WAITLIST_NO_PLACE } from '@/data/waitlist';
 ---
 <BaseLayout
   title="You're on the Hubbly waitlist"
@@ -30,29 +30,29 @@ import { GIFT_LINE, SHARE_TEXT, WAITLIST_NO_PLACE } from '@/data/waitlist';
         <h2 class="font-display text-2xl font-semibold text-navy">Your link</h2>
         <p class="mt-2 text-base leading-relaxed text-navy">{SHARE_TEXT}</p>
         <a id="share-url" class="mt-3 block break-all font-semibold text-coral-deep underline" href="/waitlist"></a>
-        <div class="mt-4 flex flex-wrap gap-3">
-          <button
-            type="button"
-            data-share
-            data-channel="copy"
-            data-analytics="waitlist_share_click"
-            class="rounded-full bg-navy px-5 py-2.5 font-semibold text-cream"
-          >
-            Copy link
-          </button>
+        <div class="mt-4 flex flex-col gap-3 sm:flex-row">
           <button
             type="button"
             data-share
             data-channel="share"
             data-analytics="waitlist_share_click"
-            class="rounded-full bg-white px-5 py-2.5 font-semibold text-navy ring-1 ring-navy/15"
+            class="order-1 inline-flex min-h-12 w-full items-center justify-center rounded-full bg-coral-deep px-5 font-semibold text-white sm:order-2 sm:w-auto sm:bg-white sm:text-navy sm:ring-1 sm:ring-navy/15"
           >
             Share
+          </button>
+          <button
+            type="button"
+            data-share
+            data-channel="copy"
+            data-analytics="waitlist_share_click"
+            class="order-2 inline-flex min-h-12 w-full items-center justify-center rounded-full bg-white px-5 font-semibold text-navy ring-1 ring-navy/15 sm:order-1 sm:w-auto sm:bg-navy sm:text-cream sm:ring-0"
+          >
+            Copy link
           </button>
         </div>
         <p id="share-status" role="status" class="mt-3 text-sm font-semibold text-navy"></p>
         <p class="mt-4 text-base leading-relaxed text-navy">
-          3 confirmed referrals: Chore Cards. 5 confirmed referrals: colour-in mascot sheets.
+          {REFERRAL_SUMMARY}
           <a class="font-semibold text-coral-deep underline" href="/referral-terms">Referral terms</a>.
         </p>
       </div>
@@ -65,7 +65,7 @@ import { GIFT_LINE, SHARE_TEXT, WAITLIST_NO_PLACE } from '@/data/waitlist';
         <TrialNotice />
       </div>
       <p class="mt-4 text-base leading-relaxed text-navy">
-        {WAITLIST_NO_PLACE}{' '}
+        {FOUNDERS_CAP} {WAITLIST_NO_PLACE}{' '}
         <a class="font-semibold text-coral-deep underline" href="/founders-terms">Founders' terms</a>.
       </p>
       <p class="mt-4 text-base leading-relaxed text-navy-soft">

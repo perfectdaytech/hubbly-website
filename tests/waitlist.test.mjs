@@ -9,7 +9,7 @@ import {
   shareClickProps,
 } from '../src/lib/waitlist/analytics.mjs';
 import { REF_ALPHABET, generateRefCode, isValidRefCode } from '../src/lib/waitlist/codes.mjs';
-import { networkKey, tally } from '../src/lib/waitlist/count.mjs';
+import { burstFlaggedIds, networkKey, tally } from '../src/lib/waitlist/count.mjs';
 import {
   CHECKBOX_AGE,
   CHECKBOX_BETA,
@@ -71,6 +71,7 @@ test('the page script uses the same alphabet and does not store anything', () =>
   assert.equal(script.includes('submitting'), true);
   assert.equal(script.includes('.disabled = true'), true);
   assert.equal(script.includes('length > 254'), true);
+  assert.equal(script.includes('Check your email address, it looks incomplete.'), true);
   assert.equal(script.includes('#waitlist-email'), true);
   assert.equal(script.includes('input[type="email"]'), false);
   assert.equal(script.includes('referred_by:'), false);
@@ -274,6 +275,39 @@ test('the same network is an IPv4 /24 or an IPv6 /64, and the full address is no
   assert.equal(JSON.stringify(mapped).includes('::1a'), false);
   const report = JSON.stringify({ writes: [], burstHeld: [{ id: 'v4-1', referrerId: 'referrer' }] });
   assert.equal(report.includes('5.5.5.1'), false);
+  assert.equal(networkKey('v4:5.5.5'), 'v4:5.5.5');
+  assert.equal(networkKey('v6:2a00:23c4:0001:0002'), 'v6:2a00:23c4:0001:0002');
+  assert.equal(networkKey(networkKey('5.5.5.9')), 'v4:5.5.5');
+  assert.equal(networkKey(networkKey('2a00:23c4:1:2::1a')), 'v6:2a00:23c4:0001:0002');
+});
+
+test('three mapped sign-ups from one IP are flagged and held', () => {
+  const referrer = mapSubscriber({
+    id: 'referrer',
+    email: 'owner@example.com',
+    status: 'active',
+    subscribed_at: '2026-11-01T10:00:00.000Z',
+    opted_in_at: '2026-11-01T10:05:00.000Z',
+    ip_address: '203.0.113.10',
+    fields: { ref_code: 'ABCDEFGH' },
+  });
+  const friends = [1, 2, 3].map((n) =>
+    mapSubscriber({
+      id: `burst-${n}`,
+      email: `burst${n}@example.com`,
+      status: 'active',
+      subscribed_at: `2026-11-03T10:0${n}:00.000Z`,
+      opted_in_at: `2026-11-03T10:0${n}:00.000Z`,
+      ip_address: '5.5.5.9',
+      fields: { referred_by: 'ABCDEFGH' },
+    }),
+  );
+  const flagged = burstFlaggedIds(friends);
+  assert.equal(flagged.size, 3);
+  for (const friend of friends) assert.equal(flagged.has(friend.id), true);
+  const result = tally([referrer, ...friends]);
+  assert.equal(result.burstHeld.length, 3);
+  assert.equal(result.counted, 0);
 });
 
 test('the free-plan flag counts unconfirmed contacts and does not buy anything', () => {
@@ -350,6 +384,11 @@ test('analytics payloads cannot carry a referral code or an email address', () =
   assert.equal(encoded.includes('ABCDEFGH'), false);
   assert.equal(encoded.includes('abcdefgh'), false);
   assert.equal(encoded.includes('utm_source=instagram'), true);
+  const direct = { properties: { $referrer: '$direct' } };
+  scrubAnalyticsEvent(direct);
+  assert.equal(direct.properties.$referrer, '$direct');
+  assert.equal(scrubAnalyticsUrl('$direct'), '$direct');
+  assert.equal(scrubAnalyticsUrl('/waitlist?ref=ABCDEFGH').includes('ABCDEFGH'), false);
 });
 
 test('consent wording is saved with the form version', () => {
@@ -368,9 +407,10 @@ test('consent wording is saved with the form version', () => {
   assert.ok(snapshot.includes(GIFT_LINE));
   assert.ok(snapshot.includes(WAITLIST_NO_PLACE));
   assert.ok(snapshot.includes(TRIAL_SHORT));
-  assert.ok(snapshot.includes('[REWARD CHOICE] 3 confirmed referrals: Chore Cards.'));
-  assert.ok(REFERRAL_TERMS.includes('Chore Cards'));
-  assert.ok(REFERRAL_TERMS.includes('[REWARD CHOICE]'));
+  assert.equal(snapshot.includes('[REWARD CHOICE]'), false);
+  assert.ok(REFERRAL_TERMS.includes('Calm-down cards'));
+  assert.ok(REFERRAL_TERMS.includes('family-adventure-bingo.pdf'));
+  assert.equal(REFERRAL_TERMS.includes('[REWARD CHOICE]'), false);
   assert.ok(REFERRAL_TERMS.includes('same internet connection'));
   assert.ok(REFERRAL_TERMS.includes('unsubscribes'));
   assert.ok(REFERRAL_TERMS.includes('31 Dec 2026'));
@@ -383,7 +423,8 @@ test('the pre-publish scanner rejects retired wording', () => {
   assert.equal(findIssues('ref={$fields.ref_code} <a href="{$unsubscribe}">Unsubscribe</a>', 'sample').length, 0);
   assert.equal(findIssues('iPhone Settings › [your name] › Subscriptions', 'sample').length, 0);
   assert.ok(findIssues('[TRIAL MODEL]', 'sample').some((issue) => issue.includes('square bracket')));
-  assert.ok(findIssues('[REWARD CHOICE]', 'sample').some((issue) => issue.includes('[REWARD CHOICE]')));
+  assert.ok(findIssues('[REWARD CHOICE]', 'sample').some((issue) => issue.includes('square bracket')));
+  assert.ok(findIssues('then £4.99', 'sample').some((issue) => issue.includes('£')));
   assert.ok(findIssues('first 100 households', 'sample').some((issue) => issue.includes('households')));
   assert.ok(findIssues('free, forever', 'sample').some((issue) => issue.includes('forever')));
   assert.ok(findIssues('The store link goes in this email on launch day.', 'sample').some((issue) => issue.includes('goes in this email')));
@@ -397,6 +438,20 @@ test('the pre-publish scanner rejects retired wording', () => {
   const confirm = '<a href="{$url}">Confirm your email</a><a href="{$unsubscribe}">Unsubscribe</a>';
   assert.equal(findAttributeIssues(confirm, 'emails/00-confirm.html').length, 0);
   assert.equal(findIssues(confirm, 'emails/00-confirm.html').length, 0);
+  const bulletproof = '<!--[if mso]><v:roundrect href="{$url}"></v:roundrect><![endif]-->';
+  assert.equal(findIssues(bulletproof, 'emails/00-confirm.html').length, 0);
+  for (const hidden of [
+    '<a href="mailto:&#123;name&#125;">x</a>',
+    '<a href="mailto:&#x7B;name&#x7D;">x</a>',
+    '<a href="mailto:%25257Bname%25257D">x</a>',
+    '<a href=mailto:%7Bname%7D>x</a>',
+    '<a href="mailto:%zz%7Bname%7D">x</a>',
+  ]) {
+    assert.ok(findAttributeIssues(hidden, 'emails/hidden.html').some((issue) => issue.includes('curly brace')), hidden);
+  }
+  assert.ok(findIssues('Hello &#123;name&#125;', 'emails/hidden.html').some((issue) => issue.includes('curly brace')));
+  assert.equal(findAttributeIssues('<a href="%7B$url%7D">Confirm</a>', 'emails/00-confirm.html').length, 0);
+  assert.equal(findIssues('<p>&#123;$url&#125;</p>', 'emails/00-confirm.html').length, 0);
 });
 
 test('waitlist addresses allow accented local parts and stop at 254 characters', () => {
@@ -409,6 +464,9 @@ test('waitlist addresses allow accented local parts and stop at 254 characters',
   const form = readFileSync(new URL('../src/components/waitlist/WaitlistForm.astro', import.meta.url), 'utf8');
   assert.equal(form.includes('maxlength="254"'), true);
   assert.equal(form.includes('outline-none'), false);
+  assert.equal(form.includes('data-error-for="email"'), true);
+  assert.equal(form.includes('py-3'), true);
+  assert.equal(form.includes('[REWARD CHOICE]'), false);
   const confirm = readFileSync(new URL('../src/emails/00-confirm.html', import.meta.url), 'utf8');
   assert.equal(confirm.includes('href="{$url}"'), true);
 });

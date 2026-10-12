@@ -12,4 +12,4 @@ first payment and ask for a refund (less anything you've used) through Google
 Play or the App Store. If the store does not make a refund the law requires,
 email [hello@gethubbly.app](mailto:hello@gethubbly.app) and we will look at it.
 
-The full app is free for 30 days. The trial runs inside Hubbly, and no card is needed to start. If the trial ends and you do not subscribe, you will not be charged. After that, keeping Hubbly needs a subscription. You'll see the price in the app before you choose, and you're never charged unless you subscribe.
+30-day free trial in the app, no card needed to start. After that, keeping Hubbly needs a subscription. You'll see the price in the app before you choose, and you're never charged unless you subscribe.

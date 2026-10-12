@@ -183,6 +183,13 @@ start that plan.
    and we'll delete your address within 21 days." Drafts for every email are
    in `src/emails/`. Emails 1 and 6 need Sentinel's review before they are sent.
    Nothing in this repo sends mail.
+   MailerLite's help documents `{$url}` as the web version of a campaign, not
+   as a confirmation link. No confirm-link merge tag is published. The double
+   opt-in button is added by MailerLite, and editing that confirmation email
+   is only available on a paid plan. Stay on Free. Before go-live, run a live
+   test and confirm the button people receive is MailerLite's own confirmation
+   link. The draft in `src/emails/00-confirm.html` keeps `{$url}` in the button
+   until that test.
 3. **Custom fields**, created in the MailerLite UI (the tally script will not
    create them): `ref_code`, `referred_by`, `referral_count` (number),
    `store_pref`, `beta_optin`, `tips_optin`, `age_18`, `form_version`.
@@ -223,18 +230,21 @@ start that plan.
     `node scripts/purge-unconfirmed.mjs --confirm` deletes them. Run it weekly.
     A weekly run means an address older than 14 days is gone within 21 days,
     which is the public promise.
-11. **Reward PDFs** live in `rewards/printables/` and are not served by the
-    site. Library printables stay in `public/printables/`. Referral rewards are
-    Chore Cards (3) and the colour-in mascot sheets (5). The Calmer Mornings
-    Starter is the gift for every confirmed sign-up, and it is in the library.
+11. **Reward PDFs** are `calm-down-cards.pdf` (3 confirmed referrals) and
+    `family-adventure-bingo.pdf` (5). Ava supplies the final files before
+    go-live. Do not put them in `public/`. They go out only in the reward
+    emails (`src/emails/09-reward-3.html` and `src/emails/10-reward-5.html`).
+    Chore Cards and the colour-in mascot sheets stay in the public library
+    (`public/printables/`). The Calmer Mornings Starter is the gift for every
+    confirmed sign-up, and it is in the library.
 12. **Before go-live.** Turn double opt-in on. In a clean browser, confirm
     `/waitlist`, `/nearly` and `/confirmed` set no cookies and no local
     storage. On a live test sign-up, confirm `ref_code`, `referred_by` and
     `form_version` arrive in MailerLite.
 
 `npm test` type-checks, builds, and runs the unit tests plus the pre-publish
-scan. It expects the scan to still find `[REWARD CHOICE]`, `PLAY_URL` and
-`APP_STORE_URL`. `npm run build` fails while those remain, because `postbuild`
+scan. It expects the scan to still find `PLAY_URL` and `APP_STORE_URL`.
+`[REWARD CHOICE]` is closed. The scan also fails on a pound sign. `npm run build` fails while those remain, because `postbuild`
 runs the same scan. `npm run test:unit` runs the logic tests without a build.
 
 ### Spec section 5.2
@@ -244,7 +254,7 @@ runs the same scan. `npm run test:unit` runs the logic tests without a build.
 | 1. No cookies or local storage for referrals. `?ref=` only fills the hidden field. | `src/scripts/waitlist-inline.js` reads `ref`, writes the hidden field, then removes it from the address bar. It does not touch cookies or local storage. PostHog stays on memory persistence in `src/scripts/analytics.ts`, and `scrubAnalyticsUrl` strips `ref` and `code` from event URLs. |
 | 2. Random 8-character codes from `crypto.getRandomValues`, no look-alikes, never an id or an email. | `src/lib/waitlist/codes.mjs`, called from the inline script for each page view. |
 | 3. Self-referrals, duplicates and disposable addresses do not count. | `src/lib/waitlist/count.mjs` plus `email.mjs` and `disposable.mjs`. Plus-tags and Gmail dots are treated as the same address. Three or more sign-ups from one IP in an hour are held for a hand check (`burstHeld`) and count only with `--approve-burst`. A later unsubscribe drops that referral on the next tally, because only `confirmed` status counts. |
-| 4. Only double opt-in confirmed referrals count. Unconfirmed sign-ups are deleted after 14 days. | The tally ignores every status except `confirmed`, and ignores confirmations after 23:59 UK time on 31 Dec 2026. `scripts/purge-unconfirmed.mjs` deletes unconfirmed records older than 14 days. Run it weekly. The public promise is deletion within 21 days. It is a different script from the tally. |
+| 4. Only double opt-in confirmed referrals count. Unconfirmed sign-ups are deleted after 14 days. | The tally ignores every status except `confirmed`, and ignores confirmations after 23:59 UK time on 31 Dec 2026. `scripts/purge-unconfirmed.mjs` deletes unconfirmed records older than 14 days. Run it weekly, so an address is gone within 21 days. Privacy, the FAQ, the emails and `/nearly` say "within 21 days". That public line is not "after 14 days". The purge script is separate from the tally. |
 | 5. The tally is read-only apart from `referral_count`. | `buildReferralCountBody` in `src/lib/waitlist/mailerlite.mjs`. The live client PUT sends that body only. The tally never creates subscribers, groups or other fields, and never sends email. |
 | 6. `waitlist_share_click` sends `{channel}` only. | `shareClickProps` allows `copy` or `share` and nothing else. Submit events allow store choice, the beta yes/no, a referrer yes/no, and utm tags. No email, name or code. |
 | 7. Draft branch, reviewed before merge. | This work is on a draft branch and a draft pull request. It does not target `main` and does not change the deploy workflow. |
@@ -263,12 +273,12 @@ runs the same scan. `npm run test:unit` runs the logic tests without a build.
 | Form wording matches section 3, boxes unticked, dated HTML saved | Met. `src/components/waitlist/WaitlistForm.astro` and `src/content/consent/waitlist-form-2026-10-12.html`. |
 | Clean-browser cookie test, reCAPTCHA off, our own redirect pages | reCAPTCHA is not loaded. Redirect targets are `/nearly` and `/confirmed`. The clean-browser test still has to be run by a person before go-live. |
 | Privacy paragraph and the real retention rule | Met. Section 18 of `/privacy`: delete 6 months after the Google Play launch, and by 31 July 2027, with the post-launch exception. Unconfirmed sign-ups are deleted within 21 days. |
-| Referral terms, rewards, dates, promoter, both PDFs, no "small extras" | Met. `/referral-terms`. Reward PDFs are `rewards/printables/chore-cards.pdf` and `rewards/printables/colour-in-mascot.pdf`. They are not in the public library. |
+| Referral terms, rewards, dates, promoter, both PDFs, no "small extras" | Met. `/referral-terms`. Rewards are Calm-down cards (`calm-down-cards.pdf`) at 3 and Family adventure bingo (`family-adventure-bingo.pdf`) at 5, sent only in the reward emails. The final PDFs are not in the repo yet. Chore Cards and the colour-in sheets are public library files. |
 | Section 5.2 conditions checked on the draft branch | Met in code and tests. A human review of this pull request is the remaining check. |
 | Trial lines use Sentinel's wording, price and renewal as prominent as "free" | The no-card 30-day in-app trial is on `/terms` section 5, the home page, the waitlist, the founders' terms, the FAQs and emails 1, 2, 6, 7 and 8. No copy says a card is required to start, or that the trial charges automatically. The annual price and the founders' prices are not published. |
 | Sender mailbox, postal address in the footer, DNS authentication | Postal address is in the footer and in every email draft. The mailbox and the DNS changes are open. This branch does not change DNS. |
 | Emails 1 and 6 reviewed by Sentinel before sending | Open. Drafts are `src/emails/01-welcome.html` and `src/emails/06-launch.html`. They have not been sent. |
-| Standard price confirmed, so a decision on "(instead of £4.99)" | No price is published. The scan fails if `4.99` or `44.99` appears. A missing price does not fail the scan. |
+| Standard price confirmed, so a decision on an "instead of" comparison | No price is published. The scan fails if `4.99`, `44.99` or a pound sign appears. A missing price does not fail the scan. |
 | Cooling-off wording, and a Play manual-refund route | Wording is on `/terms`, `/founders-terms` and the refunds FAQ. The Play Console refund route is an owner step. |
 | Sentinel sign-off on v3, Lauren approves the copy | The spec records Sentinel's sign-off with conditions. Lauren's approval of the pages and emails is still open. |
 | December DMCC re-check booked for Tue 1 Dec 2026 | Open. Calendar item for Sentinel, with Ava tracking. Not booked from this repo. |
@@ -276,6 +286,6 @@ runs the same scan. `npm run test:unit` runs the logic tests without a build.
 ### Freebie library
 
 `/freebies` is one page for the whole series (option B). Comment keywords are
-labels on the cards. Colour-in sheets stay a referral reward. Downloading a
+labels on the cards. Chore Cards and the colour-in sheets are in the library. The referral rewards are not. Downloading a
 file does not join the waitlist. The privacy page says so.
 
